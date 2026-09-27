@@ -12,7 +12,15 @@ interface ParityResult {
   skipped?: string;
 }
 
-async function main() {
+export interface ParityRun {
+  n: number;
+  results: ParityResult[];
+  pass: boolean;
+  webgpu: boolean;
+}
+
+/** Browser labels vs the Python labels in parity.jsonl, for every backend. */
+export async function runParity(): Promise<ParityRun> {
   const rows = await parityRows();
   const gpu = await webgpuAvailable();
   const results: ParityResult[] = [];
@@ -33,19 +41,21 @@ async function main() {
     results.push({ name: cfg.name, device: m.info.device, agreement, maxProbDiff: maxDiff, pass: agreement >= MIN_AGREEMENT });
     m.dispose();
   }
-  const pass = results.every((r) => r.skipped || r.pass);
-  document.getElementById("sub")!.innerHTML =
-    `${rows.length} test inputs vs Python · target ≥ ${MIN_AGREEMENT * 100}% · <b class="${pass ? "pass" : "fail"}">${pass ? "PASS" : "FAIL"}</b>`;
-  document.getElementById("table")!.innerHTML =
-    "<tr><th>backend</th><th>device</th><th>label agreement</th><th>max |Δp|</th><th></th></tr>" +
-    results
-      .map((r) =>
-        r.skipped
-          ? `<tr><td>${r.name}</td><td colspan="4" class="meta">${r.skipped}</td></tr>`
-          : `<tr><td>${r.name}</td><td>${r.device}</td><td>${fmt(r.agreement! * 100, 2)}%</td><td>${r.maxProbDiff!.toExponential(2)}</td><td class="${r.pass ? "pass" : "fail"}">${r.pass ? "✓" : "✗"}</td></tr>`,
-      )
-      .join("");
-  (window as unknown as { __result: unknown }).__result = { n: rows.length, results, pass, webgpu: gpu };
+  return { n: rows.length, results, pass: results.every((r) => r.skipped || r.pass), webgpu: gpu };
 }
 
-void main();
+export const paritySummary = (r: ParityRun) =>
+  `${r.n} test inputs vs Python · target ≥ ${MIN_AGREEMENT * 100}% · <b class="${r.pass ? "pass" : "fail"}">${r.pass ? "PASS" : "FAIL"}</b>`;
+
+export function parityTable(rs: ParityResult[]): string {
+  return (
+    "<tr><th>backend</th><th>device</th><th>label agreement</th><th>max |Δp|</th><th></th></tr>" +
+    rs
+      .map((r) =>
+        r.skipped
+          ? `<tr><td>${r.name}</td><td colspan="4" class="muted">${r.skipped}</td></tr>`
+          : `<tr class="num"><td>${r.name}</td><td>${r.device}</td><td>${fmt(r.agreement! * 100, 2)}%</td><td>${r.maxProbDiff!.toExponential(2)}</td><td class="${r.pass ? "pass" : "fail"}">${r.pass ? "✓" : "✗"}</td></tr>`,
+      )
+      .join("")
+  );
+}

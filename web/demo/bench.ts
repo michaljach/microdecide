@@ -3,7 +3,7 @@ import { CONFIGS, MODEL_URL, fmt, parityRows, percentile, webgpuAvailable } from
 
 const N_SINGLE = 200;
 
-interface BenchResult {
+export interface BenchResult {
   name: string;
   device?: string;
   coldLoadMs?: number;
@@ -61,39 +61,44 @@ async function bench(cfg: (typeof CONFIGS)[number], texts: string[]): Promise<Be
   };
 }
 
-async function main() {
+export interface BenchRun {
+  results: BenchResult[];
+  webgpu: boolean;
+  crossOriginIsolated: boolean;
+  userAgent: string;
+  n: number;
+}
+
+/** Cold/warm load, per-input latency and batch throughput for every backend; `onUpdate` after each. */
+export async function runBench(onUpdate: (rs: BenchResult[]) => void = () => {}): Promise<BenchRun> {
   const texts = (await parityRows()).map((r) => r.text);
   const gpu = await webgpuAvailable();
   const results: BenchResult[] = [];
   for (const cfg of CONFIGS) {
     if (cfg.device === "webgpu" && !gpu) {
       results.push({ name: cfg.name, error: "WebGPU not available" });
-      continue;
+    } else {
+      try {
+        results.push(await bench(cfg, texts));
+      } catch (err) {
+        results.push({ name: cfg.name, error: err instanceof Error ? err.message : String(err) });
+      }
     }
-    try {
-      results.push(await bench(cfg, texts));
-    } catch (err) {
-      results.push({ name: cfg.name, error: err instanceof Error ? err.message : String(err) });
-    }
-    render(results);
+    onUpdate(results);
   }
-  render(results);
-  document.getElementById("sub")!.textContent =
-    `${MODEL_URL} · ${texts.length} test inputs · crossOriginIsolated=${crossOriginIsolated} · WebGPU=${gpu} · ${navigator.userAgent}`;
-  (window as unknown as { __result: unknown }).__result = { results, webgpu: gpu, crossOriginIsolated, userAgent: navigator.userAgent };
+  return { results, webgpu: gpu, crossOriginIsolated, userAgent: navigator.userAgent, n: texts.length };
 }
 
-function render(rs: BenchResult[]) {
+export function benchTable(rs: BenchResult[]): string {
   const head = "<tr><th>backend</th><th>cold load</th><th>warm load</th><th>model</th><th>p50</th><th>p95</th><th>engine p50</th><th>batch/input</th><th>memory</th></tr>";
-  document.getElementById("table")!.innerHTML =
+  return (
     head +
     rs
       .map((r) =>
         r.error
-          ? `<tr><td>${r.name}</td><td colspan="8" class="meta">${r.error}</td></tr>`
-          : `<tr><td>${r.name}</td><td>${fmt(r.coldLoadMs!, 0)} ms</td><td>${fmt(r.warmLoadMs!, 0)} ms</td><td>${fmt(r.modelMB!, 1)} MB</td><td>${fmt(r.p50Ms!)} ms</td><td>${fmt(r.p95Ms!)} ms</td><td>${fmt(r.engineP50Ms!, 3)} ms</td><td>${fmt(r.batchMsPerInput!, 3)} ms</td><td>${r.memoryMB == null ? "—" : fmt(r.memoryMB, 0) + " MB"}</td></tr>`,
+          ? `<tr><td>${r.name}</td><td colspan="8" class="muted">${r.error}</td></tr>`
+          : `<tr class="num"><td>${r.name}</td><td>${fmt(r.coldLoadMs!, 0)} ms</td><td>${fmt(r.warmLoadMs!, 0)} ms</td><td>${fmt(r.modelMB!, 1)} MB</td><td>${fmt(r.p50Ms!)} ms</td><td>${fmt(r.p95Ms!)} ms</td><td>${fmt(r.engineP50Ms!, 3)} ms</td><td>${fmt(r.batchMsPerInput!, 3)} ms</td><td>${r.memoryMB == null ? "—" : fmt(r.memoryMB, 0) + " MB"}</td></tr>`,
       )
-      .join("");
+      .join("")
+  );
 }
-
-void main();

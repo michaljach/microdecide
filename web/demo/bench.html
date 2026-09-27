@@ -1,17 +1,24 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>microdecide bench</title>
-  <link rel="stylesheet" href="./style.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>microdecide · Benchmark</title>
+<link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <main>
-    <h1>microdecide · bench</h1>
-    <p class="sub" id="sub">running…</p>
-    <div class="card"><table id="table"></table></div>
-  </main>
-  <script type="module" src="./bench.ts"></script>
+<nav aria-label="Main"><a href="./">microdecide</a><b aria-current="page">Benchmark</b><a href="./parity.html">Parity</a></nav>
+<h1>Benchmark</h1>
+<p class="muted small" id="sub">running…</p>
+<div class="scroll"><table id="table"></table></div>
+<script type="module">
+  import { benchTable, runBench } from "./bench.ts";
+  import { MODEL_URL } from "./common.ts";
+  const table = document.getElementById("table");
+  const r = await runBench((rs) => (table.innerHTML = benchTable(rs)));
+  document.getElementById("sub").textContent =
+    `${MODEL_URL} · ${r.n} test inputs · crossOriginIsolated=${r.crossOriginIsolated} · WebGPU=${r.webgpu} · ${r.userAgent}`;
+  window.__result = r;
+</script>
 </body>
 </html>

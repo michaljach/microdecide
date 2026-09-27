@@ -1,17 +1,22 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>microdecide parity</title>
-  <link rel="stylesheet" href="./style.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>microdecide · Parity</title>
+<link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <main>
-    <h1>microdecide · parity</h1>
-    <p class="sub" id="sub">running…</p>
-    <div class="card"><table id="table"></table></div>
-  </main>
-  <script type="module" src="./parity.ts"></script>
+<nav aria-label="Main"><a href="./">microdecide</a><a href="./bench.html">Benchmark</a><b aria-current="page">Parity</b></nav>
+<h1>Parity</h1>
+<p class="muted small" id="sub">running…</p>
+<div class="scroll"><table id="table"></table></div>
+<script type="module">
+  import { paritySummary, parityTable, runParity } from "./parity.ts";
+  const r = await runParity();
+  document.getElementById("sub").innerHTML = paritySummary(r);
+  document.getElementById("table").innerHTML = parityTable(r.results);
+  window.__result = r;
+</script>
 </body>
 </html>

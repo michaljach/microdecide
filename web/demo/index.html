@@ -1,38 +1,123 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>microdecide demo</title>
-  <link rel="stylesheet" href="./style.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>microdecide</title>
+<meta name="description" content="Turn one decision into a tiny, calibrated model that runs in your browser.">
+<link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <main>
-    <h1>microdecide · comment moderation</h1>
-    <p class="sub">A tiny classifier running entirely in your browser. <a href="./bench.html">Benchmark</a> · <a href="./parity.html">Parity</a></p>
-    <div class="card">
-      <div class="row" style="justify-content: space-between; margin-bottom: 10px">
-        <label>Backend
-          <select id="backend">
-            <option value="static">static (plain JS)</option>
-            <option value="onnx:wasm">onnx · wasm</option>
-            <option value="onnx:webgpu">onnx · webgpu</option>
-          </select>
-        </label>
-        <span id="status" class="meta">loading…</span>
-      </div>
-      <textarea id="text" placeholder="Type a comment…">Finally dark mode! Been waiting for this forever.</textarea>
-      <div class="row chips" id="examples" style="margin-top: 8px"></div>
-    </div>
-    <div class="card" id="result" hidden>
-      <div class="row" style="justify-content: space-between">
-        <span class="label" id="label"></span>
-        <span class="badge" id="esc"></span>
-      </div>
-      <div id="bars" style="margin-top: 8px"></div>
-      <div class="meta" id="lat"></div>
-    </div>
-  </main>
-  <script type="module" src="./main.ts"></script>
+<nav aria-label="Main"><b aria-current="page">microdecide</b><a href="./models.html">Models</a><a href="#try">Demo</a><a href="#bench">Benchmark</a><a href="#parity">Parity</a><a href="#how">How it works</a></nav>
+
+<h1>microdecide</h1>
+<p>Turn one decision into a tiny model that runs in your browser. You describe the <b>input</b> and a fixed
+set of typed <b>labels</b>, a bigger teacher model labels examples, and microdecide trains a small, calibrated
+classifier for exactly that task. Each answer is one forward pass with no text generation, so there's nothing to
+parse and it can't return a label outside your set. When it isn't sure, it hands the input to the teacher.</p>
+
+<p><a href="#try">Try the demo</a> · <a href="./models.html">Browse ready-made models</a> · <a href="#how">How it works</a></p>
+
+<section id="try" aria-labelledby="try-heading">
+<h2 id="try-heading">Demo <span class="muted">comment moderation</span></h2>
+<p class="small">The model is downloaded once and runs entirely in this tab, so nothing you type leaves your browser.
+It sorts blog comments into <code>ok</code>, <code>spam</code> and <code>toxic</code>.</p>
+<div class="cols tight">
+<section>
+  <h3>Input</h3>
+  <div class="controls">
+    <label for="backend">Backend</label>
+    <select id="backend">
+      <option value="static">static (plain JS)</option>
+      <option value="onnx:wasm">onnx · wasm</option>
+      <option value="onnx:webgpu">onnx · webgpu</option>
+    </select>
+  </div>
+  <textarea id="text" aria-label="Comment" placeholder="Type a comment…">Finally dark mode! Been waiting for this forever.</textarea>
+  <ul class="examples" id="examples" aria-label="Examples"></ul>
+</section>
+<section aria-live="polite">
+  <h3>Result</h3>
+  <p id="status" class="muted small">loading…</p>
+  <div id="result" hidden>
+    <table class="probs" id="probs"></table>
+    <p class="small" id="verdict"></p>
+    <p class="muted small" id="lat"></p>
+  </div>
+</section>
+</div>
+<p class="small">More models to try: <span id="more"><a href="./models.html">all models</a></span>.</p>
+</section>
+
+<section id="bench" aria-labelledby="bench-heading">
+<h2 id="bench-heading">Benchmark</h2>
+<p class="small">Load time, per-input latency and batch throughput for each browser backend, on the model's
+test inputs. Cold load includes the download; warm load reads the model back from the browser cache.</p>
+<p class="muted small" id="bench-sub"></p>
+<div class="scroll"><table id="bench-table"></table></div>
+<div class="controls"><button id="bench-run">Run in this browser</button><a href="./bench.html">Open on its own page</a></div>
+</section>
+
+<section id="parity" aria-labelledby="parity-heading">
+<h2 id="parity-heading">Parity</h2>
+<p class="small">The browser should agree with the Python model it was exported from. This check runs every
+backend on the test inputs and compares labels and probabilities with Python's answers (target ≥ 99.5%).</p>
+<p class="muted small" id="parity-sub"></p>
+<div class="scroll"><table id="parity-table"></table></div>
+<div class="controls"><button id="parity-run">Check parity</button><a href="./parity.html">Open on its own page</a></div>
+</section>
+
+<section id="how" aria-labelledby="how-heading">
+<h2 id="how-heading">How it works</h2>
+<p>You write a task spec. Label descriptions matter: the teacher reads them when it labels data.</p>
+<pre><code>task: comment_moderation
+input:  {type: text, max_chars: 2000}
+output:
+  type: choice
+  labels:
+    ok:    Normal comment. Can be positive, negative or off topic, but harmless.
+    spam:  Ads, links to unrelated products or services, SEO junk, scams.
+    toxic: Insults, harassment, threats or hate toward people or groups.
+targets:    {min_macro_f1: 0.90, deploy: browser, max_download_mb: 150}
+escalation: {target_precision: 0.97}</code></pre>
+<p>One command collects inputs, has the teacher label them (every call is cached on disk), trains the
+smallest tier that meets your targets, calibrates it and exports it for the browser:</p>
+<pre><code>uv run microdecide run examples/comment_moderation.yaml</code></pre>
+<p>Calibration uses temperature scaling on a held-out split, then picks the confidence threshold that reaches
+the target precision. Anything below the threshold should go to the teacher.</p>
+
+<h2>Use it</h2>
+<pre><code>import { MicroDecide } from "microdecide-web";
+
+const m = await MicroDecide.load("/models/comment_moderation/v1");
+const d = await m.decide("Buy cheap followers at ...");
+if (!m.isConfident(d)) { /* below the calibrated threshold: escalate */ }</code></pre>
+<p>Every answer has the same shape:</p>
+<pre><code>{
+  "label": "spam",
+  "probabilities": {"ok": 0.04, "spam": 0.93, "toxic": 0.03},
+  "confidence": 0.93,
+  "escalated": false,
+  "source": "micro",
+  "model": "comment_moderation@v1",
+  "latency_ms": 0.4
+}</code></pre>
+
+<h2>Tiers</h2>
+<table>
+<tr><th>tier</th><th>model</th><th>trains on</th><th>runs in the browser as</th></tr>
+<tr><td>static</td><td>static embeddings (model2vec) + logistic regression</td><td>CPU</td><td>plain JS or ONNX</td></tr>
+<tr><td>encoder</td><td>small sentence-transformer, fine-tuned with SetFit</td><td>CPU</td><td>ONNX int8, WASM or WebGPU</td></tr>
+<tr><td>decoder</td><td>Qwen-class model, LoRA + classification head</td><td>GPU (CUDA or MPS)</td><td>ONNX q4, WebGPU</td></tr>
+</table>
+<p class="small">With <code>tier: auto</code>, microdecide trains from the smallest tier up and keeps the
+smallest one that reaches <code>min_macro_f1</code> within the download budget.</p>
+</section>
+
+<footer>
+  <p>Created by <a href="https://jach.me/">Michal Jach</a>.</p>
+</footer>
+
+<script type="module" src="./main.ts"></script>
 </body>
 </html>
