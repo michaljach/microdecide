@@ -37,6 +37,7 @@ button:hover { background: #00b; }
 button:disabled { background: #99f; cursor: default; }
 .controls { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; margin: 12px 0; }
 .controls label { color: #666; }
+.controls select { max-width: 100%; }
 .muted { color: #666; }
 .small { font-size: 14px; }
 .examples { margin: 8px 0 0; padding: 0; list-style: none; font-size: 14px; }

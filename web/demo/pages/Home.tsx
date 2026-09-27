@@ -151,13 +151,18 @@ function Home() {
             <tr><th>tier</th><th>model</th><th>trains on</th><th>runs in the browser as</th></tr>
           </thead>
           <tbody>
-            <tr><td>static</td><td>static embeddings (model2vec) + logistic regression</td><td>CPU, or in the browser</td><td>plain JS or ONNX</td></tr>
-            <tr><td>encoder</td><td>small sentence-transformer (MiniLM), fine-tuned</td><td>CPU</td><td>transformers.js, ONNX q8, WASM or WebGPU</td></tr>
+            <tr><td>static</td><td>static embeddings (model2vec) + logistic regression</td><td>CPU, or in the browser</td><td>plain JS</td></tr>
+            <tr><td>encoder</td><td>small sentence-transformer (MiniLM), fine-tuned</td><td>CPU</td><td>transformers.js, ONNX q8 on WASM</td></tr>
           </tbody>
         </table>
         <p className="small">
           With <code>tier: auto</code>, microdecide trains every candidate that fits the download budget and keeps the
           best fit: the highest validation F1, or the smaller model when two are practically tied.
+        </p>
+        <p className="small">
+          The demos run static models in plain JS and encoders on WASM. At this size WebGPU is slower per input (the
+          GPU round trip costs more than the math), so it's only an opt-in for large batches; the{" "}
+          <a href="#bench">benchmark</a> still measures it.
         </p>
       </section>
     </Layout>
