@@ -94,6 +94,27 @@ def test_load_examples_ignores_labels_for_unlabeled(tmp_path):
     assert data.load_examples(p, "unlabeled")[0].label is None
 
 
+def test_gold_file_metadata_cannot_leak_into_training(tmp_path, spec):
+    gold = tmp_path / "gold.csv"
+    seed = tmp_path / "seed.csv"
+    gold_rows = [(text, "ok", "seed") for text in COMMENTS[:6]]
+    write_csv(gold, gold_rows, ("text", "label", "source"))
+    # A conflicting duplicate must keep the gold label and stay in test.
+    write_csv(seed, [(COMMENTS[0], "spam"), (COMMENTS[-1], "ok")], ("text", "label"))
+    s = spec.model_copy(update={"data": spec.data.model_copy(update={
+        "gold": gold, "seed_examples": seed, "unlabeled": None, "synthetic": 0,
+    })})
+    runs = tmp_path / "runs"
+    data.collect(s, runs, embed=fake_embed, log=lambda _: None)
+    data.label(s, FakeTeacher(), runs, log=lambda _: None)
+    rows = data.read_jsonl(data.data_dir(s, runs) / "labeled.jsonl")
+    held_out = [r for r in rows if r["text"] in COMMENTS[:6]]
+    assert held_out
+    assert all(r["source"] == "gold" and r["split"] == "test" and r["label"] == "ok" for r in held_out)
+    assert next(r for r in rows if r["text"] == COMMENTS[0])["label"] == "ok"
+    assert next(r for r in rows if r["text"] == COMMENTS[-1])["split"] == "train"
+
+
 def test_missing_text_column(tmp_path):
     p = tmp_path / "bad.csv"
     write_csv(p, [("x",)], ("comment",))

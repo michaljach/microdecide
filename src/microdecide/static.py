@@ -64,6 +64,10 @@ def fit_head(
     from sklearn.metrics import f1_score
     from sklearn.preprocessing import StandardScaler
 
+    missing = sorted(set(range(n_labels)) - set(np.unique(y)))
+    if missing:
+        raise ValueError(f"no training examples for label indices {missing}; add examples for every declared label")
+
     scaler = StandardScaler().fit(X)
     Xs, Xvs = scaler.transform(X), scaler.transform(Xv)
     search = {}

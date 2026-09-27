@@ -64,7 +64,8 @@ def read_rows(path: str | Path) -> list[dict]:
 
 def load_examples(path: str | Path, source: str, labels: Sequence[str] | None = None) -> list[Example]:
     """Load examples. If `labels` is given, rows with a label keep it (validated);
-    otherwise labels are ignored. A `source` column overrides the default source."""
+    otherwise labels are ignored. A `source` column overrides the default source,
+    except for gold files: their examples must remain held out."""
     out = []
     for i, row in enumerate(read_rows(path)):
         label = None
@@ -72,7 +73,8 @@ def load_examples(path: str | Path, source: str, labels: Sequence[str] | None = 
             label = (row.get("label") or "").strip() or None
         if label is not None and label not in labels:
             raise ValueError(f"{path}: row {i + 1} has label {label!r} not in {list(labels)}")
-        out.append(Example(text=row["text"].strip(), source=(row.get("source") or source).strip(), label=label))
+        row_source = "gold" if source == "gold" else (row.get("source") or source).strip()
+        out.append(Example(text=row["text"].strip(), source=row_source, label=label))
     return out
 
 
