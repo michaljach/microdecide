@@ -1,7 +1,12 @@
 import type { Backend, Device, ModelConfig } from "../src";
 
+/** Site root ("/" locally, "/microdecide/" on GitHub Pages). Every asset URL goes through url(). */
+export const BASE = import.meta.env.BASE_URL;
+export const url = (path: string) => BASE + path.replace(/^\/+/, "");
+export const ORT_WASM = url("ort/");
+
 export const params = new URLSearchParams(location.search);
-export const MODEL_URL = params.get("model") ?? "/models/comment_moderation/v1";
+export const MODEL_URL = params.get("model") ?? url("models/comment_moderation/v2");
 
 export interface ModelEntry {
   id: string;
@@ -13,7 +18,8 @@ export interface ModelEntry {
 
 export async function modelIndex(): Promise<ModelEntry[]> {
   try {
-    return await (await fetch("/models/index.json")).json();
+    const entries: ModelEntry[] = await (await fetch(url("models/index.json"))).json();
+    return entries.map((e) => ({ ...e, path: url(e.path) }));
   } catch {
     return [];
   }
@@ -42,10 +48,20 @@ export const CONFIGS: Record<ModelConfig["tier"], Config[]> = {
 };
 
 /** Reads microdecide.json via the library's model cache first (playground models live only there). */
-export async function modelTier(url = MODEL_URL): Promise<ModelConfig["tier"]> {
-  const file = new URL(`${url.replace(/\/+$/, "")}/microdecide.json`, location.href).href;
+export async function modelConfig(model = MODEL_URL): Promise<ModelConfig> {
+  const file = new URL(`${model.replace(/\/+$/, "")}/microdecide.json`, location.href).href;
   const hit = typeof caches !== "undefined" ? await (await caches.open("microdecide-models-v1")).match(file) : undefined;
-  return (await (hit ?? (await fetch(file))).json()).tier;
+  return (await (hit ?? (await fetch(file))).json()) as ModelConfig;
+}
+
+export async function modelTier(model = MODEL_URL): Promise<ModelConfig["tier"]> {
+  return (await modelConfig(model)).tier;
+}
+
+/** Backend configs for a model, minus ones whose files aren't deployed (e.g. the fp32 encoder). */
+export async function configsFor(model = MODEL_URL): Promise<Config[]> {
+  const cfg = await modelConfig(model);
+  return CONFIGS[cfg.tier].filter((c) => c.dtype !== "fp32" || (cfg.tier !== "static" && !!cfg.onnx.fp32_file));
 }
 
 /** Vendor/architecture of the WebGPU adapter (tells a real GPU from a software fallback). */

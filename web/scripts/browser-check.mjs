@@ -3,6 +3,7 @@
 //   node scripts/browser-check.mjs bench     load time, p50/p95, WASM vs WebGPU → <export>/bench.json
 //   node scripts/browser-check.mjs offline   classify with the network cut (model from Cache API)
 //   node scripts/browser-check.mjs playground  train in the browser, save, reload with MicroDecide.load
+// BASE=/microdecide/ builds + previews under a sub-path; SITE=https://… checks a deployed site instead.
 import { existsSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -11,13 +12,21 @@ import { build, preview } from "vite";
 
 const web = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const mode = process.argv[2] ?? "parity";
-const model = process.env.MODEL ?? "/models/comment_moderation/v1";
+const site = process.env.SITE?.replace(/\/?$/, "/");
+const basePath = site ? new URL(site).pathname : (process.env.BASE ?? "/");
+const model = process.env.MODEL ?? `${basePath}models/comment_moderation/v1`;
 
 // production build + preview: what users get, and realistic benchmark numbers
 const configFile = join(web, "vite.config.ts");
-await build({ configFile, logLevel: "error" });
-const server = await preview({ configFile, preview: { port: 0 }, logLevel: "error" });
-const base = server.resolvedUrls.local[0].replace(/\/$/, "");
+let server = null;
+let base;
+if (site) {
+  base = site.replace(/\/$/, "");
+} else {
+  await build({ configFile, logLevel: "error" });
+  server = await preview({ configFile, preview: { port: 0 }, logLevel: "error" });
+  base = server.resolvedUrls.local[0].replace(/\/$/, "");
+}
 // full Chromium in new-headless mode gets the real GPU (Metal on macOS); the default
 // headless shell only offers SwiftShader, a software WebGPU that makes benchmarks meaningless
 const browser = await chromium.launch({
@@ -39,7 +48,8 @@ try {
       // (`microdecide eval` then adds a Browser section to report.md)
       const json = JSON.stringify({ ...result, date: new Date().toISOString() }, null, 2);
       const [task, version] = model.split("/").slice(-2);
-      for (const dir of [join(web, "public", model), join(web, "..", "runs", task, version, "export")]) {
+      const served = join(web, "public", "models", task, version);
+      for (const dir of site ? [] : [served, join(web, "..", "runs", task, version, "export")]) {
         if (existsSync(dir)) {
           writeFileSync(join(dir, "bench.json"), json);
           console.log(`→ ${join(dir, "bench.json")}`);
@@ -66,7 +76,7 @@ try {
     await page.goto(`${base}/playground.html`);
     await page.click("#load-example");
     await page.waitForFunction(() => /^\d{3,} labeled/.test(document.getElementById("count").textContent), null, { timeout: 30_000 });
-    if (process.env.BASE) await page.selectOption("#base", process.env.BASE);
+    if (process.env.EMBEDDINGS) await page.selectOption("#base", process.env.EMBEDDINGS); // e.g. bases/potion-base-32M
     const t0 = Date.now();
     await page.click("#train");
     await page.waitForFunction(() => window.__playground?.result, null, { timeout: 120_000 });
@@ -104,7 +114,7 @@ try {
   exitCode = 1;
 } finally {
   await browser.close();
-  await server.close?.();
-  server.httpServer?.close();
+  await server?.close?.();
+  server?.httpServer?.close();
 }
 process.exit(exitCode);

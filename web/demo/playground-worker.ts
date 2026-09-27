@@ -17,7 +17,7 @@ export type Req =
   | { id: number; type: "loadBase"; url: string }
   | { id: number; type: "train"; examples: Example[]; labels: string[]; targetPrecision: number; seed: number; name: string }
   | { id: number; type: "predict"; text: string }
-  | { id: number; type: "save"; name: string }
+  | { id: number; type: "save"; name: string; url: string }
   | { id: number; type: "zip"; name: string };
 
 let base: (EmbeddingBase & { embedder: StaticEmbedder; url: string; mb: number }) | null = null;
@@ -110,7 +110,7 @@ self.onmessage = async (e: MessageEvent<Req>) => {
       if (!base || !trained) throw new Error("train a model first");
       const files = modelFiles(msg.name, base, trained.report, { examples: trained.examples.length });
       if (msg.type === "save") {
-        const url = await saveModelToCache(`/playground-models/${msg.name}`, files);
+        const url = await saveModelToCache(msg.url, files);
         post({ id: msg.id, ok: true, result: { url: new URL(url).pathname, bytes: Object.values(files).reduce((a, f) => a + f.byteLength, 0) } });
       } else {
         const bytes = zipModel(msg.name, files);

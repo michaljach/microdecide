@@ -1,5 +1,5 @@
 import { type Decision, MicroDecide } from "../src";
-import { fmt } from "./common";
+import { fmt, url } from "./common";
 import { parseExamples } from "./csv";
 import type { Example, Req } from "./playground-worker";
 
@@ -153,7 +153,7 @@ $("examples").addEventListener("click", (e) => {
   renderAll();
 });
 $("load-example").onclick = async () => {
-  const text = await (await fetch("/examples/comment_moderation.csv")).text();
+  const text = await (await fetch(url("examples/comment_moderation.csv"))).text();
   if (state.examples.length === 0) state.labels = [];
   const added = addExamples(parseExamples(text));
   if (state.name === "my_task") {
@@ -243,11 +243,11 @@ interface TrainResult {
 
 let loadedBase = "";
 async function ensureBase() {
-  const url = $<HTMLSelectElement>("base").value;
-  if (url === loadedBase) return;
+  const baseUrl = url($<HTMLSelectElement>("base").value);
+  if (baseUrl === loadedBase) return;
   setProgress("loading embeddings", 0);
-  const info = await call<{ model: string; mb: number }>({ type: "loadBase", url });
-  loadedBase = url;
+  const info = await call<{ model: string; mb: number }>({ type: "loadBase", url: baseUrl });
+  loadedBase = baseUrl;
   $("train-meta").dataset.base = `${info.model} (${fmt(info.mb, 1)} MB)`;
 }
 
@@ -348,11 +348,12 @@ $("try").addEventListener("input", () => void tryIt());
 // --- 5 · use it --------------------------------------------------------------------------------------------
 
 $("save").onclick = async () => {
-  const { url, bytes } = await call<{ url: string; bytes: number }>({ type: "save", name: state.name });
-  $("save-status").innerHTML = `saved ${fmt(bytes / 1e6, 1)} MB · <a href="./index.html?model=${encodeURIComponent(url)}">open in demo</a>`;
+  const target = url(`playground-models/${state.name}`);
+  const { url: saved, bytes } = await call<{ url: string; bytes: number }>({ type: "save", name: state.name, url: target });
+  $("save-status").innerHTML = `saved ${fmt(bytes / 1e6, 1)} MB · <a href="./index.html?model=${encodeURIComponent(saved)}">open in demo</a>`;
   $("snippet").hidden = false;
-  $("snippet").textContent = `import { MicroDecide } from "microdecide-web";\n\n// same origin, this browser (Cache API) — works offline\nconst m = await MicroDecide.load("${url}");\nconst d = await m.decide("some text");`;
-  (window as unknown as { __playground: { saved?: string } }).__playground.saved = url;
+  $("snippet").textContent = `import { MicroDecide } from "microdecide-web";\n\n// same origin, this browser (Cache API) — works offline\nconst m = await MicroDecide.load("${saved}");\nconst d = await m.decide("some text");`;
+  (window as unknown as { __playground: { saved?: string } }).__playground.saved = saved;
 };
 $("download").onclick = async () => {
   const bytes = await call<Uint8Array>({ type: "zip", name: state.name });
@@ -375,4 +376,4 @@ function renderAll() {
   renderExamples();
 }
 renderAll();
-if ("serviceWorker" in navigator && !import.meta.env.DEV) void navigator.serviceWorker.register("/sw.js");
+if ("serviceWorker" in navigator && !import.meta.env.DEV) void navigator.serviceWorker.register(url("sw.js"));

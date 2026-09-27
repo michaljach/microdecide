@@ -2,7 +2,7 @@
 // onnxruntime wasm, model index/configs) reloads offline after one online visit. Large model
 // weights are cached by the library itself (Cache API "microdecide-models-v1" / transformers.js
 // "transformers-cache"), so they're skipped here to avoid storing them twice.
-const CACHE = "microdecide-demo-shell-v3";
+const CACHE = "microdecide-demo-shell-v4";
 
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
@@ -19,7 +19,7 @@ self.addEventListener("fetch", (e) => {
         if (res.ok) await cache.put(e.request, res.clone());
         return res;
       } catch (err) {
-        const hit = await cache.match(e.request, { ignoreVary: true, ignoreSearch: url.pathname.endsWith(".html") || url.pathname === "/" });
+        const hit = await cache.match(e.request, { ignoreVary: true, ignoreSearch: url.pathname.endsWith(".html") || url.pathname.endsWith("/") });
         if (hit) return hit;
         throw err;
       }

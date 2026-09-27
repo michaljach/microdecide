@@ -45,7 +45,7 @@ for (const src of exports) {
   const e = card.export;
   index.push({
     id: cfg.model,
-    path: `/models/${task}/${version}`,
+    path: `models/${task}/${version}`, // relative to the site root (works under a sub-path)
     tier: cfg.tier,
     base: card.base,
     downloadMB: cfg.tier === "static" ? e.static_download_mb : e.onnx_download_mb,

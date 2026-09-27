@@ -1,5 +1,5 @@
 import { MicroDecide } from "../src";
-import { CONFIGS, MODEL_URL, fmt, modelTier, parityRows, webgpuAvailable } from "./common";
+import { MODEL_URL, ORT_WASM, configsFor, fmt, modelTier, parityRows, webgpuAvailable } from "./common";
 
 const MIN_AGREEMENT = 0.995;
 
@@ -17,13 +17,13 @@ async function main() {
   const gpu = await webgpuAvailable();
   const tier = await modelTier();
   const results: ParityResult[] = [];
-  for (const cfg of CONFIGS[tier]) {
+  for (const cfg of await configsFor()) {
     if (!cfg.parity) continue;
     if (cfg.device === "webgpu" && !gpu) {
       results.push({ name: cfg.name, skipped: "WebGPU not available" });
       continue;
     }
-    const m = await MicroDecide.load(MODEL_URL, { backend: cfg.backend, device: cfg.device, dtype: cfg.dtype });
+    const m = await MicroDecide.load(MODEL_URL, { backend: cfg.backend, device: cfg.device, dtype: cfg.dtype, ortWasmPaths: ORT_WASM });
     const ds = await m.decideBatch(rows.map((r) => r.text));
     let same = 0;
     let maxDiff = 0;

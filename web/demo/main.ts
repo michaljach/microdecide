@@ -1,5 +1,5 @@
 import { type Decision, MicroDecide } from "../src";
-import { CONFIGS, MODEL_URL, fmt, modelIndex, modelTier } from "./common";
+import { type Config, MODEL_URL, ORT_WASM, configsFor, fmt, modelIndex, modelTier, url } from "./common";
 
 const COLORS: Record<string, string> = { ok: "var(--ok)", spam: "var(--spam)", toxic: "var(--toxic)" };
 const EXAMPLES = [
@@ -43,9 +43,10 @@ async function setupModels() {
   await setupBackends();
 }
 
+let configs: Config[] = [];
 async function setupBackends() {
-  const tier = await modelTier(modelSel.value);
-  backendSel.innerHTML = CONFIGS[tier].map((c, i) => `<option value="${i}">${c.name}</option>`).join("");
+  configs = await configsFor(modelSel.value);
+  backendSel.innerHTML = configs.map((c, i) => `<option value="${i}">${c.name}</option>`).join("");
   for (const id of ["bench-link", "parity-link"]) {
     const a = $<HTMLAnchorElement>(id);
     a.href = `${a.href.split("?")[0]}?model=${encodeURIComponent(modelSel.value)}`;
@@ -53,13 +54,12 @@ async function setupBackends() {
 }
 
 async function load() {
-  const tier = await modelTier(modelSel.value);
-  const cfg = CONFIGS[tier][Number(backendSel.value) || 0];
+  const cfg = configs[Number(backendSel.value) || 0];
   status.textContent = "loading…";
   model?.dispose();
   model = null;
   try {
-    model = await MicroDecide.load(modelSel.value, { backend: cfg.backend, device: cfg.device, dtype: cfg.dtype });
+    model = await MicroDecide.load(modelSel.value, { backend: cfg.backend, device: cfg.device, dtype: cfg.dtype, ortWasmPaths: ORT_WASM });
     const i = model.info;
     status.textContent = `${i.model} · ${i.tier} · ${i.backend}/${i.device}${cfg.dtype ? "/" + cfg.dtype : ""} · loaded in ${fmt(i.loadMs, 0)} ms · ${fmt(i.downloadBytes / 1e6, 1)} MB`;
     await run();
@@ -103,4 +103,4 @@ modelSel.addEventListener("change", async () => {
 });
 void setupModels().then(load);
 
-if ("serviceWorker" in navigator && !import.meta.env.DEV) void navigator.serviceWorker.register("/sw.js");
+if ("serviceWorker" in navigator && !import.meta.env.DEV) void navigator.serviceWorker.register(url("sw.js"));

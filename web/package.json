@@ -26,7 +26,8 @@
     "parity": "node scripts/browser-check.mjs parity",
     "bench": "node scripts/browser-check.mjs bench",
     "offline": "node scripts/browser-check.mjs offline",
-    "playground": "node scripts/browser-check.mjs playground"
+    "playground": "node scripts/browser-check.mjs playground",
+    "deploy:pages": "scripts/deploy-pages.sh"
   },
   "license": "MIT",
   "dependencies": {

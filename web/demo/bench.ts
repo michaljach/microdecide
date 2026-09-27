@@ -1,6 +1,6 @@
 import { MicroDecide, clearModelCache } from "../src";
 import type { Config } from "./common";
-import { CONFIGS, MODEL_URL, fmt, gpuAdapterInfo, modelTier, parityRows, percentile, webgpuAvailable } from "./common";
+import { MODEL_URL, ORT_WASM, configsFor, fmt, gpuAdapterInfo, modelTier, parityRows, percentile, webgpuAvailable } from "./common";
 
 const N_SINGLE = 200;
 
@@ -30,7 +30,7 @@ async function memoryMB(): Promise<number | null> {
 
 async function bench(cfg: Config, texts: string[]): Promise<BenchResult> {
   await clearModelCache();
-  const opts = { backend: cfg.backend, device: cfg.device, dtype: cfg.dtype };
+  const opts = { backend: cfg.backend, device: cfg.device, dtype: cfg.dtype, ortWasmPaths: ORT_WASM };
   const cold = await MicroDecide.load(MODEL_URL, opts);
   cold.dispose();
   const m = await MicroDecide.load(MODEL_URL, opts); // warm: model files from the Cache API
@@ -67,7 +67,7 @@ async function main() {
   const gpu = await webgpuAvailable();
   const tier = await modelTier();
   const results: BenchResult[] = [];
-  for (const cfg of CONFIGS[tier]) {
+  for (const cfg of await configsFor()) {
     if (cfg.device === "webgpu" && !gpu) {
       results.push({ name: cfg.name, error: "WebGPU not available" });
       continue;

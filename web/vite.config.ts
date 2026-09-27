@@ -25,6 +25,8 @@ const serveOrtRaw: Plugin = {
 
 export default defineConfig({
   plugins: [serveOrtRaw],
+  // "/" locally; BASE=/microdecide/ for GitHub Pages (scripts/deploy-pages.sh)
+  base: process.env.BASE ?? "/",
   root: "demo",
   publicDir: resolve(import.meta.dirname, "public"),
   server: { headers: isolation, fs: { allow: [".."] } },
