@@ -7,8 +7,8 @@ from pathlib import Path
 
 import numpy as np
 
-# (base, estimated download MB), smallest first; without model.base, the smallest that meets
-# targets on val wins (int8 table + tokenizer)
+# (base, estimated download MB), smallest first; without model.base, train.best_fit picks among
+# those within budget (int8 table + tokenizer)
 CANDIDATES = (("minishlab/potion-base-8M", 8.6), ("minishlab/potion-base-32M", 33.3))
 EMBEDDING_DTYPE = "int8"  # quantized at train time: no train/export mismatch, ~4x smaller, same F1
 C_GRID = (0.003, 0.01, 0.03, 0.1, 0.3, 1.0, 3.0)

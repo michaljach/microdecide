@@ -15,7 +15,8 @@ task spec (YAML) → collect inputs → teacher labels → train → calibrate �
 
 - **Tiers**, smallest download first: *static* (model2vec embeddings + logistic
   regression, plain JS) and *encoder* (fine-tuned MiniLM, ONNX q8 via transformers.js).
-  `auto` picks the smallest model that meets your F1 target and download budget.
+  `auto` trains every candidate that fits your download budget and keeps the best fit
+  (highest validation F1; the smaller one on a near-tie).
 - Every prediction is a typed `Decision` with a **calibrated** confidence; below the
   threshold (chosen for a target precision) it should be escalated.
 - Exports are checked for **parity**: the browser matches Python on the test set.

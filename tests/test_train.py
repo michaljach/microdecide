@@ -55,8 +55,13 @@ def test_train_runtime_eval(toy_run, spec):
     assert out.name == "v1"
     card = json.loads((out / "model_card.json").read_text())
     assert card["labels"] == ["ok", "spam", "toxic"] and card["seed"] == spec.seed
-    assert card["base"] == "tiny-a"  # smallest candidate already meets the target → stop
-    assert [c["base"] for c in card["training"]["candidates"]] == ["tiny-a"]
+    # best fit: every candidate within budget is trained, the chosen one is the smallest within
+    # F1_TIE of the best val macro F1
+    tried = card["training"]["candidates"]
+    assert len(tried) == 3 and card["training"]["selection"] == "best fit"
+    top = max(c["val_macro_f1"] for c in tried)
+    near = [c for c in tried if c["val_macro_f1"] >= top - train.F1_TIE]
+    assert card["base"] == min(near, key=lambda c: c["est_download_mb"])["base"]
     assert card["temperature"] > 0 and 0 < card["threshold"] <= 1 + 1e-6
 
     rt = Runtime.load(out)

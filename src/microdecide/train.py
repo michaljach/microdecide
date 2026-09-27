@@ -19,6 +19,9 @@ from microdecide.data import data_dir, read_jsonl
 from microdecide.spec import TaskSpec
 
 TIER_ORDER = ("static", "encoder")
+# Best fit: the highest val macro F1 within the download budget wins, but a smaller model wins a
+# near-tie — val splits are small, so F1 differences below this are mostly noise.
+F1_TIE = 0.01
 TIERS = {"static": static, "encoder": encoder}
 
 
@@ -31,16 +34,29 @@ def classifier_for(tier: str):
 
 
 def plan(spec: TaskSpec, override: str | None) -> list[tuple[str, str]]:
-    """(tier, base) candidates in the order they are tried: by estimated download size, across
-    tiers in auto mode ("smallest that meets targets" — an encoder can beat a larger static model)."""
+    """(tier, base) candidates to train, smallest estimated download first, across tiers in auto
+    mode. Candidates estimated over max_download_mb are skipped (an explicit model.base never is)."""
     tier = override or spec.model.tier
     tiers = [t for t in TIER_ORDER if t in TIERS] if tier == "auto" else [tier]
     if spec.model.base:
         if tier == "auto":
             raise ValueError("model.base needs an explicit model.tier (the base belongs to one tier)")
         return [(tiers[0], spec.model.base)]
-    cands = [(mb, t, base) for t in tiers for base, mb in TIERS[t].CANDIDATES]
-    return [(t, base) for _, t, base in sorted(cands, key=lambda c: c[0])]
+    cands = sorted((mb, t, base) for t in tiers for base, mb in TIERS[t].CANDIDATES)
+    fitting = [(t, base) for mb, t, base in cands if mb <= spec.targets.max_download_mb]
+    if not fitting:
+        raise ValueError(f"no candidate fits max_download_mb={spec.targets.max_download_mb}: {[(b, mb) for mb, _, b in cands]}")
+    return fitting
+
+
+def best_fit(cands: list[dict], budget: float) -> int | None:
+    """Index of the best-fitting candidate: highest val macro F1 within budget; among those within
+    F1_TIE of it, the smallest download."""
+    fits = [i for i, c in enumerate(cands) if c["est_download_mb"] <= budget]
+    if not fits:
+        return None
+    top = max(cands[i]["val_macro_f1"] for i in fits)
+    return min((i for i in fits if cands[i]["val_macro_f1"] >= top - F1_TIE), key=lambda i: cands[i]["est_download_mb"])
 
 
 def next_version(spec: TaskSpec, runs: Path) -> str:
@@ -76,23 +92,23 @@ def train(spec: TaskSpec, runs: str | Path = "runs", tier: str | None = None, lo
         for s in ("train", "val")
     }
 
-    budget, target = spec.targets.max_download_mb, spec.targets.min_macro_f1
+    budget = spec.targets.max_download_mb
     t0 = time.perf_counter()
-    tried, chosen = [], None
+    tried, models = [], []
     for t, base in candidates_plan:
         log(f"training {t} tier on {len(part['train'])} examples (base {base}) ...")
         model, info = TIERS[t].fit(base, data, labels, spec.seed, log)
         cand = {"tier": t, "base": base, "est_download_mb": round(model.download_mb(), 1), **info}
         tried.append(cand)
+        models.append(model)
         fits = cand["est_download_mb"] <= budget
         log(f"  → val macro F1 {cand['val_macro_f1']:.3f}, ~{cand['est_download_mb']} MB{'' if fits else ' (over budget)'}")
-        if fits and (chosen is None or cand["val_macro_f1"] > chosen[0]["val_macro_f1"]):
-            chosen = (cand, model)
-        if fits and cand["val_macro_f1"] >= target:
-            break  # smallest that meets targets
-    if chosen is None:
+    i = best_fit(tried, budget)
+    if i is None:
         raise ValueError(f"no candidate fits max_download_mb={budget}: {[(c['base'], c['est_download_mb']) for c in tried]}")
-    best, model = chosen
+    best, model = tried[i], models[i]
+    if len(tried) > 1:
+        log(f"best fit: {best['tier']} {best['base']} (val macro F1 {best['val_macro_f1']:.3f}, ~{best['est_download_mb']} MB)")
     train_s = time.perf_counter() - t0
 
     # calibrate on val
@@ -129,7 +145,7 @@ def train(spec: TaskSpec, runs: str | Path = "runs", tier: str | None = None, lo
         "threshold": thr["threshold"],
         "calibration": calibration,
         "download_mb": best["est_download_mb"],
-        "training": {"chosen": best, "candidates": tried, "train_seconds": round(train_s, 2), "sample_weight": "teacher confidence"},
+        "training": {"selection": "best fit", "chosen": best, "candidates": tried, "train_seconds": round(train_s, 2), "sample_weight": "teacher confidence"},
         "teacher": spec.teacher.model_dump(mode="json"),
         "data": {s: len(v) for s, v in part.items()},
         "seed": spec.seed,

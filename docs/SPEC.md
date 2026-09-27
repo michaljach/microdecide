@@ -138,8 +138,7 @@ Static tier details: embeddings are quantized to int8 at train time (no F1
 loss measured; no train/export mismatch). Standardization is folded into the
 head, so `head.json` is just `logits = emb @ coef.T + intercept` and can be
 evaluated (or refit) outside Python. Without `model.base`, the static tier
-tries its bases smallest-first and keeps the first meeting `min_macro_f1` on
-val within budget. Head C is chosen by val macro F1; teacher confidence is
+trains each base within budget and keeps the best fit (see Auto mode). Head C is chosen by val macro F1; teacher confidence is
 the sample weight.
 
 Encoder tier details: standard `AutoModelForSequenceClassification` (so the
@@ -147,12 +146,15 @@ export runs in transformers.js unchanged), AdamW 1e-4, 6 epochs, warmup 10%,
 max 256 tokens, teacher confidence as sample weight, best epoch by val macro F1.
 Trains on CPU by default (reproducible); `MICRODECIDE_DEVICE=mps|cuda` to speed up.
 
-**Auto mode**: try every (tier, base) candidate smallest estimated download
-first, across tiers; pick the first that meets `min_macro_f1` on val **and**
-fits `max_download_mb` (else the best val F1 within budget). "Smallest" is the
-download: on the example task the encoder (MiniLM-L3, 18.6 MB q8, F1 0.943)
-beats the larger static model (potion-32M, 33 MB, F1 0.897). If none fits, report the gap
-and recommend: more/better data, a larger budget, or escalation-heavy mode.
+**Auto mode** (best fit): train every (tier, base) candidate whose estimated
+download fits `max_download_mb` (smallest first, across tiers; over-budget
+candidates are skipped), then keep the highest val macro F1. A smaller
+candidate wins a near-tie (within 0.01 val macro F1, `train.F1_TIE`), since
+val splits are small. `min_macro_f1` doesn't stop the search; it's reported
+as met or missed. "Smallest" is the download: on the example task the encoder
+(MiniLM-L3, 18.6 MB q8, F1 0.943) beats the larger static model (potion-32M,
+33 MB, F1 0.897). If nothing reaches `min_macro_f1`, the report recommends
+more/better data, a larger budget, or escalation-heavy mode.
 
 
 ### 4.5 Calibrate
