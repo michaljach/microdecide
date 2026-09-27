@@ -5,11 +5,11 @@
  *   const d = await m.decide("Buy cheap followers at ...");   // Decision
  */
 import { Model } from "./model.js";
-import type { Decision, LoadOptions, ModelInfo } from "./types.js";
+import type { Decision, LoadOptions, LoadProgress, ModelInfo } from "./types.js";
 import { WorkerClient } from "./rpc.js";
 import type { InferenceProtocol } from "./protocol.js";
 
-export type { Backend, Decision, Device, EncoderConfig, LoadOptions, ModelConfig, ModelInfo, StaticConfig } from "./types.js";
+export type { Backend, Decision, Device, EncoderConfig, LoadOptions, LoadProgress, ModelConfig, ModelInfo, StaticConfig } from "./types.js";
 export { clearModelCache } from "./fetch.js";
 export { Model } from "./model.js";
 
@@ -17,7 +17,7 @@ export class MicroDecide {
   private constructor(
     readonly info: ModelInfo,
     private readonly run: (texts: string[]) => Promise<Decision[]>,
-    private readonly worker: WorkerClient<InferenceProtocol> | null,
+    private readonly worker: WorkerClient<InferenceProtocol, LoadProgress> | null,
   ) {}
 
   static async load(url: string, options: LoadOptions = {}): Promise<MicroDecide> {
@@ -27,9 +27,10 @@ export class MicroDecide {
       return new MicroDecide(model.info, (t) => model.decideBatch(t), null);
     }
     const worker = new Worker(new URL("./worker.js", import.meta.url), { type: "module" });
-    const client = new WorkerClient<InferenceProtocol>(worker);
+    const client = new WorkerClient<InferenceProtocol, LoadProgress>(worker);
+    const { onProgress, ...rest } = options; // functions can't cross into the worker
     try {
-      const info = await client.call({ type: "load", url: new URL(url, location.href).href, options });
+      const info = await client.call({ type: "load", url: new URL(url, location.href).href, options: rest }, onProgress);
       return new MicroDecide(info, (texts) => client.call({ type: "decide", texts }), client);
     } catch (err) {
       client.dispose();

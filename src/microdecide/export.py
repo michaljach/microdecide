@@ -24,7 +24,7 @@ from microdecide.runtime import Runtime
 from microdecide.artifacts import write_card
 
 # Preserve the existing export module API while implementations live by tier.
-from microdecide.exporters.common import ExportError, FORMAT, FORMAT_VERSION, STATIC_MAX_TOKENS, OPSET, MAX_F1_DROP, compare as _compare
+from microdecide.exporters.common import ExportError, FORMAT, FORMAT_VERSION, STATIC_MAX_TOKENS, OPSET, MAX_F1_DROP, compare as _compare, record_file_sizes
 from microdecide.exporters.static import _export_static, export_base, ExportedTokenizer, reference_probabilities, static_onnx_probabilities, build_static_onnx
 from microdecide.exporters.encoder import _export_encoder, export_encoder_onnx, quantize_q8, encoder_onnx_probabilities
 
@@ -53,6 +53,8 @@ def export(run_dir: str | Path, out: str | Path | None = None, log=print) -> dic
         artifacts, primary, download = _export_encoder(rt, run_dir, out, base_config, log)
     else:
         raise ValueError(f"unknown tier {rt.card['tier']!r}")
+
+    record_file_sizes(out)
 
     # parity: training-time model vs every exported artifact, on the test split
     test = [r for r in read_jsonl(run_dir / "labeled.jsonl") if r["split"] == "test"]

@@ -3,8 +3,8 @@ import { fmt } from "../common";
 
 const pct = (x: number) => `${fmt(x * 100, 1)}%`;
 
-/** Probabilities as a table with bars (top label in bold) and whether the answer would escalate. */
-export function DecisionView({ d, threshold, meta = true }: { d: Decision; threshold: number; meta?: boolean }) {
+/** Probabilities as a table with bars (top label in bold), then the answer and its confidence. */
+export function DecisionView({ d, meta = true }: { d: Decision; meta?: boolean }) {
   return (
     <>
       <table className="probs">
@@ -21,18 +21,11 @@ export function DecisionView({ d, threshold, meta = true }: { d: Decision; thres
         </tbody>
       </table>
       <p className="small">
-        <b>{d.label}</b> with {pct(d.confidence)} confidence
-        {d.confidence >= threshold ? (
-          ", handled in the browser."
-        ) : (
-          <>
-            , <span className="esc">below the calibrated threshold of {pct(threshold)}</span>: this one would go to the teacher.
-          </>
-        )}
+        <b>{d.label}</b> with {pct(d.confidence)} confidence.
       </p>
       {meta && (
         <p className="muted small">
-          inference {fmt(d.latency_ms, 2)} ms · model {d.model} · source {d.source}
+          inference {fmt(d.latency_ms, 2)} ms · model {d.model}
         </p>
       )}
     </>

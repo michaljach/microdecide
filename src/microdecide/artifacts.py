@@ -57,6 +57,9 @@ class BaseConfig(Artifact):
     temperature: float = Field(gt=0)
     threshold: float = Field(ge=0, le=1.0 + 1e-9)
     max_chars: int = Field(gt=0)
+    # model file sizes in bytes by relative path: the browser's download-progress total
+    # (servers that gzip on the fly send no Content-Length, or the compressed one)
+    files: dict[str, int] | None = None
 
     @model_validator(mode="after")
     def unique_labels(self):

@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import { type CatalogEntry, byVersionDesc, catalogOf, modelPage, pct, title, useModels } from "../catalog";
+import { type CatalogEntry, byVersionDesc, catalogOf, modelPage, title, useModels } from "../catalog";
 import { Layout } from "../ui/Layout";
 import { mount } from "../ui/mount";
 
@@ -8,7 +8,6 @@ function Item({ m, older }: { m: CatalogEntry; older: CatalogEntry[] }) {
     `${m.tier} tier`,
     Number.isFinite(m.downloadMB) ? `${m.downloadMB.toFixed(1)} MB` : null,
     m.metrics && `macro F1 ${m.metrics.macroF1.toFixed(2)}`,
-    m.metrics && `handles ${pct(m.metrics.coverage, 0)} alone`,
   ].filter(Boolean);
   return (
     <li>

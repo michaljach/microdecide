@@ -61,6 +61,21 @@
           "title": "Max Chars",
           "type": "integer"
         },
+        "files": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Files"
+        },
         "tier": {
           "const": "encoder",
           "title": "Tier",
@@ -236,6 +251,21 @@
           "exclusiveMinimum": 0,
           "title": "Max Chars",
           "type": "integer"
+        },
+        "files": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Files"
         },
         "tier": {
           "const": "static",

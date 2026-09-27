@@ -16,7 +16,7 @@ describe("worker transport", () => {
     const second = client.call({ type: "decide", texts: ["b"] });
     const [a, b] = worker.postMessage.mock.calls.map(([msg]) => msg.id);
     worker.onmessage({ data: { id: a, progress: { stage: "fit", fraction: 0.5 } } });
-    expect(progress).toHaveBeenCalledWith("fit", 0.5);
+    expect(progress).toHaveBeenCalledWith({ stage: "fit", fraction: 0.5 });
     worker.onmessage({ data: { id: b, ok: true, result: [] } });
     await expect(second).resolves.toEqual([]);
     worker.onmessage({ data: { id: a, ok: false, error: "failed" } });

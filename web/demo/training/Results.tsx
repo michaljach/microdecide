@@ -9,11 +9,9 @@ export interface Trained {
 
 export function Results({ t, color }: { t: Trained; color: (l: string) => string }) {
   const { result: r, labels } = t;
-  const e = r.escalation;
   const summary: [string, string][] = [
     ["macro F1 (test)", fmt(r.test.macroF1, 3)],
     ["accuracy (test)", `${fmt(r.test.accuracy * 100, 1)}%`],
-    ["handled alone", `${fmt(e.testCoverage * 100, 0)}%, ${e.testAccuracyOnCovered == null ? "—" : fmt(e.testAccuracyOnCovered * 100, 1) + "%"} accurate`],
     ["calibration error", `${fmt(r.calibration.testEceAfter, 3)} (was ${fmt(r.calibration.testEceBefore, 3)})`],
     ["training time", `${fmt(r.ms.total / 1000, 2)} s`],
   ];
@@ -89,7 +87,7 @@ export function Results({ t, color }: { t: Trained; color: (l: string) => string
       </div>
       <p className="muted small">
         {t.baseInfo} · train/val/test {r.counts.train}/{r.counts.val}/{r.counts.test} · C={r.C} · temperature {fmt(r.calibration.temperature, 2)} ·
-        threshold {fmt(e.threshold, 3)} for {fmt(e.targetPrecision * 100, 0)}% precision{e.reached ? "" : " (not reached on val)"} · embed{" "}
+        embed{" "}
         {fmt(r.ms.embed, 0)} ms, fit {fmt(r.ms.fit, 0)} ms, calibrate {fmt(r.ms.calibrate, 0)} ms
       </p>
     </div>

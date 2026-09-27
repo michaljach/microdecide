@@ -6,7 +6,7 @@ from typing import Callable
 
 import numpy as np
 
-from microdecide.artifacts import write_config
+from microdecide.artifacts import read_config, write_config
 
 Probs = Callable[[list[str]], np.ndarray]
 FORMAT = "microdecide"
@@ -39,3 +39,14 @@ def compare(p_ref: np.ndarray, p: np.ndarray, y: np.ndarray) -> dict:
 
 def _write_config(out: Path, config: dict) -> None:
     write_config(out / "microdecide.json", config)
+
+
+def record_file_sizes(out: Path) -> None:
+    """Add {relative path: bytes} of the model files to microdecide.json (download-progress totals)."""
+    config = read_config(out / "microdecide.json")
+    config["files"] = {
+        p.relative_to(out).as_posix(): p.stat().st_size
+        for p in sorted(out.rglob("*"))
+        if p.is_file() and p.name not in {"microdecide.json", "model_card.json", "parity.jsonl", "bench.json"}
+    }
+    _write_config(out, config)

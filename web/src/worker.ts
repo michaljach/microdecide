@@ -10,7 +10,8 @@ self.onmessage = async (e: MessageEvent<Request>) => {
   const msg = e.data;
   try {
     if (msg.type === "load") {
-      model = await Model.load(msg.url, msg.options);
+      const id = msg.id;
+      model = await Model.load(msg.url, { ...msg.options, onProgress: (progress) => post({ id, progress }) });
       post({ id: msg.id, ok: true, result: model.info });
     } else {
       if (!model) throw new Error("model not loaded");

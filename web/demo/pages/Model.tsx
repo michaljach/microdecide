@@ -11,14 +11,11 @@ function Card({ m }: { m: CatalogEntry }) {
 
 const m = await MicroDecide.load("${m.path}");
 const d = await m.decide(${JSON.stringify(m.examples[0] ?? "…")});
-// d.label is one of: ${Object.keys(m.labels).join(", ")}
-if (!m.isConfident(d)) { /* below ${pct(m.threshold)}: escalate */ }`;
+// d.label is one of: ${Object.keys(m.labels).join(", ")}`;
   const quality: [string, string][] = q
     ? [
         ["macro F1", q.macroF1.toFixed(3)],
         ["accuracy", pct(q.accuracy)],
-        ["handled in the browser", pct(q.coverage)],
-        ["accuracy on those", pct(q.accuracyOnCovered)],
         ["calibration error (ECE)", `${q.eceBefore.toFixed(3)} → ${q.eceAfter.toFixed(3)}`],
         ["train / val / test", `${m.data.train} / ${m.data.val} / ${m.data.test}`],
       ]
@@ -52,8 +49,7 @@ if (!m.isConfident(d)) { /* below ${pct(m.threshold)}: escalate */ }`;
           {q ? (
             <>
               <p className="small">
-                On {q.testN} held-out test inputs. Answers below {pct(m.threshold)} confidence go to the teacher; the
-                threshold was picked on the validation split to reach {pct(q.targetPrecision, 0)} precision.
+                On {q.testN} held-out test inputs.
               </p>
               <table className="kv">
                 <tbody>

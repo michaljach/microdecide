@@ -18,6 +18,8 @@ interface BaseConfig {
   temperature: number;
   threshold: number;
   max_chars: number;
+  /** Model file sizes in bytes by relative path (download progress totals). Absent in older exports. */
+  files?: Record<string, number>;
 }
 
 interface OnnxRef {
@@ -78,6 +80,14 @@ export interface LoadOptions {
   cache?: boolean;
   /** Where onnxruntime-web's .wasm files are served. Default "/ort/". */
   ortWasmPaths?: string;
+  /** Called as model files download (or are read back from the cache). */
+  onProgress?: (p: LoadProgress) => void;
+}
+
+/** Bytes so far across the model's files. `total` grows as files start, so it can rise mid-load. */
+export interface LoadProgress {
+  loaded: number;
+  total: number;
 }
 
 export interface ModelInfo {
