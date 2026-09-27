@@ -1,0 +1,25 @@
+[project]
+name = "microdecide"
+version = "0.1.0"
+description = "Turn a task spec into a tiny, calibrated, browser-runnable classifier."
+authors = [
+    { name = "Michal Jach", email = "michaljach@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.13.5",
+    "pyyaml>=6.0.3",
+    "typer>=0.27.2",
+]
+
+[project.scripts]
+microdecide = "microdecide.cli:app"
+
+[build-system]
+requires = ["uv_build>=0.12.17,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+]

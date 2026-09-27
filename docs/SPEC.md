@@ -1,0 +1,251 @@
+# microdecide — Design Spec
+
+## 1. Goal
+
+A user describes **one decision** (input, allowed outputs, quality/latency
+target). microdecide produces a **specialized micro model** for exactly that
+decision:
+
+- small enough to **download and run in a browser** (WASM, WebGPU when
+  available): ~10 MB to ~400 MB depending on tier
+- returns a **typed decision + calibrated confidence**
+- runs client-side: offline, private, no per-call cost
+- **escalates** to a teacher model (Jev, an LLM, or a human) when unsure,
+  and learns from those escalations
+
+Positioning: a "System Zero" layer in front of System One (Jev) and
+System Two (frontier LLMs). It handles the easy, high-volume majority of cases
+cheaply; the hard cases go up the stack.
+
+Non-goals (v1): text generation, multi-step reasoning, image/audio input,
+distributed training.
+
+## 2. Task spec (user input)
+
+YAML, validated by a pydantic `TaskSpec` model.
+
+```yaml
+task: comment_moderation            # slug, used for paths
+description: >
+  Decide whether a user comment on a product blog is acceptable.
+input:
+  type: text
+  max_chars: 2000
+output:
+  type: choice                      # v1: choice | boolean ; v2: score, multi_label
+  labels:
+    ok: Normal comment, on or off topic but harmless.
+    spam: Ads, links to unrelated products, SEO junk.
+    toxic: Insults, harassment, hate.
+model:
+  tier: auto                        # auto | static | encoder | decoder
+  base: null                        # override base model id, e.g. Qwen/Qwen3-0.6B
+  quantization: q4                  # q8 | q4 (decoder), q8 (encoder)
+teacher:
+  kind: llm                         # llm | jev | csv
+  model: claude-haiku-4-5-20251001  # configurable (llm, jev)
+  path: null                        # labeled CSV (csv)
+data:
+  seed_examples: examples/comment_moderation_seed.csv   # optional
+  unlabeled: null                   # optional CSV/JSONL of real inputs
+  synthetic: 2000                   # number of generated inputs
+targets:
+  min_macro_f1: 0.90
+  deploy: browser                   # browser | node | python
+  max_download_mb: 150              # hard budget for the model files
+  max_latency_ms: 100               # p95 in browser, WASM backend, short input
+escalation:
+  target_precision: 0.97            # auto-pick threshold to hit this
+```
+
+Label descriptions matter: they are used in teacher prompts and synthetic
+data generation.
+
+## 3. Output schema (every prediction)
+
+```json
+{
+  "label": "spam",
+  "probabilities": {"ok": 0.04, "spam": 0.93, "toxic": 0.03},
+  "confidence": 0.93,
+  "escalated": false,
+  "source": "micro",              // micro | teacher
+  "model": "comment_moderation@v3",
+  "latency_ms": 0.4
+}
+```
+
+`label` is always one of the spec's labels. Boolean tasks use labels
+`true`/`false`.
+
+## 4. Pipeline
+
+```
+spec ─▶ collect inputs ─▶ teacher labels ─▶ split ─▶ train ─▶ calibrate
+                                                                   │
+        feedback ◀── escalations ◀── serve (micro + fallback) ◀── export ◀── eval
+```
+
+### 4.1 Collect inputs
+Sources, merged and deduplicated (normalized-text hash, then near-dup via
+embedding cosine > 0.95):
+1. user seed examples (may already have labels)
+2. user unlabeled real data (best source)
+3. synthetic generation by an LLM: prompted per label, with explicit
+   diversity axes (length, tone, language, obfuscation, borderline cases).
+   Generate ~30% "hard/borderline" examples on purpose.
+
+### 4.2 Teacher labeling
+`Teacher` interface:
+```python
+class Teacher(Protocol):
+    name: str
+    def label(self, spec: TaskSpec, inputs: list[str]) -> list[Decision]: ...
+```
+Implementations: `LLMTeacher` (Anthropic / OpenAI-compatible, asks for JSON
+with label + probability), `JevTeacher` (M7), `CSVTeacher` (human labels),
+`FakeTeacher` (tests). All calls are cached on disk.
+Store teacher confidence; low-confidence teacher labels are down-weighted
+or dropped (configurable).
+
+### 4.3 Split
+Stratified train / val / test = 70 / 15 / 15. If a human-labeled gold set
+exists, it is always used as the test set.
+
+### 4.4 Train — model tiers (all browser-runnable)
+All tiers output logits over the label set in **one forward pass**.
+Sizes/latencies are rough targets; measure with the benchmark page (M3).
+
+| Tier | Base (default, configurable) | Method | Download | Train on |
+|---|---|---|---|---|
+| static | model2vec static embeddings | logistic regression head | ~5–30 MB | CPU, minutes |
+| encoder | small sentence encoder (MiniLM-class, ~20–30M params) | SetFit or full fine-tune + head | ~20–40 MB (q8) | CPU/GPU, minutes |
+| decoder-S | ~135–360M decoder (e.g. SmolLM2-135M/360M, Gemma 3 270M) | LoRA + seq-classification head | ~80–250 MB (q4/q8) | GPU, <1 h |
+| decoder-M | Qwen3-0.6B (or Qwen2.5-0.5B) | LoRA + seq-classification head | ~350–500 MB (q4) | GPU, ~1 h |
+
+Decoder tiers: load with `AutoModelForSequenceClassification` (score head on
+last token), LoRA on attention + MLP, merge LoRA into weights before export.
+Use the task description + label descriptions only at train time via the
+teacher; at inference the model sees just the input text (short prompt
+template optional, fixed in `model_card.json`).
+
+**Auto mode**: train from smallest up; pick the smallest tier that meets
+`min_macro_f1` **and** fits `max_download_mb`. If none fits, report the gap
+and recommend: more/better data, a larger budget, or escalation-heavy mode.
+
+Reality check to keep in the report: decoder tiers are 10–50× larger to
+download than encoders and much slower on WASM; they earn their place only on
+tasks needing more language understanding (sarcasm, context, multilingual).
+Qwen-class 0.6B is the *upper* bound, not the default.
+
+### 4.5 Calibrate
+Temperature scaling (or isotonic if val set is large) fit on val.
+Report ECE before/after. Pick the escalation threshold on val as the lowest
+confidence at which precision ≥ `target_precision`.
+
+### 4.6 Evaluate (report.md + report.json per run)
+- accuracy, macro F1, per-label precision/recall, confusion matrix
+- agreement with teacher
+- ECE (calibration error)
+- **coverage** at chosen threshold: % of inputs the micro model handles
+  alone, and accuracy on that covered set
+- latency p50/p95, model size on disk
+- 20 worst errors listed for inspection
+
+### 4.7 Export (browser-first)
+- All tiers → ONNX via `optimum`, in the folder layout transformers.js
+  expects (`onnx/model_quantized.onnx`, tokenizer, config)
+- Quantize: encoder q8; decoder q4 (fallback q8 if F1 drops > 1 point)
+- Static tier: also a tiny JSON/binary format (embedding table + head
+  weights) runnable in plain JS with no ONNX runtime
+- **Parity check**: exported quantized model vs PyTorch model on the test
+  set — report label agreement and F1 delta; fail export if F1 drops > 2 pts
+- `model_card.json`: spec, labels, threshold, prompt template, metrics,
+  teacher, data counts, seed, date, file sizes
+
+### 4.8 Browser runtime (`web/`, npm package `microdecide-web`)
+```ts
+const m = await MicroDecide.load("/models/comment_moderation/v3", {
+  device: "auto",                // webgpu if available, else wasm
+  escalateUrl: "/api/decide",    // optional, the user's own server
+});
+const d = await m.decide("Buy cheap followers at ...");   // Decision
+```
+- Model files cached in the browser (Cache API) after first load
+- Runs in a Web Worker so the UI never blocks; batching supported
+- Below threshold + `escalateUrl` set → POST to server, return teacher
+  decision with `source: "teacher"`
+- `web/demo`: paste text → decision + probabilities; **benchmark page**
+  reports load time, p50/p95 latency on WASM and WebGPU, memory
+
+### 4.9 Server: escalate + feedback
+`Runtime` wraps model + optional teacher:
+```python
+rt = Runtime.load("runs/comment_moderation/v3")
+d = rt.decide("Buy cheap followers at ...")
+```
+If `confidence < threshold` and a teacher is configured → ask teacher,
+return teacher's decision with `source="teacher"`, and append the input +
+teacher label to `feedback.jsonl`.
+FastAPI server exposes `POST /decide` with the same schema.
+
+### 4.10 Improve
+`microdecide retrain` merges `feedback.jsonl` into training data and
+produces the next version. Report compares new vs previous version on the
+same test set; don't promote if worse.
+
+## 5. CLI
+
+```
+microdecide init <task>            # scaffold spec yaml
+microdecide check <spec>           # validate a spec
+microdecide collect <spec>         # 4.1
+microdecide label <spec>           # 4.2
+microdecide train <spec> [--tier static|encoder|decoder|auto]
+microdecide eval <run_dir>
+microdecide export <run_dir> [--format onnx|numpy]
+microdecide serve <run_dir> [--teacher]
+microdecide retrain <spec>
+microdecide run <spec>             # collect → label → train → eval → export
+```
+
+## 6. Repo layout
+
+```
+microdecide/
+  CLAUDE.md
+  pyproject.toml
+  docs/SPEC.md  docs/ROADMAP.md
+  examples/comment_moderation.yaml
+  src/microdecide/
+    spec.py        # TaskSpec, Decision (pydantic)
+    data.py        # collect, dedup, split
+    synth.py       # synthetic input generation
+    teachers/      # base.py, llm.py, jev.py, csv.py, fake.py, cache.py
+    train.py       # tiers
+    calibrate.py
+    evaluate.py
+    export.py
+    runtime.py     # Runtime + escalation
+    server.py
+    cli.py
+  web/             # TypeScript runtime package + demo/benchmark (vite)
+  tests/
+  runs/            # gitignored artifacts
+```
+
+## 7. Risks & mitigations
+
+- **Teacher errors baked in** → keep optional human gold set; show worst
+  errors; teacher-confidence filtering.
+- **Synthetic data ≠ real data** → prefer real unlabeled data; report
+  metrics separately for synthetic vs real test examples.
+- **Drift in production** → escalation rate is logged; rising rate is the
+  signal to retrain.
+- **Overconfidence** → calibration is mandatory, never optional.
+
+## 8. Later (v2+)
+
+`score` (ordinal) and `multi_label` output types; multiple questions per
+input sharing one backbone (one download, many decisions); non-text inputs (tabular, time series); web UI for reviewing
+escalations.

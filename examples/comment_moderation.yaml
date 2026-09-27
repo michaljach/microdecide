@@ -1,0 +1,30 @@
+task: comment_moderation
+description: >
+  Decide whether a user comment on a product blog is acceptable to publish.
+input:
+  type: text
+  max_chars: 2000
+output:
+  type: choice
+  labels:
+    ok: Normal comment. Can be positive, negative or off topic, but harmless.
+    spam: Ads, links to unrelated products or services, SEO junk, scams.
+    toxic: Insults, harassment, threats or hate toward people or groups.
+model:
+  tier: auto              # static | encoder | decoder | auto
+  base: null              # e.g. Qwen/Qwen3-0.6B to force the decoder tier
+  quantization: q4
+teacher:
+  kind: llm
+  model: claude-haiku-4-5-20251001
+data:
+  seed_examples: null
+  unlabeled: null
+  synthetic: 2000
+targets:
+  min_macro_f1: 0.90
+  deploy: browser
+  max_download_mb: 150
+  max_latency_ms: 100
+escalation:
+  target_precision: 0.97
