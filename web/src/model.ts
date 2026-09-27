@@ -1,6 +1,7 @@
 /** Load an exported model folder and turn texts into Decisions. Runs in a worker or the main thread. */
 import { type Engine, StaticEmbedder, StaticEngine, StaticOnnxEngine, StaticTokenizer, TransformersEngine } from "./engines.js";
 import { type Fetcher, decodeJson, joinUrl, makeFetcher } from "./fetch.js";
+import { parseModelConfig } from "./artifacts.js";
 import { argmax, softmax } from "./text.js";
 import type { Decision, LoadOptions, ModelConfig, ModelInfo } from "./types.js";
 
@@ -21,10 +22,7 @@ export class Model {
       bytes.set(file, buf.byteLength);
       return buf;
     };
-    const config = decodeJson<ModelConfig>(await fetchCounted("microdecide.json"));
-    if (config.format !== "microdecide" || config.format_version !== 2) {
-      throw new Error(`unsupported model format ${config.format} v${config.format_version} (re-run \`microdecide export\`)`);
-    }
+    const config = parseModelConfig(decodeJson(await fetchCounted("microdecide.json")));
     const backend = options.backend ?? (config.tier === "static" ? "static" : "onnx");
     const device = options.device ?? "auto";
     const wasmPaths = options.ortWasmPaths ?? "/ort/";

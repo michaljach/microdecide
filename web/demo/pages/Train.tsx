@@ -1,50 +1,16 @@
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, type KeyboardEvent, useEffect, useRef, useState } from "react";
 import { type Decision, MicroDecide } from "../../src";
 import { fmt, url } from "../common";
 import { parseExamples } from "../csv";
-import type { Example, Req } from "../playground-worker";
+import { useTask, withExamples, slug, type Row } from "../training/task";
+import { Results, type Trained } from "../training/Results";
+import type { TrainResult } from "../training/protocol";
+import { useTrainingClient } from "../training/client";
 import { DecisionView } from "../ui/DecisionView";
+import { Download, type DownloadFile } from "../ui/Download";
+import { ConfirmDialog } from "../ui/ConfirmDialog";
 import { Layout } from "../ui/Layout";
 import { mount } from "../ui/mount";
-
-// --- task state (persisted per browser) -------------------------------------------------------------
-
-const STORE = "microdecide-playground-v1";
-interface Task {
-  name: string;
-  labels: string[];
-  examples: Example[];
-}
-type Row = { text: string; label?: string; weight?: number };
-
-function loadTask(): Task {
-  try {
-    const raw = localStorage.getItem(STORE);
-    if (raw) return JSON.parse(raw) as Task;
-  } catch {
-    /* private mode / blocked storage */
-  }
-  return { name: "my_task", labels: ["positive", "negative"], examples: [] };
-}
-
-/** Add labeled rows (skipping duplicates); returns the new task and how many were added. */
-function withExamples(t: Task, rows: Row[]): [Task, number] {
-  const seen = new Set(t.examples.map((ex) => ex.text));
-  const labels = [...t.labels];
-  const examples = [...t.examples];
-  let added = 0;
-  for (const r of rows) {
-    if (!r.label || seen.has(r.text)) continue;
-    if (!labels.includes(r.label)) labels.push(r.label);
-    examples.push({ text: r.text, label: r.label, ...(r.weight !== undefined && Number.isFinite(r.weight) ? { weight: r.weight } : {}) });
-    seen.add(r.text);
-    added++;
-  }
-  if (rows.length > 1) labels.sort((a, b) => a.localeCompare(b)); // stable, matches Python's order
-  return [{ ...t, labels, examples }, added];
-}
-
-const slug = (s: string) => s.trim().toLowerCase().replace(/[^a-z0-9_-]+/g, "_").replace(/^_+|_+$/g, "");
 
 const COLORS = ["#2563eb", "#9333ea", "#0891b2", "#be185d", "#4d7c0f", "#b45309", "#475569"];
 const SEMANTIC: Record<string, string> = {
@@ -55,50 +21,14 @@ const SEMANTIC: Record<string, string> = {
 const colorOf = (labels: string[], label: string) =>
   SEMANTIC[label.toLowerCase()] ?? COLORS[Math.max(0, labels.filter((l) => !SEMANTIC[l.toLowerCase()]).indexOf(label)) % COLORS.length];
 
-// --- worker RPC ------------------------------------------------------------------------------------
-
-type Distribute<T> = T extends unknown ? Omit<T, "id"> : never;
-const worker = new Worker(new URL("../playground-worker.ts", import.meta.url), { type: "module" });
-const pending = new Map<number, { resolve: (v: any) => void; reject: (e: Error) => void; onProgress?: (s: string, f: number) => void }>();
-let nextId = 0;
-worker.onmessage = (e) => {
-  const { id, ok, result, error, progress } = e.data;
-  const p = pending.get(id);
-  if (!p) return;
-  if (progress) return p.onProgress?.(progress.stage, progress.fraction);
-  pending.delete(id);
-  ok ? p.resolve(result) : p.reject(new Error(error));
-};
-function call<T>(msg: Distribute<Req>, onProgress?: (s: string, f: number) => void): Promise<T> {
-  return new Promise((resolve, reject) => {
-    const id = nextId++;
-    pending.set(id, { resolve, reject, onProgress });
-    worker.postMessage({ ...msg, id });
-  });
-}
-
-interface TrainResult {
-  C: number;
-  valMacroF1ByC: Record<string, number>;
-  counts: Record<string, number>;
-  test: { n: number; accuracy: number; macroF1: number; perLabel: { precision: number; recall: number; f1: number; support: number }[]; confusion: number[][] };
-  calibration: { temperature: number; testEceBefore: number; testEceAfter: number };
-  escalation: { threshold: number; targetPrecision: number; reached: boolean; testCoverage: number; testAccuracyOnCovered: number | null };
-  ms: { embed: number; fit: number; calibrate: number; total: number };
-  predictions: { text: string; label: string; predicted: string; confidence: number; probabilities: number[] }[];
-}
-interface Trained {
-  result: TrainResult;
-  labels: string[];
-  baseInfo: string;
-}
 type Playground = { MicroDecide: typeof MicroDecide; result: TrainResult; saved?: string };
 const exposed = () => window as unknown as { __playground: Playground };
 
 // --- page --------------------------------------------------------------------------------------------
 
 function Train() {
-  const [task, setTask] = useState<Task>(loadTask);
+  const [task, setTask] = useTask();
+  const call = useTrainingClient();
   const [nameInput, setNameInput] = useState(task.name);
   const [newLabel, setNewLabel] = useState("");
   const [status, setStatus] = useState("");
@@ -116,20 +46,12 @@ function Train() {
   const [tryText, setTryText] = useState("");
   const [tryD, setTryD] = useState<Decision | null>(null);
   const [saveStatus, setSaveStatus] = useState<ReactNode>(null);
+  const [downloadFile, setDownloadFile] = useState<DownloadFile | null>(null);
+  const [confirmation, setConfirmation] = useState<{ kind: "clear" } | { kind: "label"; label: string } | null>(null);
+  const queuePanel = useRef<HTMLDivElement>(null);
   const [snippet, setSnippet] = useState("");
   const loadedBase = useRef({ url: "", info: "" });
   const color = (l: string) => colorOf(task.labels, l);
-
-  useEffect(() => {
-    const t = setTimeout(() => {
-      try {
-        localStorage.setItem(STORE, JSON.stringify(task));
-      } catch {
-        /* quota / private mode: keep working in memory */
-      }
-    }, 300);
-    return () => clearTimeout(t);
-  }, [task]);
 
   function add(rows: Row[], replaceLabels = false): number {
     const [next, added] = withExamples(replaceLabels ? { ...task, labels: [] } : task, rows);
@@ -145,8 +67,8 @@ function Train() {
   }
   function removeLabel(l: string) {
     const n = task.examples.filter((ex) => ex.label === l).length;
-    if (n && !confirm(`Remove "${l}" and its ${n} examples?`)) return;
-    setTask({ ...task, labels: task.labels.filter((x) => x !== l), examples: task.examples.filter((ex) => ex.label !== l) });
+    if (n) setConfirmation({ kind: "label", label: l });
+    else setTask((t) => ({ ...t, labels: t.labels.filter((x) => x !== l) }));
   }
 
   // 2 · examples
@@ -173,8 +95,7 @@ function Train() {
     }
   }
   function clearAll() {
-    if (!task.examples.length || !confirm(`Delete all ${task.examples.length} examples?`)) return;
-    setTask({ ...task, examples: [] });
+    if (task.examples.length) setConfirmation({ kind: "clear" });
   }
   const labelForOne = task.labels.includes(oneLabel) ? oneLabel : (task.labels[0] ?? "");
   function addOne() {
@@ -191,16 +112,32 @@ function Train() {
     setQueue(rest);
     if (text && label) add([{ text, label }]);
   }
+  const hasQueue = queue.length > 0;
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (!queue.length || (e.target as HTMLElement).matches("input, textarea")) return;
-      const n = Number(e.key);
-      if (n >= 1 && n <= Math.min(9, task.labels.length)) answer(task.labels[n - 1]);
-      else if (e.key === "s") answer(null);
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  });
+    if (hasQueue) queuePanel.current?.focus();
+  }, [hasQueue]);
+  function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (!hasQueue || confirmation || event.altKey || event.ctrlKey || event.metaKey) return;
+    if ((event.target as HTMLElement).closest("input, textarea, select, [contenteditable]")) return;
+    const n = Number(event.key);
+    if (n >= 1 && n <= Math.min(9, task.labels.length)) {
+      event.preventDefault();
+      answer(task.labels[n - 1]);
+    } else if (event.key === "s") {
+      event.preventDefault();
+      answer(null);
+    }
+  }
+
+  function confirmDelete() {
+    if (!confirmation) return;
+    if (confirmation.kind === "clear") setTask((t) => ({ ...t, examples: [] }));
+    else {
+      const label = confirmation.label;
+      setTask((t) => ({ ...t, labels: t.labels.filter((l) => l !== label), examples: t.examples.filter((ex) => ex.label !== label) }));
+    }
+    setConfirmation(null);
+  }
 
   // 3 · train
   async function train() {
@@ -211,10 +148,10 @@ function Train() {
       const baseUrl = url(base);
       if (baseUrl !== loadedBase.current.url) {
         setProgress({ stage: "loading embeddings", f: 0 });
-        const info = await call<{ model: string; mb: number }>({ type: "loadBase", url: baseUrl });
+        const info = await call({ type: "loadBase", url: baseUrl });
         loadedBase.current = { url: baseUrl, info: `${info.model} (${fmt(info.mb, 1)} MB)` };
       }
-      const result = await call<TrainResult>(
+      const result = await call(
         {
           type: "train",
           examples: task.examples.filter((ex) => usable.includes(ex.label)),
@@ -239,7 +176,7 @@ function Train() {
   useEffect(() => {
     if (!trained) return;
     let live = true;
-    call<Decision>({ type: "predict", text: tryText }).then(
+    call({ type: "predict", text: tryText }).then(
       (d) => live && setTryD(d),
       () => {},
     );
@@ -248,7 +185,7 @@ function Train() {
 
   // 5 · use it
   async function save() {
-    const { url: saved, bytes } = await call<{ url: string; bytes: number }>({ type: "save", name: task.name, url: url(`playground-models/${task.name}`) });
+    const { url: saved, bytes } = await call({ type: "save", name: task.name, url: url(`playground-models/${task.name}`) });
     const q = `?model=${encodeURIComponent(saved)}`;
     setSaveStatus(
       <>
@@ -259,12 +196,8 @@ function Train() {
     exposed().__playground.saved = saved;
   }
   async function download() {
-    const bytes = await call<Uint8Array>({ type: "zip", name: task.name });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([bytes as BlobPart], { type: "application/zip" }));
-    a.download = `${task.name}.zip`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 10_000);
+    const bytes = await call({ type: "zip", name: task.name });
+    setDownloadFile({ blob: new Blob([bytes as BlobPart], { type: "application/zip" }), name: `${task.name}.zip` });
     setSaveStatus(`downloaded ${task.name}.zip — unzip next to your app and MicroDecide.load("/path/${task.name}")`);
   }
 
@@ -273,7 +206,15 @@ function Train() {
   const recent = task.examples.slice(-8).reverse();
 
   return (
-    <Layout page="train" wide>
+    <Layout page="train" wide onKeyDown={onKeyDown}>
+      <Download file={downloadFile} />
+      {confirmation && <ConfirmDialog
+        message={confirmation.kind === "clear"
+          ? `Delete all ${task.examples.length} examples?`
+          : `Remove "${confirmation.label}" and its ${task.examples.filter((ex) => ex.label === confirmation.label).length} examples?`}
+        onConfirm={confirmDelete}
+        onCancel={() => setConfirmation(null)}
+      />}
       <h1>Train your own</h1>
       <p>
         Train a text classifier in your browser. Define labels, add examples, train in a few seconds, then try it, save it
@@ -299,7 +240,7 @@ function Train() {
           {task.labels.map((l) => (
             <span key={l} className="chip" style={{ borderColor: color(l) }}>
               {l}
-              <button title="remove" onClick={() => removeLabel(l)}>×</button>
+              <button title="remove" aria-label={`Remove ${l}`} onClick={() => removeLabel(l)}>×</button>
             </span>
           ))}
         </span>
@@ -332,7 +273,7 @@ function Train() {
         </div>
       )}
       {queue.length > 0 && (
-        <div className="queue">
+        <div className="queue" ref={queuePanel} tabIndex={-1} aria-label="Labeling queue">
           <p className="muted small">{queue.length} left to label · keys 1–{Math.min(9, task.labels.length)}, s = skip</p>
           <p className="queue-text">{queue[0]}</p>
           <div className="controls queue-buttons">
@@ -424,95 +365,6 @@ function Train() {
       </div>
       {snippet && <pre>{snippet}</pre>}
     </Layout>
-  );
-}
-
-function Results({ t, color }: { t: Trained; color: (l: string) => string }) {
-  const { result: r, labels } = t;
-  const e = r.escalation;
-  const summary: [string, string][] = [
-    ["macro F1 (test)", fmt(r.test.macroF1, 3)],
-    ["accuracy (test)", `${fmt(r.test.accuracy * 100, 1)}%`],
-    ["handled alone", `${fmt(e.testCoverage * 100, 0)}%, ${e.testAccuracyOnCovered == null ? "—" : fmt(e.testAccuracyOnCovered * 100, 1) + "%"} accurate`],
-    ["calibration error", `${fmt(r.calibration.testEceAfter, 3)} (was ${fmt(r.calibration.testEceBefore, 3)})`],
-    ["training time", `${fmt(r.ms.total / 1000, 2)} s`],
-  ];
-  const wrong = r.predictions.filter((p) => p.predicted !== p.label).sort((a, b) => b.confidence - a.confidence).slice(0, 8);
-  return (
-    <div>
-      <table className="kv summary">
-        <tbody>
-          {summary.map(([k, v]) => (
-            <tr key={k}><td>{k}</td><td className="num"><b>{v}</b></td></tr>
-          ))}
-        </tbody>
-      </table>
-      <div className="cols">
-        <section>
-          <h3>Per label (test)</h3>
-          <div className="scroll">
-            <table>
-              <tbody>
-                <tr><th>label</th><th className="num">precision</th><th className="num">recall</th><th className="num">F1</th><th className="num">n</th></tr>
-                {r.test.perLabel.map((m, k) => (
-                  <tr key={labels[k]}>
-                    <td style={{ color: color(labels[k]) }}>{labels[k]}</td>
-                    <td className="num">{fmt(m.precision, 3)}</td>
-                    <td className="num">{fmt(m.recall, 3)}</td>
-                    <td className="num">{fmt(m.f1, 3)}</td>
-                    <td className="num">{m.support}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-        <section>
-          <h3>Confusion (rows = true)</h3>
-          <div className="scroll">
-            <table>
-              <tbody>
-                <tr><th></th>{labels.map((l) => <th key={l} className="num">{l}</th>)}</tr>
-                {r.test.confusion.map((row, k) => (
-                  <tr key={labels[k]}>
-                    <th>{labels[k]}</th>
-                    {row.map((v, j) => (
-                      <td key={j} className="num" style={j === k ? { fontWeight: 600 } : undefined}>{v}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </div>
-      <h3>Most confident mistakes (test)</h3>
-      <div className="scroll">
-        <table>
-          <tbody>
-            {wrong.length ? (
-              <>
-                <tr><th className="num">conf</th><th>true → predicted</th><th>text</th></tr>
-                {wrong.map((p) => (
-                  <tr key={p.text}>
-                    <td className="num">{fmt(p.confidence, 2)}</td>
-                    <td>{p.label} → {p.predicted}</td>
-                    <td className="text" title={p.text}>{p.text}</td>
-                  </tr>
-                ))}
-              </>
-            ) : (
-              <tr><td className="muted">No mistakes on the test split.</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-      <p className="muted small">
-        {t.baseInfo} · train/val/test {r.counts.train}/{r.counts.val}/{r.counts.test} · C={r.C} · temperature {fmt(r.calibration.temperature, 2)} ·
-        threshold {fmt(e.threshold, 3)} for {fmt(e.targetPrecision * 100, 0)}% precision{e.reached ? "" : " (not reached on val)"} · embed{" "}
-        {fmt(r.ms.embed, 0)} ms, fit {fmt(r.ms.fit, 0)} ms, calibrate {fmt(r.ms.calibrate, 0)} ms
-      </p>
-    </div>
   );
 }
 

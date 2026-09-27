@@ -6,7 +6,6 @@ has .tier, .logits(texts), .download_mb(), .save(dir), and classmethod .load(run
 
 from __future__ import annotations
 
-import json
 import shutil
 import time
 from datetime import datetime, timezone
@@ -17,20 +16,14 @@ import numpy as np
 from microdecide import calibrate, encoder, static
 from microdecide.data import data_dir, read_jsonl
 from microdecide.spec import TaskSpec
+from microdecide.artifacts import write_card
+from microdecide.classifiers import Classifier, classifier_for
 
 TIER_ORDER = ("static", "encoder")
 # Best fit: the highest val macro F1 within the download budget wins, but a smaller model wins a
 # near-tie — val splits are small, so F1 differences below this are mostly noise.
 F1_TIE = 0.01
 TIERS = {"static": static, "encoder": encoder}
-
-
-def classifier_for(tier: str):
-    if tier == "static":
-        return static.StaticClassifier
-    if tier == "encoder":
-        return encoder.EncoderClassifier
-    raise ValueError(f"unknown tier {tier!r}")
 
 
 def plan(spec: TaskSpec, override: str | None) -> list[tuple[str, str]]:
@@ -94,7 +87,8 @@ def train(spec: TaskSpec, runs: str | Path = "runs", tier: str | None = None, lo
 
     budget = spec.targets.max_download_mb
     t0 = time.perf_counter()
-    tried, models = [], []
+    tried: list[dict] = []
+    models: list[Classifier] = []
     for t, base in candidates_plan:
         log(f"training {t} tier on {len(part['train'])} examples (base {base}) ...")
         model, info = TIERS[t].fit(base, data, labels, spec.seed, log)
@@ -152,6 +146,6 @@ def train(spec: TaskSpec, runs: str | Path = "runs", tier: str | None = None, lo
         "created": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "spec": spec.model_dump(mode="json"),
     }
-    (out / "model_card.json").write_text(json.dumps(card, indent=2))
+    write_card(out / "model_card.json", card)
     log(f"trained {card['model']} ({model.tier}, {best['base']}) in {train_s:.1f}s → {out}")
     return out

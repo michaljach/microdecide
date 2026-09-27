@@ -9,6 +9,7 @@ export interface Decision {
   latency_ms: number;
 }
 
+/** Wire fields are validated against model.schema.json, generated from Python artifacts.py. */
 interface BaseConfig {
   format: "microdecide";
   format_version: 2;

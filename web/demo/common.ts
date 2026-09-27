@@ -1,3 +1,4 @@
+import { parseModelConfig } from "../src/artifacts";
 import type { Backend, Device, ModelConfig } from "../src";
 
 /** Site root ("/" locally, "/microdecide/" on GitHub Pages). Every asset URL goes through url(). */
@@ -51,7 +52,7 @@ export const CONFIGS: Record<ModelConfig["tier"], Config[]> = {
 export async function modelConfig(model = MODEL_URL): Promise<ModelConfig> {
   const file = new URL(`${model.replace(/\/+$/, "")}/microdecide.json`, location.href).href;
   const hit = typeof caches !== "undefined" ? await (await caches.open("microdecide-models-v1")).match(file) : undefined;
-  return (await (hit ?? (await fetch(file))).json()) as ModelConfig;
+  return parseModelConfig(await (hit ?? (await fetch(file))).json());
 }
 
 export async function modelTier(model = MODEL_URL): Promise<ModelConfig["tier"]> {

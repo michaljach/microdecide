@@ -6,20 +6,18 @@
  */
 import { Model } from "./model.js";
 import type { Decision, LoadOptions, ModelInfo } from "./types.js";
-import type { Request } from "./worker.js";
+import { WorkerClient } from "./rpc.js";
+import type { InferenceProtocol } from "./protocol.js";
 
 export type { Backend, Decision, Device, EncoderConfig, LoadOptions, ModelConfig, ModelInfo, StaticConfig } from "./types.js";
 export { clearModelCache } from "./fetch.js";
 export { Model } from "./model.js";
 
-type Pending = { resolve: (v: unknown) => void; reject: (e: Error) => void };
-type Distribute<T> = T extends unknown ? Omit<T, "id"> : never;
-
 export class MicroDecide {
   private constructor(
     readonly info: ModelInfo,
     private readonly run: (texts: string[]) => Promise<Decision[]>,
-    private readonly worker: Worker | null,
+    private readonly worker: WorkerClient<InferenceProtocol> | null,
   ) {}
 
   static async load(url: string, options: LoadOptions = {}): Promise<MicroDecide> {
@@ -29,26 +27,12 @@ export class MicroDecide {
       return new MicroDecide(model.info, (t) => model.decideBatch(t), null);
     }
     const worker = new Worker(new URL("./worker.js", import.meta.url), { type: "module" });
-    const pending = new Map<number, Pending>();
-    let next = 0;
-    worker.onmessage = (e) => {
-      const { id, ok, result, error } = e.data;
-      const p = pending.get(id);
-      pending.delete(id);
-      if (ok) p?.resolve(result);
-      else p?.reject(new Error(error));
-    };
-    const call = <T>(msg: Distribute<Request>) =>
-      new Promise<T>((resolve, reject) => {
-        const id = next++;
-        pending.set(id, { resolve: resolve as (v: unknown) => void, reject });
-        worker.postMessage({ ...msg, id });
-      });
+    const client = new WorkerClient<InferenceProtocol>(worker);
     try {
-      const info = await call<ModelInfo>({ type: "load", url: new URL(url, location.href).href, options });
-      return new MicroDecide(info, (texts) => call<Decision[]>({ type: "decide", texts }), worker);
+      const info = await client.call({ type: "load", url: new URL(url, location.href).href, options });
+      return new MicroDecide(info, (texts) => client.call({ type: "decide", texts }), client);
     } catch (err) {
-      worker.terminate();
+      client.dispose();
       throw err;
     }
   }
@@ -67,7 +51,7 @@ export class MicroDecide {
   }
 
   dispose(): void {
-    this.worker?.terminate();
+    this.worker?.dispose();
   }
 }
 export { StaticEmbedder, StaticTokenizer, applyHead } from "./engines.js";
