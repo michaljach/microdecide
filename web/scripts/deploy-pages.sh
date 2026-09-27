@@ -25,10 +25,11 @@ echo "site: $(du -sh dist-demo | cut -f1)"
 
 cd dist-demo
 rm -rf .git
+trap 'rm -rf .git' EXIT
 git init -q -b gh-pages
 git add -A
 git -c user.name="$(git -C .. config user.name)" -c user.email="$(git -C .. config user.email)" \
   commit -q -m "Deploy demo ($(git -C .. rev-parse --short HEAD))"
-git push -q -f "$remote" gh-pages
-rm -rf .git
+# authenticate as the gh CLI's active account (other credential helpers may hold other accounts)
+git -c credential.helper= -c "credential.helper=!gh auth git-credential" push -q -f "$remote" gh-pages
 echo "pushed gh-pages → https://$(gh api user -q .login).github.io/$repo/"

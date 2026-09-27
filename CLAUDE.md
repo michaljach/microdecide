@@ -59,6 +59,8 @@ MODEL=/models/<task>/<version> npm run parity   # headless Chromium: labels vs P
 npm run bench                    # → export/bench.json; `microdecide eval` adds it to report.md
 npm run offline                  # network cut: page + model reload from caches, still classifies
 npm run playground               # train in the browser, save, reload with MicroDecide.load (≥ 99.5%)
+npm run deploy:pages             # build for /microdecide/, force-push gh-pages → michaljach.github.io/microdecide
+SITE=https://michaljach.github.io/microdecide/ npm run parity   # run the browser checks against the live site
 ```
 
 ## Rules
