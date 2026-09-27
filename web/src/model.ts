@@ -14,7 +14,17 @@ export class Model {
   static async load(baseUrl: string, options: LoadOptions = {}, fetcher?: Fetcher): Promise<Model> {
     const t0 = performance.now();
     const useCache = options.cache ?? true;
-    const get = fetcher ?? makeFetcher(useCache);
+    // bytes per file for onProgress: [loaded, total]; files join as they start
+    const files = new Map<string, [number, number]>();
+    const onFile = (file: string, loaded: number, total: number) => {
+      files.set(file, [loaded, total]);
+      if (!options.onProgress) return;
+      let l = 0;
+      let t = 0;
+      for (const [a, b] of files.values()) (l += a), (t += Math.max(a, b));
+      options.onProgress({ loaded: l, total: t });
+    };
+    const get = fetcher ?? makeFetcher(useCache, onFile);
     const bytes = new Map<string, number>();
     const fetchCounted = async (file: string) => {
       const buf = await get(joinUrl(baseUrl, file));
@@ -49,6 +59,7 @@ export class Model {
         config,
         { device, dtype: options.dtype ?? "q8", wasmPaths, cache: useCache },
         (file, n) => bytes.set(file, n),
+        onFile,
       );
     }
     const info: ModelInfo = {

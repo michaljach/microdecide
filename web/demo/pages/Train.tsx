@@ -108,7 +108,6 @@ function Train() {
   const [oneText, setOneText] = useState("");
   const [oneLabel, setOneLabel] = useState("");
   const [base, setBase] = useState("bases/potion-base-8M");
-  const [target, setTarget] = useState("0.97");
   const [seed, setSeed] = useState("42");
   const [progress, setProgress] = useState<{ stage: string; f: number } | null>(null);
   const [training, setTraining] = useState(false);
@@ -221,7 +220,7 @@ function Train() {
           labels: usable,
           name: task.name,
           seed: Number(seed) || 42,
-          targetPrecision: Number(target) || 0.97,
+          targetPrecision: 0.97, // calibration target; the demo doesn't escalate
         },
         (stage, f) => setProgress({ stage, f }),
       );
@@ -387,8 +386,6 @@ function Train() {
           <option value="bases/potion-base-8M">potion-base-8M · 8 MB · fastest</option>
           <option value="bases/potion-base-32M">potion-base-32M · 33 MB · more accurate</option>
         </select>
-        <label htmlFor="target">Escalation precision</label>
-        <input id="target" type="number" min="0.5" max="1" step="0.01" style={{ width: "5em" }} value={target} onChange={(e) => setTarget(e.target.value)} />
         <label htmlFor="seed">Seed</label>
         <input id="seed" type="number" style={{ width: "5em" }} value={seed} onChange={(e) => setSeed(e.target.value)} />
         <button id="train" onClick={train} disabled={training}>{training ? "Training…" : "Train"}</button>
@@ -409,7 +406,7 @@ function Train() {
         <section aria-live="polite">
           <h2>Result</h2>
           {trained && tryD ? (
-            <DecisionView d={tryD} threshold={trained.result.escalation.threshold} meta={false} />
+            <DecisionView d={tryD} meta={false} />
           ) : (
             <p className="muted small">Train a model to see its answers here.</p>
           )}
@@ -429,11 +426,9 @@ function Train() {
 
 function Results({ t, color }: { t: Trained; color: (l: string) => string }) {
   const { result: r, labels } = t;
-  const e = r.escalation;
   const summary: [string, string][] = [
     ["macro F1 (test)", fmt(r.test.macroF1, 3)],
     ["accuracy (test)", `${fmt(r.test.accuracy * 100, 1)}%`],
-    ["handled alone", `${fmt(e.testCoverage * 100, 0)}%, ${e.testAccuracyOnCovered == null ? "—" : fmt(e.testAccuracyOnCovered * 100, 1) + "%"} accurate`],
     ["calibration error", `${fmt(r.calibration.testEceAfter, 3)} (was ${fmt(r.calibration.testEceBefore, 3)})`],
     ["training time", `${fmt(r.ms.total / 1000, 2)} s`],
   ];
@@ -509,7 +504,7 @@ function Results({ t, color }: { t: Trained; color: (l: string) => string }) {
       </div>
       <p className="muted small">
         {t.baseInfo} · train/val/test {r.counts.train}/{r.counts.val}/{r.counts.test} · C={r.C} · temperature {fmt(r.calibration.temperature, 2)} ·
-        threshold {fmt(e.threshold, 3)} for {fmt(e.targetPrecision * 100, 0)}% precision{e.reached ? "" : " (not reached on val)"} · embed{" "}
+        embed{" "}
         {fmt(r.ms.embed, 0)} ms, fit {fmt(r.ms.fit, 0)} ms, calibrate {fmt(r.ms.calibrate, 0)} ms
       </p>
     </div>

@@ -1,9 +1,17 @@
 import { type ReactNode, useEffect, useState } from "react";
-import { type Decision, MicroDecide } from "../../src";
+import { type Decision, type LoadProgress, MicroDecide } from "../../src";
 import { type Config, ORT_WASM, demoConfig, fmt } from "../common";
 import { DecisionView } from "./DecisionView";
 
 const message = (err: unknown) => (err instanceof Error ? err.message : String(err));
+const mb = (bytes: number) => fmt(bytes / 1e6, 1);
+
+/** What the model is doing while it isn't ready: downloading (with bytes) or starting up. */
+function loadingText(p: LoadProgress | null): string {
+  if (!p || p.total === 0) return "Downloading model…";
+  if (p.loaded < p.total) return `Downloading model… ${mb(p.loaded)} / ${mb(p.total)} MB`;
+  return "Starting model…";
+}
 
 /**
  * Try a model: input on the left, result on the right. Re-mount with `key={model}` to switch models.
@@ -14,7 +22,8 @@ export function Classifier({ model, examples, heading = "h2", picker }: { model:
   const H = heading;
   const [text, setText] = useState(examples[0] ?? "");
   const [loaded, setLoaded] = useState<MicroDecide | null>(null);
-  const [status, setStatus] = useState("loading…");
+  const [progress, setProgress] = useState<LoadProgress | null>(null);
+  const [status, setStatus] = useState("");
   const [decision, setDecision] = useState<Decision | null>(null);
 
   useEffect(() => {
@@ -22,11 +31,17 @@ export function Classifier({ model, examples, heading = "h2", picker }: { model:
     let m: MicroDecide | null = null;
     demoConfig(model)
       .then((cfg: Config) =>
-        MicroDecide.load(model, { backend: cfg.backend, device: cfg.device, dtype: cfg.dtype, ortWasmPaths: ORT_WASM }).then((x) => {
+        MicroDecide.load(model, {
+          backend: cfg.backend,
+          device: cfg.device,
+          dtype: cfg.dtype,
+          ortWasmPaths: ORT_WASM,
+          onProgress: (p) => live && setProgress(p),
+        }).then((x) => {
           if (!live) return x.dispose();
           m = x;
           const i = x.info;
-          setStatus(`${i.model} · ${i.tier} · ${i.backend}/${i.device}${cfg.dtype ? "/" + cfg.dtype : ""} · ${fmt(i.downloadBytes / 1e6, 1)} MB · loaded in ${fmt(i.loadMs, 0)} ms`);
+          setStatus(`${i.model} · ${i.tier} · ${i.backend}/${i.device}${cfg.dtype ? "/" + cfg.dtype : ""} · ${mb(i.downloadBytes)} MB · loaded in ${fmt(i.loadMs, 0)} ms`);
           setLoaded(x);
         }),
       )
@@ -51,6 +66,9 @@ export function Classifier({ model, examples, heading = "h2", picker }: { model:
     return () => void (live = false);
   }, [loaded, text]);
 
+  const loading = !status;
+  const fraction = progress && progress.total ? progress.loaded / progress.total : 0;
+
   return (
     <div className={heading === "h3" ? "cols tight" : "cols"}>
       <section>
@@ -67,8 +85,13 @@ export function Classifier({ model, examples, heading = "h2", picker }: { model:
       </section>
       <section aria-live="polite">
         <H>Result</H>
-        <p id="status" className="muted small">{status}</p>
-        {decision && loaded && <DecisionView d={decision} threshold={loaded.info.threshold} />}
+        <p id="status" className="muted small">{loading ? loadingText(progress) : status}</p>
+        {loading && (
+          <div className="loadbar" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(fraction * 100)}>
+            <div style={{ width: `${Math.round(fraction * 100)}%` }} />
+          </div>
+        )}
+        {decision && loaded && <DecisionView d={decision} />}
       </section>
     </div>
   );

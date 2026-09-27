@@ -24,14 +24,13 @@ output:
     ok:    Normal comment. Can be positive, negative or off topic, but harmless.
     spam:  Ads, links to unrelated products or services, SEO junk, scams.
     toxic: Insults, harassment, threats or hate toward people or groups.
-targets:    {min_macro_f1: 0.90, deploy: browser, max_download_mb: 30}
-escalation: {target_precision: 0.97}`;
+targets:    {min_macro_f1: 0.90, deploy: browser, max_download_mb: 30}`;
 
 const USAGE = `import { MicroDecide } from "microdecide-web";
 
 const m = await MicroDecide.load("/models/comment_moderation/v3");
 const d = await m.decide("Buy cheap followers at ...");
-if (!m.isConfident(d)) { /* below the calibrated threshold: escalate */ }`;
+// d.label is "ok", "spam" or "toxic"`;
 
 const DECISION = `{
   "label": "spam",
@@ -79,9 +78,9 @@ function Home() {
       <h1>microdecide</h1>
       <p>
         Turn one decision into a tiny model that runs in your browser. You describe the <b>input</b> and a fixed set of typed{" "}
-        <b>labels</b>, a bigger teacher model labels examples, and microdecide trains a small, calibrated classifier for exactly
+        <b>labels</b>, a bigger model labels examples, and microdecide trains a small, calibrated classifier for exactly
         that task. Each answer is one forward pass with no text generation, so there's nothing to parse and it can't return a
-        label outside your set. When it isn't sure, it hands the input to the teacher.
+        label outside your set.
       </p>
       <p>
         <a href="#try">Try the demo</a> · <a href="./repository.html">Browse the model repository</a> ·{" "}
@@ -128,16 +127,16 @@ function Home() {
 
       <section id="how" aria-labelledby="how-heading">
         <h2 id="how-heading">How it works</h2>
-        <p>You write a task spec. Label descriptions matter: the teacher reads them when it labels data.</p>
+        <p>You write a task spec. Label descriptions matter: the labeling model reads them.</p>
         <pre><code>{SPEC}</code></pre>
         <p>
-          One command collects inputs, has the teacher label them (every call is cached on disk), trains every model that fits
+          One command collects inputs, has a larger model label them (every call is cached on disk), trains every model that fits
           your download budget, keeps the best one, calibrates it and exports it for the browser:
         </p>
         <pre><code>uv run microdecide run examples/comment_moderation.yaml</code></pre>
         <p>
-          Calibration uses temperature scaling on a held-out split, then picks the confidence threshold that reaches the
-          target precision. Anything below the threshold should go to the teacher.
+          Calibration uses temperature scaling on a held-out split, so the confidence it reports matches how often
+          it is right.
         </p>
 
         <h2>Use it</h2>

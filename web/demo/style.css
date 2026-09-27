@@ -49,6 +49,8 @@ button:disabled { background: #99f; cursor: default; }
 .probs .num { text-align: right; font-variant-numeric: tabular-nums; }
 .probs tr.best { font-weight: bold; }
 table.kv { width: auto; }
+.loadbar { height: 4px; max-width: 320px; background: #eee; margin: 4px 0 12px; }
+.loadbar div { height: 100%; background: #00e; transition: width .15s; }
 .bar { display: inline-block; height: 10px; background: #000; vertical-align: middle; }
 .num { font-variant-numeric: tabular-nums; }
 .model-list { padding: 0; list-style: none; }

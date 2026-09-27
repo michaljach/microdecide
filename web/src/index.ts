@@ -8,7 +8,7 @@ import { Model } from "./model.js";
 import type { Decision, LoadOptions, ModelInfo } from "./types.js";
 import type { Request } from "./worker.js";
 
-export type { Backend, Decision, Device, EncoderConfig, LoadOptions, ModelConfig, ModelInfo, StaticConfig } from "./types.js";
+export type { Backend, Decision, Device, EncoderConfig, LoadOptions, LoadProgress, ModelConfig, ModelInfo, StaticConfig } from "./types.js";
 export { clearModelCache } from "./fetch.js";
 export { Model } from "./model.js";
 
@@ -31,8 +31,10 @@ export class MicroDecide {
     const worker = new Worker(new URL("./worker.js", import.meta.url), { type: "module" });
     const pending = new Map<number, Pending>();
     let next = 0;
+    const { onProgress, ...rest } = options; // functions can't cross into the worker
     worker.onmessage = (e) => {
-      const { id, ok, result, error } = e.data;
+      const { id, ok, result, error, progress } = e.data;
+      if (progress) return onProgress?.(progress);
       const p = pending.get(id);
       pending.delete(id);
       if (ok) p?.resolve(result);
@@ -45,7 +47,7 @@ export class MicroDecide {
         worker.postMessage({ ...msg, id });
       });
     try {
-      const info = await call<ModelInfo>({ type: "load", url: new URL(url, location.href).href, options });
+      const info = await call<ModelInfo>({ type: "load", url: new URL(url, location.href).href, options: rest, progress: !!onProgress });
       return new MicroDecide(info, (texts) => call<Decision[]>({ type: "decide", texts }), worker);
     } catch (err) {
       worker.terminate();

@@ -172,6 +172,7 @@ export class TransformersEngine implements Engine {
     config: EncoderConfig,
     opts: { device: "auto" | "webgpu" | "wasm"; dtype: "q8" | "fp32"; wasmPaths: string; cache: boolean },
     onBytes: (file: string, bytes: number) => void,
+    onProgress?: (file: string, loaded: number, total: number) => void,
   ): Promise<TransformersEngine> {
     const tfjs: TransformersJs = await import("@huggingface/transformers");
     const { env } = tfjs;
@@ -193,8 +194,10 @@ export class TransformersEngine implements Engine {
     }
     const id = url.slice(slash + 1);
     const device = await resolveDevice(opts.device);
-    const progress_callback = (p: { status: string; file?: string; total?: number }) => {
-      if (p.status === "progress" && p.file && p.total) onBytes(p.file, p.total);
+    const progress_callback = (p: { status: string; file?: string; loaded?: number; total?: number }) => {
+      if (p.status !== "progress" || !p.file || !p.total) return;
+      onBytes(p.file, p.total);
+      onProgress?.(p.file, p.loaded ?? 0, p.total);
     };
     const [tokenizer, model] = await Promise.all([
       tfjs.AutoTokenizer.from_pretrained(id, { progress_callback }),
