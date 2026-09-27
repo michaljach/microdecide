@@ -2,19 +2,19 @@
 
 from __future__ import annotations
 
-import json
 import time
 from pathlib import Path
 
 import numpy as np
 
 from microdecide.calibrate import softmax
+from microdecide.artifacts import read_card
 from microdecide.spec import Decision
-from microdecide.train import classifier_for
+from microdecide.classifiers import Classifier, classifier_for
 
 
 class Runtime:
-    def __init__(self, model, card: dict):
+    def __init__(self, model: Classifier, card: dict):
         self.model = model
         self.card = card
         self.labels: list[str] = card["labels"]
@@ -26,7 +26,7 @@ class Runtime:
     @classmethod
     def load(cls, run_dir: str | Path) -> Runtime:
         run_dir = Path(run_dir)
-        card = json.loads((run_dir / "model_card.json").read_text())
+        card = read_card(run_dir / "model_card.json")
         return cls(classifier_for(card["tier"]).load(run_dir), card)
 
     def probabilities(self, texts: list[str]) -> np.ndarray:

@@ -1,35 +1,27 @@
 /// <reference lib="webworker" />
 // Playground worker: embedding base + training + live prediction + save/zip, off the UI thread.
+import { parseModelConfig } from "../src/artifacts";
 import { StaticEmbedder, StaticTokenizer, applyHead } from "../src/engines";
 import { decodeJson, joinUrl, makeFetcher } from "../src/fetch";
 import { type EmbeddingBase, modelFiles, saveModelToCache, zipModel } from "../src/package";
 import { argmax, softmax } from "../src/text";
 import { type TrainReport, trainStaticHead } from "../src/train";
-import type { Decision, StaticConfig } from "../src/types";
+import type { Decision } from "../src/types";
 
-export interface Example {
-  text: string;
-  label: string;
-  weight?: number;
-}
-
-export type Req =
-  | { id: number; type: "loadBase"; url: string }
-  | { id: number; type: "train"; examples: Example[]; labels: string[]; targetPrecision: number; seed: number; name: string }
-  | { id: number; type: "predict"; text: string }
-  | { id: number; type: "save"; name: string; url: string }
-  | { id: number; type: "zip"; name: string };
+import type { Example, Req, Reply } from "./training/protocol";
+export type { Example, Req } from "./training/protocol";
 
 let base: (EmbeddingBase & { embedder: StaticEmbedder; url: string; mb: number }) | null = null;
 let embCache = new Map<string, Float64Array>();
 let trained: { report: TrainReport; name: string; examples: Example[] } | null = null;
 
-const post = (msg: unknown, transfer: Transferable[] = []) => (self as unknown as Worker).postMessage(msg, transfer);
+const post = (msg: Reply, transfer: Transferable[] = []) => (self as unknown as Worker).postMessage(msg, transfer);
 const progress = (id: number, stage: string, fraction: number) => post({ id, progress: { stage, fraction } });
 
 async function loadBase(url: string) {
   const get = makeFetcher(true);
-  const config = decodeJson<StaticConfig>(await get(joinUrl(url, "microdecide.json")));
+  const config = parseModelConfig(decodeJson(await get(joinUrl(url, "microdecide.json"))));
+  if (config.tier !== "static") throw new Error("Training requires a static embedding base");
   const [tokenizerJson, tokenizerConfig, table] = await Promise.all([
     get(joinUrl(url, config.tokenizer.file)),
     get(joinUrl(url, "tokenizer_config.json")),

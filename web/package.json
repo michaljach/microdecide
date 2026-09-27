@@ -27,7 +27,11 @@
     "bench": "node scripts/browser-check.mjs bench",
     "offline": "node scripts/browser-check.mjs offline",
     "playground": "node scripts/browser-check.mjs playground",
-    "deploy:pages": "scripts/deploy-pages.sh"
+    "deploy:pages": "scripts/deploy-pages.sh",
+    "fixtures": "uv run --project .. python ../scripts/generate_fixtures.py",
+    "pretest": "npm run fixtures && node scripts/generate-validator.mjs --check",
+    "schema": "uv run --project .. python ../scripts/generate_fixtures.py --schema-only && node scripts/generate-validator.mjs",
+    "test:browser": "npm run fixtures && npm run build:demo && node scripts/fixture-browser-check.mjs"
   },
   "license": "MIT",
   "dependencies": {
@@ -45,6 +49,7 @@
     "react-dom": "^19.3.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.1",
-    "vitest": "^5.0.2"
+    "vitest": "^5.0.2",
+    "ajv": "^8.20.0"
   }
 }

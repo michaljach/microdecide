@@ -1,0 +1,397 @@
+{
+  "$defs": {
+    "Embeddings": {
+      "additionalProperties": false,
+      "properties": {
+        "embeddings": {
+          "title": "Embeddings",
+          "type": "string"
+        },
+        "dtype": {
+          "const": "int8",
+          "title": "Dtype",
+          "type": "string"
+        }
+      },
+      "required": [
+        "embeddings",
+        "dtype"
+      ],
+      "title": "Embeddings",
+      "type": "object"
+    },
+    "EncoderConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "format": {
+          "const": "microdecide",
+          "title": "Format",
+          "type": "string"
+        },
+        "format_version": {
+          "const": 2,
+          "title": "Format Version",
+          "type": "integer"
+        },
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "labels": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "title": "Labels",
+          "type": "array"
+        },
+        "temperature": {
+          "exclusiveMinimum": 0,
+          "title": "Temperature",
+          "type": "number"
+        },
+        "threshold": {
+          "maximum": 1.000000001,
+          "minimum": 0,
+          "title": "Threshold",
+          "type": "number"
+        },
+        "max_chars": {
+          "exclusiveMinimum": 0,
+          "title": "Max Chars",
+          "type": "integer"
+        },
+        "files": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Files"
+        },
+        "tier": {
+          "const": "encoder",
+          "title": "Tier",
+          "type": "string"
+        },
+        "tokenizer": {
+          "$ref": "#/$defs/EncoderTokenizer"
+        },
+        "onnx": {
+          "$ref": "#/$defs/OnnxRef"
+        }
+      },
+      "required": [
+        "format",
+        "format_version",
+        "model",
+        "labels",
+        "temperature",
+        "threshold",
+        "max_chars",
+        "tier",
+        "tokenizer",
+        "onnx"
+      ],
+      "title": "EncoderConfig",
+      "type": "object"
+    },
+    "EncoderTokenizer": {
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "title": "File",
+          "type": "string"
+        },
+        "add_special_tokens": {
+          "title": "Add Special Tokens",
+          "type": "boolean"
+        },
+        "max_tokens": {
+          "exclusiveMinimum": 0,
+          "title": "Max Tokens",
+          "type": "integer"
+        },
+        "truncation": {
+          "title": "Truncation",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "file",
+        "add_special_tokens",
+        "max_tokens",
+        "truncation"
+      ],
+      "title": "EncoderTokenizer",
+      "type": "object"
+    },
+    "Head": {
+      "additionalProperties": false,
+      "properties": {
+        "coef": {
+          "items": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "title": "Coef",
+          "type": "array"
+        },
+        "intercept": {
+          "items": {
+            "type": "number"
+          },
+          "title": "Intercept",
+          "type": "array"
+        }
+      },
+      "required": [
+        "coef",
+        "intercept"
+      ],
+      "title": "Head",
+      "type": "object"
+    },
+    "OnnxRef": {
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "title": "File",
+          "type": "string"
+        },
+        "fp32_file": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fp32 File"
+        },
+        "dtype": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dtype"
+        },
+        "inputs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Inputs",
+          "type": "array"
+        },
+        "output": {
+          "title": "Output",
+          "type": "string"
+        }
+      },
+      "required": [
+        "file",
+        "inputs",
+        "output"
+      ],
+      "title": "OnnxRef",
+      "type": "object"
+    },
+    "StaticConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "format": {
+          "const": "microdecide",
+          "title": "Format",
+          "type": "string"
+        },
+        "format_version": {
+          "const": 2,
+          "title": "Format Version",
+          "type": "integer"
+        },
+        "model": {
+          "title": "Model",
+          "type": "string"
+        },
+        "labels": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Labels",
+          "type": "array"
+        },
+        "temperature": {
+          "exclusiveMinimum": 0,
+          "title": "Temperature",
+          "type": "number"
+        },
+        "threshold": {
+          "maximum": 1.000000001,
+          "minimum": 0,
+          "title": "Threshold",
+          "type": "number"
+        },
+        "max_chars": {
+          "exclusiveMinimum": 0,
+          "title": "Max Chars",
+          "type": "integer"
+        },
+        "files": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "integer"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Files"
+        },
+        "tier": {
+          "const": "static",
+          "title": "Tier",
+          "type": "string"
+        },
+        "kind": {
+          "anyOf": [
+            {
+              "const": "base",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Kind"
+        },
+        "onnx": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OnnxRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "normalize": {
+          "title": "Normalize",
+          "type": "boolean"
+        },
+        "dim": {
+          "exclusiveMinimum": 0,
+          "title": "Dim",
+          "type": "integer"
+        },
+        "vocab_size": {
+          "exclusiveMinimum": 0,
+          "title": "Vocab Size",
+          "type": "integer"
+        },
+        "tokenizer": {
+          "$ref": "#/$defs/StaticTokenizer"
+        },
+        "static": {
+          "$ref": "#/$defs/Embeddings"
+        },
+        "head": {
+          "$ref": "#/$defs/Head"
+        }
+      },
+      "required": [
+        "format",
+        "format_version",
+        "model",
+        "labels",
+        "temperature",
+        "threshold",
+        "max_chars",
+        "tier",
+        "normalize",
+        "dim",
+        "vocab_size",
+        "tokenizer",
+        "static",
+        "head"
+      ],
+      "title": "StaticConfig",
+      "type": "object"
+    },
+    "StaticTokenizer": {
+      "additionalProperties": false,
+      "properties": {
+        "file": {
+          "title": "File",
+          "type": "string"
+        },
+        "add_special_tokens": {
+          "title": "Add Special Tokens",
+          "type": "boolean"
+        },
+        "max_tokens": {
+          "exclusiveMinimum": 0,
+          "title": "Max Tokens",
+          "type": "integer"
+        },
+        "median_token_length": {
+          "exclusiveMinimum": 0,
+          "title": "Median Token Length",
+          "type": "integer"
+        },
+        "drop_token_ids": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Drop Token Ids",
+          "type": "array"
+        }
+      },
+      "required": [
+        "file",
+        "add_special_tokens",
+        "max_tokens",
+        "median_token_length",
+        "drop_token_ids"
+      ],
+      "title": "StaticTokenizer",
+      "type": "object"
+    }
+  },
+  "discriminator": {
+    "mapping": {
+      "encoder": "#/$defs/EncoderConfig",
+      "static": "#/$defs/StaticConfig"
+    },
+    "propertyName": "tier"
+  },
+  "oneOf": [
+    {
+      "$ref": "#/$defs/StaticConfig"
+    },
+    {
+      "$ref": "#/$defs/EncoderConfig"
+    }
+  ]
+}

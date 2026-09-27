@@ -1,4 +1,4 @@
-import { type ReactNode, useLayoutEffect } from "react";
+import { type ReactNode, type KeyboardEventHandler } from "react";
 
 export type Page = "home" | "repository" | "train" | "bench" | "parity" | "model";
 
@@ -10,11 +10,10 @@ const NAV: [Page, string, string][] = [
 ];
 
 /** Site chrome: nav + footer. `model` carries ?model= over to the Benchmark and Parity links. */
-export function Layout({ page, wide, model, children }: { page: Page; wide?: boolean; model?: string; children: ReactNode }) {
-  useLayoutEffect(() => void document.body.classList.toggle("wide", !!wide), [wide]);
+export function Layout({ page, wide, model, children, onKeyDown }: { page: Page; wide?: boolean; model?: string; children: ReactNode; onKeyDown?: KeyboardEventHandler<HTMLDivElement> }) {
   const query = model ? `?model=${encodeURIComponent(model)}` : "";
   return (
-    <>
+    <div className={wide ? "app wide" : "app"} onKeyDown={onKeyDown}>
       <nav aria-label="Main">
         {page === "home" ? <b aria-current="page">microdecide</b> : <a href="./">microdecide</a>}
         {NAV.map(([p, label, href]) =>
@@ -29,6 +28,6 @@ export function Layout({ page, wide, model, children }: { page: Page; wide?: boo
       <footer>
         <p>Created by <a href="https://jach.me/">Michal Jach</a>.</p>
       </footer>
-    </>
+    </div>
   );
 }

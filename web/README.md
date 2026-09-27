@@ -43,3 +43,26 @@ without a router): `index.html` (demo, benchmark, parity), `repository.html` (ca
 dependency only; the library in `src/` doesn't use it.
 
 Development: see the Commands section in [CLAUDE.md](../CLAUDE.md).
+
+## Development checks
+
+`npm test` generates deterministic Python training and model-export fixtures with
+uv, then runs all Node tests including parity. Run `uv sync --locked` at the repo
+root first. No pretrained downloads or existing run artifacts are required.
+`npm run test:browser` checks the built playground with those fixtures (requires
+`npx playwright install chromium`).
+
+Artifact schemas are owned by Python and compiled for browser validation with
+`npm run schema`. See [the architecture notes](../docs/ARCHITECTURE.md) for module
+ownership, compatibility entry points, and regeneration commands.
+
+To deploy UI changes from a checkout without trained `runs/`, reuse the currently
+published model assets:
+
+```sh
+git fetch origin gh-pages
+git archive origin/gh-pages models bases examples ort | tar -x -C public
+npm run deploy:pages -- --reuse-models
+```
+
+The default deployment command still syncs artifacts from local training runs.

@@ -48,3 +48,5 @@ const d = await m.decide("Buy cheap followers at …");  // { label: "spam", con
 
 Design: [docs/SPEC.md](docs/SPEC.md) · Plan: [docs/ROADMAP.md](docs/ROADMAP.md) ·
 Web package: [web/README.md](web/README.md)
+
+Code layout and reproducible checks: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).

@@ -1,5 +1,6 @@
 /** Package a head trained in the browser (+ its embedding base) as a model folder that
  *  `MicroDecide.load` opens: store it in the Cache API, or zip it for download. */
+import { parseModelConfig } from "./artifacts.js";
 import { CACHE_NAME, joinUrl } from "./fetch.js";
 import type { TrainReport } from "./train.js";
 import type { StaticConfig } from "./types.js";
@@ -42,7 +43,7 @@ export function modelFiles(name: string, base: EmbeddingBase, report: TrainRepor
   };
   const json = (v: unknown) => new TextEncoder().encode(JSON.stringify(v));
   return {
-    "microdecide.json": json(config),
+    "microdecide.json": json(parseModelConfig(config)),
     "model_card.json": json(card),
     "tokenizer.json": new Uint8Array(base.tokenizerJson),
     "tokenizer_config.json": new Uint8Array(base.tokenizerConfig),

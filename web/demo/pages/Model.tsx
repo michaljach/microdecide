@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { type CatalogEntry, catalogOf, pct, title, useModels } from "../catalog";
 import { MODEL_URL } from "../common";
 import { Classifier } from "../ui/Classifier";
@@ -80,10 +79,10 @@ const d = await m.decide(${JSON.stringify(m.examples[0] ?? "…")});
 function Model() {
   const index = useModels();
   const m = catalogOf(index).find((e) => e.path === MODEL_URL);
-  useEffect(() => void (m && (document.title = `microdecide · ${title(m.task)}`)), [m]);
 
   return (
     <Layout page="model" wide model={MODEL_URL}>
+      <title>{m ? `microdecide · ${title(m.task)}` : "microdecide · Model"}</title>
       <p><a href="./repository.html">← Repository</a></p>
       {m ? (
         <>

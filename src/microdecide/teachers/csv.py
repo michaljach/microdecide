@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 
 from microdecide.data import normalize, read_rows
@@ -17,7 +18,9 @@ class CSVTeacher:
         self._table: dict[str, tuple[str, float]] | None = None
 
     def fingerprint(self, spec: TaskSpec) -> str:
-        return hashlib.sha256(self.path.read_bytes()).hexdigest()
+        # Cached decisions contain a probability for every label in the task.
+        content_hash = hashlib.sha256(self.path.read_bytes()).hexdigest()
+        return json.dumps([content_hash, sorted(spec.labels)])
 
     def _load(self, spec: TaskSpec) -> dict[str, tuple[str, float]]:
         if self._table is None:

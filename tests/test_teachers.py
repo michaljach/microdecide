@@ -74,6 +74,32 @@ def test_csv_teacher_rejects_unknown_label(tmp_path, spec):
         CSVTeacher(p).label(spec, ["hi"])
 
 
+def test_csv_cache_tracks_task_labels_and_file_contents(tmp_path, spec):
+    p = tmp_path / "labels.csv"
+    p.write_text("text,label,confidence\nhello,ok,0.8\n")
+    first = CachedTeacher(CSVTeacher(p))
+    (original,) = first.label(spec, ["hello"])
+    assert original.probabilities["spam"] == pytest.approx(0.1)
+
+    changed = spec.model_copy(update={"output": spec.output.model_copy(update={
+        "labels": {k: v for k, v in spec.output.labels.items() if k != "toxic"},
+    })})
+    second = CachedTeacher(CSVTeacher(p))
+    (decision,) = second.label(changed, ["hello"])
+    changed.check_decision(decision)
+    assert decision.probabilities["spam"] == pytest.approx(0.2)
+    assert second.calls == 1 and second.hits == 0
+
+    repeated = CachedTeacher(CSVTeacher(p))
+    assert repeated.label(changed, ["hello"]) == [decision]
+    assert repeated.calls == 0 and repeated.hits == 1
+
+    p.write_text("text,label,confidence\nhello,spam,0.8\n")
+    updated = CachedTeacher(CSVTeacher(p))
+    assert updated.label(changed, ["hello"])[0].label == "spam"
+    assert updated.calls == 1 and updated.hits == 0
+
+
 def test_llm_teacher_request_and_normalization(spec):
     client = FakeAnthropic(lambda req: ("end_turn", {"label": "spam", "probabilities": {"ok": 1, "spam": 8, "toxic": 1}}))
     t = LLMTeacher("claude-haiku-4-5-20251001", client=client, workers=2)

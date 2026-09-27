@@ -50,6 +50,22 @@ def test_pick_threshold_ties_are_not_split():
 # --- train / runtime / eval ---
 
 
+@pytest.mark.parametrize("classes", [[0, 2], [0, 1], [1, 2], [0]])
+def test_head_rejects_missing_training_classes(classes):
+    y = np.repeat(classes, 3)
+    X = np.arange(len(y), dtype=float).reshape(-1, 1)
+    with pytest.raises(ValueError, match="no training examples for label indices"):
+        static.fit_head(X, y, np.ones(len(y)), X, y, 3, 42)
+
+
+def test_binary_head_preserves_label_order():
+    X = np.array([[-3.], [-2.], [-1.], [1.], [2.], [3.]])
+    y = np.array([0, 0, 0, 1, 1, 1])
+    coef, intercept, _ = static.fit_head(X, y, np.ones(len(y)), X, y, 2, 42)
+    assert coef.shape == (2, 1)
+    np.testing.assert_array_equal((X @ coef.T + intercept).argmax(axis=1), y)
+
+
 def test_train_runtime_eval(toy_run, spec):
     out = train.train(spec, toy_run, log=lambda _: None)
     assert out.name == "v1"

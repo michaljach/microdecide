@@ -1,13 +1,12 @@
 /** Node-side parity: the exported model through the JS static engine vs Python (parity.jsonl). */
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { Model } from "../src/model";
 
-const EXPORT = resolve(__dirname, process.env.MODEL_EXPORT ?? "../../runs/comment_moderation/v1/export");
-const have = existsSync(resolve(EXPORT, "microdecide.json"));
+const EXPORT = resolve(__dirname, process.env.MODEL_EXPORT ?? "generated/model");
 
-describe.skipIf(!have)("exported model parity (static engine, Node)", () => {
+describe("exported model parity (static engine, Node)", () => {
   it("matches Python labels on the test split", async () => {
     const fetcher = async (url: string) => {
       const buf = readFileSync(url);

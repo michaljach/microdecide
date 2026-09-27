@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Build the demo for GitHub Pages and force-push it as a single-commit `gh-pages` branch.
 #   scripts/deploy-pages.sh            (from web/; needs exported models + bases, see CLAUDE.md)
+#   scripts/deploy-pages.sh --reuse-models  (use existing public/ artifacts without runs/)
 # Site: https://<owner>.github.io/<repo>/  — the base path is taken from the origin remote.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -10,7 +11,16 @@ repo=$(basename -s .git "$remote")
 export BASE="/$repo/"
 
 [ -d public/bases/potion-base-8M ] || { echo "missing public/bases — run: uv run microdecide export-base minishlab/potion-base-8M (and -32M)"; exit 1; }
-node scripts/sync-model.mjs
+case "${1:-}" in
+  "") node scripts/sync-model.mjs ;;
+  --reuse-models)
+    [ -f public/models/index.json ] && [ -d public/ort ] || {
+      echo "missing public/models/index.json or public/ort; restore the deployed artifacts first"
+      exit 1
+    }
+    ;;
+  *) echo "usage: $0 [--reuse-models]"; exit 1 ;;
+esac
 npx vite build
 
 # lean site: the fp32 encoder (70 MB) is only an optional WebGPU variant
