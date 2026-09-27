@@ -37,10 +37,20 @@ on a laptop CPU in < 10 min with a readable report.
 **Done when:** the demo page classifies comments fully offline in the
 browser, and browser labels match Python on ≥ 99.5% of the test set.
 
-## [ ] M4 — Encoder tier
+## [x] M4 — Encoder tier
 - MiniLM-class encoder, SetFit/fine-tune, ONNX q8 export, runs in `web/`
 
 **Done when:** report compares static vs encoder; encoder runs in the demo.
+
+## [ ] M4.5 — Web training playground
+- a page in `web/` where a user trains a model entirely in the browser (Web
+  Worker): define labels, paste/upload/label examples, fit a head on frozen
+  static embeddings, see val metrics + calibration + threshold, try it live
+- download the result as a model folder `MicroDecide.load` can open
+
+**Done when:** a model trained in the playground loads with `MicroDecide.load`
+and matches the playground's own predictions; training ~1k examples takes
+seconds in the browser.
 
 ## [ ] M5 — Decoder tier (Qwen-class)
 - `AutoModelForSequenceClassification` + LoRA for SmolLM2/Gemma-270M and

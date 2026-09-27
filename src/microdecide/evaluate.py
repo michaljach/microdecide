@@ -11,7 +11,6 @@ import numpy as np
 from microdecide import calibrate
 from microdecide.data import read_jsonl, write_jsonl
 from microdecide.runtime import Runtime
-from microdecide.train import dir_size_mb
 
 N_WORST = 20
 N_LATENCY = 200
@@ -79,7 +78,7 @@ def evaluate(run_dir: str | Path, log=print) -> dict:
         if (m := np.array([r["source"] == src for r in test])).any()
     }
     non_gold = np.array([r["teacher"] != "given" for r in test])
-    size_mb = dir_size_mb(run_dir / "embeddings") + (run_dir / "head.json").stat().st_size / 1e6
+    size_mb = download_mb(run_dir, card)
 
     worst_idx = [i for i in np.argsort(-conf) if pred[i] != y[i]][:N_WORST]
     worst = [
@@ -142,6 +141,15 @@ def evaluate(run_dir: str | Path, log=print) -> dict:
     return report
 
 
+def download_mb(run_dir: Path, card: dict) -> float:
+    """What the browser downloads: measured from the export if there is one, else the train-time estimate."""
+    exp = run_dir / "export" / "model_card.json"
+    if exp.is_file():
+        e = json.loads(exp.read_text())["export"]
+        return e["static_download_mb"] if card["tier"] == "static" else e["onnx_download_mb"]
+    return card["download_mb"]
+
+
 def _recommend(r: dict) -> list[str]:
     out = []
     if not r["targets"]["min_macro_f1"]["met"]:
@@ -187,7 +195,7 @@ def render_markdown(r: dict) -> str:
         f"| coverage @ threshold {e['threshold']:.3f} | {_pct(e['coverage'])} handled alone, {_pct(e['accuracy_on_covered'])} accurate (target {e['target_precision']:.0%}) |",
         f"| escalation rate | {_pct(e['escalation_rate'])} |",
         f"| ECE (test) | {c['test_ece_before']:.3f} → {c['test_ece_after']:.3f} after temperature {c['temperature']:.2f} |",
-        f"| size on disk | {r['size_mb']} MB (budget {tg['max_download_mb']['target']} MB {ok(tg['max_download_mb']['met'])}) |",
+        f"| download size | {r['size_mb']} MB (budget {tg['max_download_mb']['target']} MB {ok(tg['max_download_mb']['met'])}) |",
         f"| latency (python, single input) | p50 {lat['p50_ms']:.2f} ms · p95 {lat['p95_ms']:.2f} ms |",
         "",
     ]

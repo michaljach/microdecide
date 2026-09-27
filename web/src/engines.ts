@@ -1,9 +1,29 @@
-/** Inference engines: token ids → logits. Both mirror microdecide/export.py exactly. */
-import type { ModelConfig } from "./types.js";
+/** Inference engines: texts → logits. Static engines mirror microdecide/export.py exactly. */
+import { Tokenizer } from "@huggingface/tokenizers";
+import { sliceCodePoints } from "./text.js";
+import type { EncoderConfig, StaticConfig } from "./types.js";
 
 export interface Engine {
   readonly device: "js" | "webgpu" | "wasm";
-  logits(ids: number[][]): Promise<Float64Array[]>;
+  logits(texts: string[]): Promise<Float64Array[]>;
+}
+
+/** Static-tier tokenization rules (= ExportedTokenizer.ids in microdecide/export.py). */
+export class StaticTokenizer {
+  private readonly tok: Tokenizer;
+  private readonly drop: Set<number>;
+
+  constructor(tokenizerJson: object, tokenizerConfig: object, private readonly config: StaticConfig) {
+    this.tok = new Tokenizer(tokenizerJson, tokenizerConfig);
+    this.drop = new Set(config.tokenizer.drop_token_ids);
+  }
+
+  ids(text: string): number[] {
+    const t = this.config.tokenizer;
+    const clipped = sliceCodePoints(sliceCodePoints(text, this.config.max_chars), t.max_tokens * t.median_token_length);
+    const ids = this.tok.encode(clipped, { add_special_tokens: t.add_special_tokens }).ids;
+    return ids.filter((id) => !this.drop.has(id)).slice(0, t.max_tokens);
+  }
 }
 
 /** Plain JS: mean of int8 embedding rows → L2 normalize → linear head. */
@@ -13,7 +33,8 @@ export class StaticEngine implements Engine {
 
   constructor(
     private readonly table: Int8Array,
-    private readonly config: ModelConfig,
+    private readonly config: StaticConfig,
+    private readonly tokenizer: StaticTokenizer,
   ) {
     if (table.length !== config.vocab_size * config.dim) {
       throw new Error(`embedding table has ${table.length} values, expected ${config.vocab_size}x${config.dim}`);
@@ -21,8 +42,8 @@ export class StaticEngine implements Engine {
     this.pooled = new Float64Array(config.dim);
   }
 
-  async logits(ids: number[][]): Promise<Float64Array[]> {
-    return ids.map((row) => this.one(row));
+  async logits(texts: string[]): Promise<Float64Array[]> {
+    return texts.map((t) => this.one(this.tokenizer.ids(t)));
   }
 
   private one(ids: number[]): Float64Array {
@@ -52,27 +73,47 @@ export class StaticEngine implements Engine {
 
 type Ort = typeof import("onnxruntime-web/webgpu");
 
-/** onnxruntime-web on WebGPU or WASM. Loaded lazily so the static path never downloads it. */
-export class OnnxEngine implements Engine {
+/**
+ * "auto" → WASM for the static and encoder tiers: measured on an M2 Pro (Metal), single-input
+ * latency is lower on WASM (encoder q8: p50 2.5 ms vs 9.8 ms fp32 / 14.6 ms q8 on WebGPU); GPU
+ * dispatch overhead dominates for models this small. WebGPU wins on large batches and will be
+ * the default for the decoder tier. Pass device: "webgpu" to force it.
+ */
+async function resolveDevice(device: "auto" | "webgpu" | "wasm"): Promise<"webgpu" | "wasm"> {
+  return device === "auto" ? "wasm" : device;
+}
+
+function configureOrt(ort: Ort, wasmPaths: string) {
+  ort.env.wasm.wasmPaths = wasmPaths;
+  ort.env.wasm.numThreads = globalThis.crossOriginIsolated ? Math.min(4, navigator.hardwareConcurrency || 1) : 1;
+}
+
+/** Static tier's ONNX graph on onnxruntime-web (WebGPU or WASM). Loaded lazily. */
+export class StaticOnnxEngine implements Engine {
   private constructor(
     private readonly ort: Ort,
     private readonly session: import("onnxruntime-web/webgpu").InferenceSession,
+    private readonly tokenizer: StaticTokenizer,
     readonly device: "webgpu" | "wasm",
   ) {}
 
-  static async create(model: ArrayBuffer, device: "auto" | "webgpu" | "wasm", wasmPaths: string): Promise<OnnxEngine> {
+  static async create(
+    model: ArrayBuffer,
+    tokenizer: StaticTokenizer,
+    device: "auto" | "webgpu" | "wasm",
+    wasmPaths: string,
+  ): Promise<StaticOnnxEngine> {
     const ort: Ort = await import("onnxruntime-web/webgpu");
-    ort.env.wasm.wasmPaths = wasmPaths;
-    ort.env.wasm.numThreads = globalThis.crossOriginIsolated ? Math.min(4, navigator.hardwareConcurrency || 1) : 1;
-    let chosen: "webgpu" | "wasm" = device === "webgpu" ? "webgpu" : "wasm";
-    if (device === "auto") chosen = (await hasWebGPU()) ? "webgpu" : "wasm";
+    configureOrt(ort, wasmPaths);
+    const chosen = await resolveDevice(device);
     const session = await ort.InferenceSession.create(new Uint8Array(model), {
       executionProviders: chosen === "webgpu" ? ["webgpu", "wasm"] : ["wasm"],
     });
-    return new OnnxEngine(ort, session, chosen);
+    return new StaticOnnxEngine(ort, session, tokenizer, chosen);
   }
 
-  async logits(ids: number[][]): Promise<Float64Array[]> {
+  async logits(texts: string[]): Promise<Float64Array[]> {
+    const ids = texts.map((t) => this.tokenizer.ids(t));
     const width = Math.max(1, ...ids.map((r) => r.length));
     const inputIds = new BigInt64Array(ids.length * width);
     const mask = new BigInt64Array(ids.length * width);
@@ -87,11 +128,73 @@ export class OnnxEngine implements Engine {
       input_ids: new this.ort.Tensor("int64", inputIds, dims),
       attention_mask: new this.ort.Tensor("int64", mask, dims),
     });
-    const logits = out.logits;
-    const data = logits.data as Float32Array;
-    const n = logits.dims[1];
-    return ids.map((_, i) => Float64Array.from(data.subarray(i * n, (i + 1) * n)));
+    return splitRows(out.logits.data as Float32Array, ids.length, out.logits.dims[1]);
   }
+}
+
+type TransformersJs = typeof import("@huggingface/transformers");
+type SeqClassifier = Awaited<ReturnType<TransformersJs["AutoModelForSequenceClassification"]["from_pretrained"]>>;
+type HfTokenizer = Awaited<ReturnType<TransformersJs["AutoTokenizer"]["from_pretrained"]>>;
+
+/** Encoder tier: transformers.js AutoTokenizer + AutoModelForSequenceClassification. Loaded lazily. */
+export class TransformersEngine implements Engine {
+  private constructor(
+    private readonly tokenizer: HfTokenizer,
+    private readonly model: SeqClassifier,
+    private readonly config: EncoderConfig,
+    readonly device: "webgpu" | "wasm",
+  ) {}
+
+  static async create(
+    baseUrl: string,
+    config: EncoderConfig,
+    opts: { device: "auto" | "webgpu" | "wasm"; dtype: "q8" | "fp32"; wasmPaths: string; cache: boolean },
+    onBytes: (file: string, bytes: number) => void,
+  ): Promise<TransformersEngine> {
+    const tfjs: TransformersJs = await import("@huggingface/transformers");
+    const { env } = tfjs;
+    // serve everything from the model folder; never the Hub, never a CDN. transformers.js joins
+    // paths in a way that breaks "http://", so hand it a root-relative path (same origin only).
+    const abs = new URL(baseUrl, globalThis.location?.href);
+    if (globalThis.location && abs.origin !== globalThis.location.origin) {
+      throw new Error(`encoder models must be served from the page's origin (got ${abs.origin})`);
+    }
+    const url = abs.pathname.replace(/\/+$/, "");
+    const slash = url.lastIndexOf("/");
+    env.allowRemoteModels = false;
+    env.allowLocalModels = true;
+    env.localModelPath = url.slice(0, slash + 1);
+    env.useBrowserCache = opts.cache && typeof caches !== "undefined";
+    if (env.backends.onnx.wasm) {
+      env.backends.onnx.wasm.wasmPaths = opts.wasmPaths;
+      env.backends.onnx.wasm.numThreads = globalThis.crossOriginIsolated ? Math.min(4, navigator.hardwareConcurrency || 1) : 1;
+    }
+    const id = url.slice(slash + 1);
+    const device = await resolveDevice(opts.device);
+    const progress_callback = (p: { status: string; file?: string; total?: number }) => {
+      if (p.status === "progress" && p.file && p.total) onBytes(p.file, p.total);
+    };
+    const [tokenizer, model] = await Promise.all([
+      tfjs.AutoTokenizer.from_pretrained(id, { progress_callback }),
+      tfjs.AutoModelForSequenceClassification.from_pretrained(id, { device, dtype: opts.dtype, progress_callback }),
+    ]);
+    return new TransformersEngine(tokenizer, model, config, device);
+  }
+
+  async logits(texts: string[]): Promise<Float64Array[]> {
+    const clipped = texts.map((t) => sliceCodePoints(t, this.config.max_chars));
+    const inputs = this.tokenizer(clipped, {
+      padding: true,
+      truncation: true,
+      max_length: this.config.tokenizer.max_tokens,
+    });
+    const { logits } = await this.model(inputs);
+    return splitRows(logits.data as Float32Array, texts.length, logits.dims[1]);
+  }
+}
+
+function splitRows(data: Float32Array, rows: number, cols: number): Float64Array[] {
+  return Array.from({ length: rows }, (_, i) => Float64Array.from(data.subarray(i * cols, (i + 1) * cols)));
 }
 
 export async function hasWebGPU(): Promise<boolean> {

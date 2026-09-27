@@ -1,5 +1,5 @@
 import { type Decision, MicroDecide } from "../src";
-import { MODEL_URL, fmt } from "./common";
+import { CONFIGS, MODEL_URL, fmt, modelIndex, modelTier } from "./common";
 
 const COLORS: Record<string, string> = { ok: "var(--ok)", spam: "var(--spam)", toxic: "var(--toxic)" };
 const EXAMPLES = [
@@ -27,15 +27,38 @@ for (const ex of EXAMPLES) {
   $("examples").append(b);
 }
 
+const modelSel = $<HTMLSelectElement>("model");
+const backendSel = $<HTMLSelectElement>("backend");
+
+async function setupModels() {
+  const models = await modelIndex();
+  const entries = models.length ? models : [{ id: MODEL_URL, path: MODEL_URL, tier: await modelTier(), base: "", downloadMB: NaN }];
+  modelSel.innerHTML = entries
+    .map((m) => `<option value="${m.path}">${m.id} · ${m.tier}${Number.isFinite(m.downloadMB) ? ` · ${fmt(m.downloadMB, 1)} MB` : ""}</option>`)
+    .join("");
+  modelSel.value = entries.some((m) => m.path === MODEL_URL) ? MODEL_URL : entries[0].path;
+  await setupBackends();
+}
+
+async function setupBackends() {
+  const tier = await modelTier(modelSel.value);
+  backendSel.innerHTML = CONFIGS[tier].map((c, i) => `<option value="${i}">${c.name}</option>`).join("");
+  for (const id of ["bench-link", "parity-link"]) {
+    const a = $<HTMLAnchorElement>(id);
+    a.href = `${a.href.split("?")[0]}?model=${encodeURIComponent(modelSel.value)}`;
+  }
+}
+
 async function load() {
-  const [backend, device] = $<HTMLSelectElement>("backend").value.split(":");
+  const tier = await modelTier(modelSel.value);
+  const cfg = CONFIGS[tier][Number(backendSel.value) || 0];
   status.textContent = "loading…";
   model?.dispose();
   model = null;
   try {
-    model = await MicroDecide.load(MODEL_URL, { backend: backend as "static" | "onnx", device: device as "wasm" | "webgpu" | undefined });
+    model = await MicroDecide.load(modelSel.value, { backend: cfg.backend, device: cfg.device, dtype: cfg.dtype });
     const i = model.info;
-    status.textContent = `${i.model} · ${i.backend}/${i.device} · loaded in ${fmt(i.loadMs, 0)} ms · ${fmt(i.downloadBytes / 1e6, 1)} MB`;
+    status.textContent = `${i.model} · ${i.tier} · ${i.backend}/${i.device}${cfg.dtype ? "/" + cfg.dtype : ""} · loaded in ${fmt(i.loadMs, 0)} ms · ${fmt(i.downloadBytes / 1e6, 1)} MB`;
     await run();
   } catch (err) {
     status.textContent = `failed: ${err instanceof Error ? err.message : err}`;
@@ -70,7 +93,11 @@ function render(d: Decision, m: MicroDecide) {
 }
 
 text.addEventListener("input", () => void run());
-$("backend").addEventListener("change", () => void load());
-void load();
+backendSel.addEventListener("change", () => void load());
+modelSel.addEventListener("change", async () => {
+  await setupBackends();
+  await load();
+});
+void setupModels().then(load);
 
 if ("serviceWorker" in navigator && !import.meta.env.DEV) void navigator.serviceWorker.register("/sw.js");

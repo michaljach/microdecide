@@ -5,9 +5,9 @@ import pytest
 from conftest import tiny_static_model
 from typer.testing import CliRunner
 
-from microdecide import train
+from microdecide import static, train
 from microdecide.cli import app
-from microdecide.export import ExportError, export, onnx_probabilities, reference_probabilities
+from microdecide.export import ExportError, export, reference_probabilities, static_onnx_probabilities
 from microdecide.runtime import Runtime
 
 TRICKY = [
@@ -51,14 +51,14 @@ def test_reference_and_onnx_match_runtime_on_edge_cases(run_dir):
     rt = Runtime.load(run_dir)
     p_rt = rt.probabilities(TRICKY)
     np.testing.assert_allclose(reference_probabilities(out, TRICKY), p_rt, atol=1e-9)
-    np.testing.assert_allclose(onnx_probabilities(out, TRICKY), p_rt, atol=1e-5)
+    np.testing.assert_allclose(static_onnx_probabilities(out, TRICKY), p_rt, atol=1e-5)
     # empty / all-unknown inputs fall back to the head bias, identically everywhere
     np.testing.assert_allclose(p_rt[3], p_rt[4], atol=1e-12)
 
 
 def test_export_rejects_float_embeddings(toy_run, spec, monkeypatch):
     float_model = tiny_static_model(int8=False)
-    monkeypatch.setattr(train, "load_encoder", lambda base, quantize_to=None: float_model)
+    monkeypatch.setattr(static, "load_encoder", lambda base, quantize_to=None: float_model)
     out = train.train(spec, toy_run, log=lambda _: None)
     with pytest.raises(ExportError, match="int8"):
         export(out, log=lambda _: None)

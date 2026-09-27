@@ -1,5 +1,6 @@
 import { MicroDecide, clearModelCache } from "../src";
-import { CONFIGS, MODEL_URL, fmt, parityRows, percentile, webgpuAvailable } from "./common";
+import type { Config } from "./common";
+import { CONFIGS, MODEL_URL, fmt, gpuAdapterInfo, modelTier, parityRows, percentile, webgpuAvailable } from "./common";
 
 const N_SINGLE = 200;
 
@@ -27,9 +28,9 @@ async function memoryMB(): Promise<number | null> {
   }
 }
 
-async function bench(cfg: (typeof CONFIGS)[number], texts: string[]): Promise<BenchResult> {
+async function bench(cfg: Config, texts: string[]): Promise<BenchResult> {
   await clearModelCache();
-  const opts = { backend: cfg.backend, device: cfg.device };
+  const opts = { backend: cfg.backend, device: cfg.device, dtype: cfg.dtype };
   const cold = await MicroDecide.load(MODEL_URL, opts);
   cold.dispose();
   const m = await MicroDecide.load(MODEL_URL, opts); // warm: model files from the Cache API
@@ -64,8 +65,9 @@ async function bench(cfg: (typeof CONFIGS)[number], texts: string[]): Promise<Be
 async function main() {
   const texts = (await parityRows()).map((r) => r.text);
   const gpu = await webgpuAvailable();
+  const tier = await modelTier();
   const results: BenchResult[] = [];
-  for (const cfg of CONFIGS) {
+  for (const cfg of CONFIGS[tier]) {
     if (cfg.device === "webgpu" && !gpu) {
       results.push({ name: cfg.name, error: "WebGPU not available" });
       continue;
@@ -80,7 +82,7 @@ async function main() {
   render(results);
   document.getElementById("sub")!.textContent =
     `${MODEL_URL} · ${texts.length} test inputs · crossOriginIsolated=${crossOriginIsolated} · WebGPU=${gpu} · ${navigator.userAgent}`;
-  (window as unknown as { __result: unknown }).__result = { results, webgpu: gpu, crossOriginIsolated, userAgent: navigator.userAgent };
+  (window as unknown as { __result: unknown }).__result = { model: MODEL_URL, tier, gpuAdapter: await gpuAdapterInfo(), results, webgpu: gpu, crossOriginIsolated, userAgent: navigator.userAgent };
 }
 
 function render(rs: BenchResult[]) {

@@ -31,7 +31,8 @@ Example spec: `examples/comment_moderation.yaml`.
 - `model2vec` (static embeddings) for the tiny tier encoder
 - `setfit` / `sentence-transformers` for the encoder tier
 - `transformers` + `peft` for the decoder tier (LoRA + classification head)
-- `optimum[onnxruntime]` for ONNX export + int8/q4 quantization
+- `torch.onnx.export` (dynamo, needs `onnxscript`) + `onnxruntime.quantization` for ONNX
+  export + int8 quantization (`optimum-onnx` pins transformers < 4.58, incompatible with v5)
 - **Browser runtime** in `web/`: TypeScript + `@huggingface/transformers`
   (transformers.js), built with `vite`; a demo + benchmark page
 - `fastapi` + `uvicorn` for the escalation/feedback server
@@ -45,12 +46,14 @@ Add dependencies only when the milestone needs them.
 uv sync                          # install
 uv run pytest                    # tests
 uv run microdecide run examples/comment_moderation.yaml   # full pipeline (→ export)
+uv run microdecide train examples/comment_moderation.yaml --tier encoder
+uv run microdecide compare runs/comment_moderation/v1 runs/comment_moderation/v2
 
 cd web && npm install
-npm run sync-model               # copy runs/<task>/<version>/export + ORT wasm into public/
+npm run sync-model               # copy every runs/*/v*/export + ORT wasm into public/
 npm run dev                      # demo at /, /bench.html, /parity.html
 npm test && npm run typecheck    # vitest (incl. Node parity vs Python) + tsc
-npm run parity                   # headless Chromium: browser labels vs Python (≥ 99.5%)
+MODEL=/models/<task>/<version> npm run parity   # headless Chromium (real GPU): labels vs Python ≥ 99.5%
 npm run bench                    # → export/bench.json; `microdecide eval` adds it to report.md
 npm run offline                  # network cut: page + model reload from caches, still classifies
 ```

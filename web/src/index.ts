@@ -8,7 +8,7 @@ import { Model } from "./model.js";
 import type { Decision, LoadOptions, ModelInfo } from "./types.js";
 import type { Request } from "./worker.js";
 
-export type { Backend, Decision, Device, LoadOptions, ModelConfig, ModelInfo } from "./types.js";
+export type { Backend, Decision, Device, EncoderConfig, LoadOptions, ModelConfig, ModelInfo, StaticConfig } from "./types.js";
 export { clearModelCache } from "./fetch.js";
 export { Model } from "./model.js";
 

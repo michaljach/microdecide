@@ -9,15 +9,20 @@ export interface Decision {
   latency_ms: number;
 }
 
-/** `microdecide.json`, written by `microdecide export`. */
-export interface ModelConfig {
-  format: "microdecide-static";
-  format_version: number;
+interface BaseConfig {
+  format: "microdecide";
+  format_version: 2;
   model: string;
   labels: string[];
   temperature: number;
   threshold: number;
   max_chars: number;
+  onnx: { file: string; fp32_file?: string; dtype?: string; inputs: string[]; output: string };
+}
+
+/** `microdecide.json` for the static tier: int8 embedding table + linear head. */
+export interface StaticConfig extends BaseConfig {
+  tier: "static";
   normalize: boolean;
   dim: number;
   vocab_size: number;
@@ -29,18 +34,30 @@ export interface ModelConfig {
     drop_token_ids: number[];
   };
   static: { embeddings: string; dtype: "int8" };
-  onnx: { file: string; inputs: string[]; output: string };
   head: { coef: number[][]; intercept: number[] };
 }
 
-/** "static" = plain JS over the int8 table (no runtime download); "onnx" = onnxruntime-web. */
+/** `microdecide.json` for the encoder tier: a transformers.js sequence classifier. */
+export interface EncoderConfig extends BaseConfig {
+  tier: "encoder";
+  tokenizer: { file: string; add_special_tokens: boolean; max_tokens: number; truncation: boolean };
+}
+
+/** `microdecide.json`, written by `microdecide export`. */
+export type ModelConfig = StaticConfig | EncoderConfig;
+
+/** "static" = plain JS over the int8 table (static tier only, no runtime download);
+ *  "onnx" = onnxruntime-web (static tier's graph, or the encoder via transformers.js). */
 export type Backend = "static" | "onnx";
 export type Device = "auto" | "webgpu" | "wasm";
 
 export interface LoadOptions {
-  /** Default "static" for static-tier models: smallest download, no ONNX runtime needed. */
+  /** Default: "static" for static-tier models (smallest, no ONNX runtime), "onnx" otherwise. */
   backend?: Backend;
-  /** ONNX only. "auto" = WebGPU when an adapter is available, else WASM. */
+  /** Encoder tier only: "q8" (default, smallest) or "fp32" (often better on WebGPU). */
+  dtype?: "q8" | "fp32";
+  /** ONNX only. "auto" = WASM for static/encoder models (lower single-input latency than
+   *  WebGPU at this size; see engines.ts), WebGPU for decoders. */
   device?: Device;
   /** Run inference in a Web Worker so the UI never blocks. Default true where Workers exist. */
   worker?: boolean;
@@ -52,6 +69,7 @@ export interface LoadOptions {
 
 export interface ModelInfo {
   model: string;
+  tier: ModelConfig["tier"];
   labels: string[];
   threshold: number;
   backend: Backend;

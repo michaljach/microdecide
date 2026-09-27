@@ -1,5 +1,5 @@
 import { MicroDecide } from "../src";
-import { CONFIGS, MODEL_URL, fmt, parityRows, webgpuAvailable } from "./common";
+import { CONFIGS, MODEL_URL, fmt, modelTier, parityRows, webgpuAvailable } from "./common";
 
 const MIN_AGREEMENT = 0.995;
 
@@ -15,13 +15,15 @@ interface ParityResult {
 async function main() {
   const rows = await parityRows();
   const gpu = await webgpuAvailable();
+  const tier = await modelTier();
   const results: ParityResult[] = [];
-  for (const cfg of CONFIGS) {
+  for (const cfg of CONFIGS[tier]) {
+    if (!cfg.parity) continue;
     if (cfg.device === "webgpu" && !gpu) {
       results.push({ name: cfg.name, skipped: "WebGPU not available" });
       continue;
     }
-    const m = await MicroDecide.load(MODEL_URL, { backend: cfg.backend, device: cfg.device });
+    const m = await MicroDecide.load(MODEL_URL, { backend: cfg.backend, device: cfg.device, dtype: cfg.dtype });
     const ds = await m.decideBatch(rows.map((r) => r.text));
     let same = 0;
     let maxDiff = 0;
@@ -45,7 +47,7 @@ async function main() {
           : `<tr><td>${r.name}</td><td>${r.device}</td><td>${fmt(r.agreement! * 100, 2)}%</td><td>${r.maxProbDiff!.toExponential(2)}</td><td class="${r.pass ? "pass" : "fail"}">${r.pass ? "✓" : "✗"}</td></tr>`,
       )
       .join("");
-  (window as unknown as { __result: unknown }).__result = { n: rows.length, results, pass, webgpu: gpu };
+  (window as unknown as { __result: unknown }).__result = { model: MODEL_URL, tier, n: rows.length, results, pass, webgpu: gpu };
 }
 
 void main();

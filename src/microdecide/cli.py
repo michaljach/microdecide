@@ -142,6 +142,23 @@ def export(
         _fail(str(e))
 
 
+@app.command("compare")
+def compare_(run_dirs: list[Path], out: Path = typer.Option(None, help="Write markdown here (default: runs/<task>/compare.md)")) -> None:
+    """Compare model versions on the same test split (quality, coverage, size, latency)."""
+    from microdecide.compare import compare
+
+    for d in run_dirs:
+        if not (d / "model_card.json").is_file():
+            _fail(f"{d} is not a run directory (no model_card.json)")
+    md, summary = compare(run_dirs)
+    out = out or run_dirs[0].parent / "compare.md"
+    out.write_text(md)
+    typer.echo(md)
+    typer.echo(f"→ {out}")
+    if not summary["same_test_split"]:
+        typer.secho("! test splits differ between versions", fg=typer.colors.YELLOW)
+
+
 @app.command()
 def run(spec: Path, runs: Path = RUNS, tier: str = typer.Option(None, help="Override model.tier")) -> None:
     """Full pipeline: collect → label → train → eval → export."""

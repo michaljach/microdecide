@@ -21,8 +21,11 @@ export function makeFetcher(useCache = true): Fetcher {
   };
 }
 
+/** Clears cached model files (ours, and transformers.js' cache used by the encoder tier). */
 export async function clearModelCache(): Promise<boolean> {
-  return typeof caches !== "undefined" ? caches.delete(CACHE_NAME) : false;
+  if (typeof caches === "undefined") return false;
+  const results = await Promise.all([caches.delete(CACHE_NAME), caches.delete("transformers-cache")]);
+  return results.some(Boolean);
 }
 
 export function joinUrl(base: string, file: string): string {

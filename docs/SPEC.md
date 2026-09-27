@@ -127,7 +127,7 @@ Sizes/latencies are rough targets; measure with the benchmark page (M3).
 | Tier | Base (default, configurable) | Method | Download | Train on |
 |---|---|---|---|---|
 | static | model2vec potion-base-8M → 32M (int8 embeddings) | logistic regression head | ~9–33 MB | CPU, seconds |
-| encoder | small sentence encoder (MiniLM-class, ~20–30M params) | SetFit or full fine-tune + head | ~20–40 MB (q8) | CPU/GPU, minutes |
+| encoder | MiniLM-L3 → MiniLM-L6 → bge-small (17–33M params) | full fine-tune, `*ForSequenceClassification` | ~18–35 MB (q8) | CPU, < 1 min |
 | decoder-S | ~135–360M decoder (e.g. SmolLM2-135M/360M, Gemma 3 270M) | LoRA + seq-classification head | ~80–250 MB (q4/q8) | GPU, <1 h |
 | decoder-M | Qwen3-0.6B (or Qwen2.5-0.5B) | LoRA + seq-classification head | ~350–500 MB (q4) | GPU, ~1 h |
 
@@ -145,8 +145,16 @@ tries its bases smallest-first and keeps the first meeting `min_macro_f1` on
 val within budget. Head C is chosen by val macro F1; teacher confidence is
 the sample weight.
 
-**Auto mode**: train from smallest up; pick the smallest tier that meets
-`min_macro_f1` **and** fits `max_download_mb`. If none fits, report the gap
+Encoder tier details: standard `AutoModelForSequenceClassification` (so the
+export runs in transformers.js unchanged), AdamW 1e-4, 6 epochs, warmup 10%,
+max 256 tokens, teacher confidence as sample weight, best epoch by val macro F1.
+Trains on CPU by default (reproducible); `MICRODECIDE_DEVICE=mps|cuda` to speed up.
+
+**Auto mode**: try every (tier, base) candidate smallest estimated download
+first, across tiers; pick the first that meets `min_macro_f1` on val **and**
+fits `max_download_mb` (else the best val F1 within budget). "Smallest" is the
+download: on the example task the encoder (MiniLM-L3, 18.6 MB q8, F1 0.943)
+beats the larger static model (potion-32M, 33 MB, F1 0.897). If none fits, report the gap
 and recommend: more/better data, a larger budget, or escalation-heavy mode.
 
 Reality check to keep in the report: decoder tiers are 10–50× larger to
@@ -180,7 +188,12 @@ parity.jsonl              test-split predictions from Python (browser parity inp
 model_card.json           card + export parity + download sizes (+ bench.json from web/)
 ```
 - Static tier: embeddings are already int8 from training, so export adds no
-  quantization loss. Encoder q8; decoder q4 (fallback q8 if F1 drops > 1 point).
+  quantization loss. Encoder: `torch.onnx.export` (dynamo) → `onnx/model.onnx`
+  (fp32) + dynamic int8 `onnx/model_quantized.onnx` (transformers.js "q8"), plus
+  the HF tokenizer/config files. Decoder q4 (fallback q8 if F1 drops > 1 point).
+- `parity.jsonl` holds the predictions of the artifact the browser runs (static
+  format, or the q8 ONNX), so browser parity isolates runtime differences from
+  quantization loss (which the export parity check measures).
 - **Parity check** at export: training-time model vs exported static format vs
   exported ONNX on the test split — label agreement, max |Δp|, F1 delta; export
   fails if F1 drops > 2 pts. `export.reference_probabilities` re-implements
@@ -191,16 +204,21 @@ model_card.json           card + export parity + download sizes (+ bench.json fr
 ### 4.8 Browser runtime (`web/`, npm package `microdecide-web`)
 ```ts
 const m = await MicroDecide.load("/models/comment_moderation/v1", {
-  backend: "static",             // static (plain JS, default) | onnx
-  device: "auto",                // onnx only: webgpu if available, else wasm
+  backend: "static",             // static tier: static (plain JS, default) | onnx
+  device: "auto",                // onnx: wasm for static/encoder (measured faster), webgpu for decoders
+  dtype: "q8",                   // encoder: q8 (default) | fp32
 });
 const d = await m.decide("Buy cheap followers at ...");   // Decision
 m.isConfident(d);                // false → escalate (escalateUrl lands in M6)
 ```
-- Tokenization via `@huggingface/tokenizers` (transformers.js' tokenizer);
-  ONNX via `onnxruntime-web` (transformers.js' runtime), loaded lazily so the
-  static path never downloads it. transformers.js pipelines are used for tiers
-  with standard architectures (M4+); the static tier is a custom graph.
+- Static tier: `@huggingface/tokenizers` (transformers.js' tokenizer) + plain JS,
+  or its ONNX graph on `onnxruntime-web`. Encoder tier: transformers.js
+  `AutoTokenizer` + `AutoModelForSequenceClassification`, files served from the
+  page's origin only (never the Hub or a CDN, so it works offline). One shared
+  onnxruntime-web; loaded lazily so the static path never downloads it.
+- Device default is measured, not assumed (M2 Pro, Metal): static JS p95 0.1 ms;
+  encoder q8 WASM p50 2.5 ms vs WebGPU 9.8 ms fp32 / 14.6 ms q8 single-input.
+  WebGPU wins only on large batches at this size.
 - Model files cached in the browser (Cache API) after first load; the demo adds
   an app-shell service worker so it reloads and classifies with the network off
 - Runs in a Web Worker so the UI never blocks; batching supported
@@ -233,7 +251,8 @@ microdecide collect <spec>         # 4.1
 microdecide label <spec>           # 4.2
 microdecide train <spec> [--tier static|encoder|decoder|auto]
 microdecide eval <run_dir>
-microdecide export <run_dir> [--format onnx|numpy]
+microdecide compare <run_dir> <run_dir>...   # same test split, side by side → runs/<task>/compare.md
+microdecide export <run_dir>
 microdecide serve <run_dir> [--teacher]
 microdecide retrain <spec>
 microdecide run <spec>             # collect → label → train → eval → export

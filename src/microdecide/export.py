@@ -1,19 +1,23 @@
-"""Browser-first export (docs/SPEC.md §4.7).
+"""Browser-first export (docs/SPEC.md §4.7). One folder per model, transformers.js layout.
 
-Static tier → one folder, transformers.js layout, two interchangeable formats:
-  microdecide.json          runtime config: labels, temperature, threshold, head, tokenizer rules
-  tokenizer.json            HF tokenizer (+ tokenizer_config.json, config.json)
-  static/embeddings.i8      int8 embedding table, row-major [vocab, dim] — plain JS, no ONNX runtime
-  onnx/model_quantized.onnx input_ids + attention_mask → logits (onnxruntime-web: WASM / WebGPU)
+  microdecide.json            runtime config: tier, labels, temperature, threshold, tokenizer rules
+  tokenizer.json              HF tokenizer (+ tokenizer_config.json, config.json)
+  onnx/model_quantized.onnx   logits graph for onnxruntime-web / transformers.js (WASM / WebGPU)
 
-`reference_probabilities` re-implements inference from the exported files only; it is the
-spec the JS runtime must match."""
+static tier:  + static/embeddings.i8 (int8 table, plain JS, no ONNX runtime) + head in microdecide.json
+encoder tier: + onnx/model.onnx (fp32); model_quantized.onnx is dynamic int8 (q8)
+
+Every export runs a parity check (training-time model vs each exported artifact, test split) and
+writes parity.jsonl — the exported artifact's predictions — for the browser parity page.
+`reference_probabilities` re-implements static-tier inference from the exported files only;
+it is the spec the JS static engine mirrors."""
 
 from __future__ import annotations
 
 import json
 import shutil
 from pathlib import Path
+from typing import Callable
 
 import numpy as np
 
@@ -21,11 +25,13 @@ from microdecide.calibrate import softmax
 from microdecide.data import read_jsonl, write_jsonl
 from microdecide.runtime import Runtime
 
-FORMAT = "microdecide-static"
-FORMAT_VERSION = 1
-MAX_TOKENS = 512  # model2vec default max_length
-OPSET = 17
+FORMAT = "microdecide"
+FORMAT_VERSION = 2
+STATIC_MAX_TOKENS = 512  # model2vec default max_length
+OPSET = 18
 MAX_F1_DROP = 0.02
+
+Probs = Callable[[list[str]], np.ndarray]
 
 
 class ExportError(RuntimeError):
@@ -36,93 +42,51 @@ def export(run_dir: str | Path, out: str | Path | None = None, log=print) -> dic
     run_dir = Path(run_dir)
     out = Path(out) if out else run_dir / "export"
     rt = Runtime.load(run_dir)
-    card = rt.card
-    enc = rt.model.encoder
-    if enc.token_mapping is not None or enc.weights is not None:
-        raise ExportError("static export does not support token_mapping/weights yet")
-    if enc.embedding.dtype != np.int8:
-        raise ExportError(f"expected int8 embeddings, got {enc.embedding.dtype}")
-
     if out.exists():
         shutil.rmtree(out)
-    (out / "static").mkdir(parents=True)
-    (out / "onnx").mkdir()
+    (out / "onnx").mkdir(parents=True)
 
-    labels = rt.labels
-    config = {
+    base_config = {
         "format": FORMAT,
         "format_version": FORMAT_VERSION,
-        "model": card["model"],
-        "labels": labels,
+        "tier": rt.card["tier"],
+        "model": rt.card["model"],
+        "labels": rt.labels,
         "temperature": rt.temperature,
         "threshold": rt.threshold,
         "max_chars": rt.max_chars,
-        "normalize": bool(enc.normalize),
-        "dim": int(enc.dim),
-        "vocab_size": int(enc.embedding.shape[0]),
-        "tokenizer": {
-            "file": "tokenizer.json",
-            "add_special_tokens": False,
-            "median_token_length": int(enc.median_token_length),
-            "max_tokens": MAX_TOKENS,
-            "drop_token_ids": [int(enc.unk_token_id)] if enc.unk_token_id is not None else [],
-        },
-        "static": {"embeddings": "static/embeddings.i8", "dtype": "int8"},
-        "onnx": {"file": "onnx/model_quantized.onnx", "inputs": ["input_ids", "attention_mask"], "output": "logits"},
-        "head": {"coef": rt.model.coef.tolist(), "intercept": rt.model.intercept.tolist()},
     }
-    (out / "microdecide.json").write_text(json.dumps(config))
-    np.ascontiguousarray(enc.embedding).tofile(out / "static" / "embeddings.i8")
-    shutil.copy(run_dir / "embeddings" / "tokenizer.json", out / "tokenizer.json")
-    (out / "tokenizer_config.json").write_text(
-        json.dumps({"tokenizer_class": "BertTokenizer", "do_lower_case": True, "model_max_length": MAX_TOKENS})
-    )
-    (out / "config.json").write_text(
-        json.dumps(
-            {
-                "model_type": "microdecide-static",
-                "architectures": ["MicroDecideStatic"],
-                "id2label": dict(enumerate(labels)),
-                "label2id": {k: i for i, k in enumerate(labels)},
-                "hidden_size": int(enc.dim),
-                "vocab_size": int(enc.embedding.shape[0]),
-            }
-        )
-    )
-    build_onnx(enc.embedding, rt.model.coef, rt.model.intercept, out / "onnx" / "model_quantized.onnx")
+    if rt.card["tier"] == "static":
+        artifacts, primary, download = _export_static(rt, run_dir, out, base_config)
+    elif rt.card["tier"] == "encoder":
+        artifacts, primary, download = _export_encoder(rt, run_dir, out, base_config, log)
+    else:
+        raise NotImplementedError(f"export for tier {rt.card['tier']!r} lands in M5")
 
-    # parity: training-time model vs exported static format vs exported ONNX, on the test split
+    # parity: training-time model vs every exported artifact, on the test split
     test = [r for r in read_jsonl(run_dir / "labeled.jsonl") if r["split"] == "test"]
     texts = [r["text"] for r in test]
-    y = np.array([labels.index(r["label"]) for r in test])
+    y = np.array([rt.labels.index(r["label"]) for r in test])
     p_model = rt.probabilities(texts)
-    p_static = reference_probabilities(out, texts)
-    p_onnx = onnx_probabilities(out, texts)
-    parity = {
-        "n": len(texts),
-        "static": _compare(p_model, p_static, y),
-        "onnx": _compare(p_model, p_onnx, y),
-    }
+    probs = {name: fn(texts) for name, fn in artifacts.items()}
+    parity = {"n": len(texts), **{name: _compare(p_model, p, y) for name, p in probs.items()}}
     write_jsonl(
         out / "parity.jsonl",
-        ({"text": t, "label": labels[int(p.argmax())], "probabilities": dict(zip(labels, map(float, p)))} for t, p in zip(texts, p_model)),
+        (
+            {"text": t, "label": rt.labels[int(p.argmax())], "probabilities": dict(zip(rt.labels, map(float, p)))}
+            for t, p in zip(texts, probs[primary])
+        ),
     )
+    info = {"format": FORMAT, "format_version": FORMAT_VERSION, "parity": parity, "parity_reference": primary, **download}
+    (out / "model_card.json").write_text(json.dumps({**rt.card, "export": info}, indent=2))
 
-    sizes = {
-        "static_download_mb": _mb(out / "static" / "embeddings.i8", out / "tokenizer.json", out / "microdecide.json"),
-        "onnx_download_mb": _mb(out / "onnx" / "model_quantized.onnx", out / "tokenizer.json", out / "microdecide.json"),
-    }
-    export_card = {**card, "export": {"format": FORMAT, "format_version": FORMAT_VERSION, "parity": parity, **sizes}}
-    (out / "model_card.json").write_text(json.dumps(export_card, indent=2))
-
-    for name in ("static", "onnx"):
+    for name in artifacts:
         if parity[name]["f1_drop"] > MAX_F1_DROP:
             raise ExportError(f"{name} export F1 dropped {parity[name]['f1_drop']:.3f} (> {MAX_F1_DROP})")
-    log(
-        f"exported → {out}  static {sizes['static_download_mb']} MB, onnx {sizes['onnx_download_mb']} MB; "
-        f"label agreement static {parity['static']['label_agreement']:.2%}, onnx {parity['onnx']['label_agreement']:.2%}"
-    )
-    return export_card["export"]
+    sizes = ", ".join(f"{k.removesuffix('_download_mb')} {v} MB" for k, v in download.items())
+    agree = ", ".join(f"{k} {parity[k]['label_agreement']:.2%}" for k in artifacts)
+    log(f"exported → {out}  {sizes}; label agreement vs training model: {agree}")
+    return info
 
 
 def _mb(*files: Path) -> float:
@@ -142,7 +106,66 @@ def _compare(p_ref: np.ndarray, p: np.ndarray, y: np.ndarray) -> dict:
     }
 
 
-# --- reference implementation over exported files (the JS runtime mirrors this) ---------------
+def _write_config(out: Path, config: dict) -> None:
+    (out / "microdecide.json").write_text(json.dumps(config))
+
+
+# --- static tier ---------------------------------------------------------------------------
+
+
+def _export_static(rt: Runtime, run_dir: Path, out: Path, config: dict) -> tuple[dict[str, Probs], str, dict]:
+    enc = rt.model.encoder
+    if enc.token_mapping is not None or enc.weights is not None:
+        raise ExportError("static export does not support token_mapping/weights yet")
+    if enc.embedding.dtype != np.int8:
+        raise ExportError(f"expected int8 embeddings, got {enc.embedding.dtype}")
+    (out / "static").mkdir()
+    labels = rt.labels
+    config = {
+        **config,
+        "normalize": bool(enc.normalize),
+        "dim": int(enc.dim),
+        "vocab_size": int(enc.embedding.shape[0]),
+        "tokenizer": {
+            "file": "tokenizer.json",
+            "add_special_tokens": False,
+            "median_token_length": int(enc.median_token_length),
+            "max_tokens": STATIC_MAX_TOKENS,
+            "drop_token_ids": [int(enc.unk_token_id)] if enc.unk_token_id is not None else [],
+        },
+        "static": {"embeddings": "static/embeddings.i8", "dtype": "int8"},
+        "onnx": {"file": "onnx/model_quantized.onnx", "inputs": ["input_ids", "attention_mask"], "output": "logits"},
+        "head": {"coef": rt.model.coef.tolist(), "intercept": rt.model.intercept.tolist()},
+    }
+    _write_config(out, config)
+    np.ascontiguousarray(enc.embedding).tofile(out / "static" / "embeddings.i8")
+    shutil.copy(run_dir / "embeddings" / "tokenizer.json", out / "tokenizer.json")
+    (out / "tokenizer_config.json").write_text(
+        json.dumps({"tokenizer_class": "BertTokenizer", "do_lower_case": True, "model_max_length": STATIC_MAX_TOKENS})
+    )
+    (out / "config.json").write_text(
+        json.dumps(
+            {
+                "model_type": "microdecide-static",
+                "architectures": ["MicroDecideStatic"],
+                "id2label": dict(enumerate(labels)),
+                "label2id": {k: i for i, k in enumerate(labels)},
+                "hidden_size": int(enc.dim),
+                "vocab_size": int(enc.embedding.shape[0]),
+            }
+        )
+    )
+    build_static_onnx(enc.embedding, rt.model.coef, rt.model.intercept, out / "onnx" / "model_quantized.onnx")
+    common = [out / "tokenizer.json", out / "microdecide.json"]
+    download = {
+        "static_download_mb": _mb(out / "static" / "embeddings.i8", *common),
+        "onnx_download_mb": _mb(out / "onnx" / "model_quantized.onnx", *common),
+    }
+    return (
+        {"static": lambda t: reference_probabilities(out, t), "onnx": lambda t: static_onnx_probabilities(out, t)},
+        "static",
+        download,
+    )
 
 
 class ExportedTokenizer:
@@ -179,7 +202,7 @@ def reference_probabilities(export_dir: str | Path, texts: list[str]) -> np.ndar
     return softmax(emb @ coef.T + intercept, config["temperature"])
 
 
-def onnx_probabilities(export_dir: str | Path, texts: list[str]) -> np.ndarray:
+def static_onnx_probabilities(export_dir: str | Path, texts: list[str]) -> np.ndarray:
     import onnxruntime as ort
 
     export_dir = Path(export_dir)
@@ -197,7 +220,7 @@ def onnx_probabilities(export_dir: str | Path, texts: list[str]) -> np.ndarray:
     return softmax(logits, config["temperature"])
 
 
-def build_onnx(table: np.ndarray, coef: np.ndarray, intercept: np.ndarray, path: Path) -> None:
+def build_static_onnx(table: np.ndarray, coef: np.ndarray, intercept: np.ndarray, path: Path) -> None:
     """Masked mean of int8 embedding rows → L2 normalize → linear head. Outputs raw logits
     (temperature is applied by the runtime, like transformers.js sequence classifiers)."""
     import onnx
@@ -242,7 +265,111 @@ def build_onnx(table: np.ndarray, coef: np.ndarray, intercept: np.ndarray, path:
         [helper.make_tensor_value_info("logits", F, ["batch", len(intercept)])],
         initializer=inits,
     )
-    model = helper.make_model(graph, opset_imports=[helper.make_opsetid("", OPSET)], producer_name="microdecide")
+    model = helper.make_model(graph, opset_imports=[helper.make_opsetid("", 17)], producer_name="microdecide")
     model.ir_version = 8  # widely supported by onnxruntime-web
     onnx.checker.check_model(model)
     onnx.save(model, str(path))
+
+
+# --- encoder tier --------------------------------------------------------------------------
+
+TOKENIZER_FILES = ("tokenizer.json", "tokenizer_config.json", "special_tokens_map.json", "vocab.txt")
+
+
+def _export_encoder(rt: Runtime, run_dir: Path, out: Path, config: dict, log) -> tuple[dict[str, Probs], str, dict]:
+    clf = rt.model
+    src = run_dir / "encoder"
+    input_names = [n for n in clf.tokenizer.model_input_names if n in ("input_ids", "attention_mask", "token_type_ids")]
+    config = {
+        **config,
+        "tokenizer": {"file": "tokenizer.json", "add_special_tokens": True, "max_tokens": clf.max_tokens, "truncation": True},
+        "onnx": {
+            "file": "onnx/model_quantized.onnx",
+            "fp32_file": "onnx/model.onnx",
+            "dtype": "q8",
+            "inputs": input_names,
+            "output": "logits",
+        },
+    }
+    _write_config(out, config)
+    for f in TOKENIZER_FILES:
+        if (src / f).is_file():
+            shutil.copy(src / f, out / f)
+    shutil.copy(src / "config.json", out / "config.json")
+
+    log("exporting encoder to ONNX (fp32) ...")
+    fp32, q8 = out / "onnx" / "model.onnx", out / "onnx" / "model_quantized.onnx"
+    export_encoder_onnx(clf, input_names, fp32)
+    log("quantizing (dynamic int8) ...")
+    quantize_q8(fp32, q8)
+    common = [out / "tokenizer.json", out / "tokenizer_config.json", out / "config.json", out / "microdecide.json"]
+    download = {"onnx_download_mb": _mb(q8, *common), "onnx_fp32_download_mb": _mb(fp32, *common)}
+    return (
+        {"onnx_fp32": lambda t: encoder_onnx_probabilities(out, t, fp32), "onnx_q8": lambda t: encoder_onnx_probabilities(out, t, q8)},
+        "onnx_q8",
+        download,
+    )
+
+
+def export_encoder_onnx(clf, input_names: list[str], path: Path) -> None:
+    """torch.export-based ONNX export of `*ForSequenceClassification` → logits, dynamic batch/seq."""
+    import torch
+
+    class Logits(torch.nn.Module):
+        def __init__(self, model):
+            super().__init__()
+            self.model = model
+
+        def forward(self, input_ids, attention_mask, token_type_ids=None):
+            kw = {"input_ids": input_ids, "attention_mask": attention_mask}
+            if token_type_ids is not None:
+                kw["token_type_ids"] = token_type_ids
+            return self.model(**kw).logits
+
+    enc = clf.encode(["an example input for tracing", "a second, slightly longer example input for tracing"])
+    kwargs = {k: enc[k] for k in input_names}
+    batch, seq = torch.export.Dim("batch"), torch.export.Dim("seq", max=clf.max_tokens)
+    program = torch.onnx.export(
+        Logits(clf.model.eval()),
+        (),
+        kwargs=kwargs,
+        input_names=input_names,
+        output_names=["logits"],
+        dynamic_shapes={k: {0: batch, 1: seq} for k in input_names},
+        opset_version=OPSET,
+        dynamo=True,
+    )
+    program.save(str(path), external_data=False)
+
+
+def quantize_q8(src: Path, dst: Path) -> None:
+    """Dynamic int8 weights (transformers.js "q8"). The torch.export graph carries value_info that
+    ONNX shape inference rejects inside the quantizer, so quantize a copy without it."""
+    import onnx
+    from onnxruntime.quantization import QuantType, quantize_dynamic
+
+    model = onnx.load(str(src))
+    model.graph.ClearField("value_info")
+    tmp = dst.with_suffix(".prequant.onnx")
+    onnx.save(model, str(tmp))
+    try:
+        quantize_dynamic(str(tmp), str(dst), weight_type=QuantType.QInt8)
+    finally:
+        tmp.unlink(missing_ok=True)
+
+
+def encoder_onnx_probabilities(export_dir: Path, texts: list[str], model_path: Path) -> np.ndarray:
+    import onnxruntime as ort
+    from transformers import AutoTokenizer
+
+    config = json.loads((export_dir / "microdecide.json").read_text())
+    tok = AutoTokenizer.from_pretrained(export_dir)
+    session = ort.InferenceSession(str(model_path), providers=["CPUExecutionProvider"])
+    names = [i.name for i in session.get_inputs()]
+    out = []
+    for i in range(0, len(texts), 64):
+        batch = [t[: config["max_chars"]] for t in texts[i : i + 64]]
+        enc = tok(batch, padding=True, truncation=True, max_length=config["tokenizer"]["max_tokens"], return_tensors="np")
+        (logits,) = session.run(["logits"], {k: enc[k].astype(np.int64) for k in names})
+        out.append(logits)
+    return softmax(np.concatenate(out), config["temperature"])

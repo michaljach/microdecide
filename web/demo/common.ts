@@ -1,18 +1,60 @@
-import type { Backend, Device } from "../src";
+import type { Backend, Device, ModelConfig } from "../src";
 
-export const MODEL_URL = new URLSearchParams(location.search).get("model") ?? "/models/comment_moderation/v1";
+export const params = new URLSearchParams(location.search);
+export const MODEL_URL = params.get("model") ?? "/models/comment_moderation/v1";
+
+export interface ModelEntry {
+  id: string;
+  path: string;
+  tier: ModelConfig["tier"];
+  base: string;
+  downloadMB: number;
+}
+
+export async function modelIndex(): Promise<ModelEntry[]> {
+  try {
+    return await (await fetch("/models/index.json")).json();
+  } catch {
+    return [];
+  }
+}
 
 export interface Config {
   name: string;
   backend: Backend;
   device?: Device;
+  dtype?: "q8" | "fp32";
+  /** compared against parity.jsonl (the exported artifact's Python predictions) */
+  parity: boolean;
 }
 
-export const CONFIGS: Config[] = [
-  { name: "static (plain JS)", backend: "static" },
-  { name: "onnx · wasm", backend: "onnx", device: "wasm" },
-  { name: "onnx · webgpu", backend: "onnx", device: "webgpu" },
-];
+export const CONFIGS: Record<ModelConfig["tier"], Config[]> = {
+  static: [
+    { name: "static (plain JS)", backend: "static", parity: true },
+    { name: "onnx · wasm", backend: "onnx", device: "wasm", parity: true },
+    { name: "onnx · webgpu", backend: "onnx", device: "webgpu", parity: true },
+  ],
+  encoder: [
+    { name: "transformers.js · wasm · q8", backend: "onnx", device: "wasm", dtype: "q8", parity: true },
+    { name: "transformers.js · webgpu · q8", backend: "onnx", device: "webgpu", dtype: "q8", parity: true },
+    { name: "transformers.js · webgpu · fp32", backend: "onnx", device: "webgpu", dtype: "fp32", parity: false },
+  ],
+};
+
+export async function modelTier(url = MODEL_URL): Promise<ModelConfig["tier"]> {
+  return (await (await fetch(`${url}/microdecide.json`)).json()).tier;
+}
+
+/** Vendor/architecture of the WebGPU adapter (tells a real GPU from a software fallback). */
+export async function gpuAdapterInfo(): Promise<Record<string, string> | null> {
+  const gpu = (navigator as Navigator & { gpu?: { requestAdapter(): Promise<{ info?: Record<string, string> } | null> } }).gpu;
+  try {
+    const info = (await gpu?.requestAdapter())?.info;
+    return info ? { vendor: info.vendor, architecture: info.architecture, device: info.device, description: info.description } : null;
+  } catch {
+    return null;
+  }
+}
 
 export async function webgpuAvailable(): Promise<boolean> {
   const gpu = (navigator as Navigator & { gpu?: { requestAdapter(): Promise<unknown> } }).gpu;

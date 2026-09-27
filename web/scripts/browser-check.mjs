@@ -17,7 +17,12 @@ const configFile = join(web, "vite.config.ts");
 await build({ configFile, logLevel: "error" });
 const server = await preview({ configFile, preview: { port: 0 }, logLevel: "error" });
 const base = server.resolvedUrls.local[0].replace(/\/$/, "");
-const browser = await chromium.launch({ args: ["--enable-unsafe-webgpu", "--enable-features=Vulkan,WebGPU"] });
+// full Chromium in new-headless mode gets the real GPU (Metal on macOS); the default
+// headless shell only offers SwiftShader, a software WebGPU that makes benchmarks meaningless
+const browser = await chromium.launch({
+  channel: "chromium",
+  args: ["--enable-unsafe-webgpu", "--ignore-gpu-blocklist", "--enable-gpu", "--use-angle=metal"],
+});
 const page = await (await browser.newContext()).newPage();
 page.on("pageerror", (e) => console.error("page error:", e.message));
 
@@ -25,7 +30,7 @@ let exitCode = 0;
 try {
   if (mode === "parity" || mode === "bench") {
     await page.goto(`${base}/${mode}.html?model=${model}`);
-    const result = await page.waitForFunction(() => window.__result, null, { timeout: 180_000, polling: 500 }).then((h) => h.jsonValue());
+    const result = await page.waitForFunction(() => window.__result, null, { timeout: 600_000, polling: 500 }).then((h) => h.jsonValue());
     console.log(JSON.stringify(result, null, 2));
     if (mode === "parity" && !result.pass) exitCode = 1;
     if (mode === "bench") {

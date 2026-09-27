@@ -65,10 +65,28 @@ TOY_ROWS = (
 )
 
 
+def tiny_encoder_dir(path):
+    """A 1-layer, 16-dim BERT + WordPiece tokenizer over the toy vocab, saved locally (no download)."""
+    from transformers import BertConfig, BertModel, BertTokenizerFast
+
+    words = sorted({w for t in TOY_TEXTS for w in t.split()})
+    path.mkdir(parents=True, exist_ok=True)
+    (path / "vocab.txt").write_text("\n".join(["[PAD]", "[UNK]", "[CLS]", "[SEP]", "[MASK]", *words]) + "\n")
+    tok = BertTokenizerFast(vocab_file=str(path / "vocab.txt"), do_lower_case=True)
+    import torch
+
+    torch.manual_seed(0)
+    cfg = BertConfig(vocab_size=len(words) + 5, hidden_size=16, num_hidden_layers=1, num_attention_heads=2,
+                     intermediate_size=32, max_position_embeddings=512)
+    BertModel(cfg).save_pretrained(path)
+    tok.save_pretrained(path)
+    return path
+
+
 @pytest.fixture
 def toy_run(tmp_path, spec, monkeypatch):
     """A labeled dataset of the toy rows (4x, with suffixes) + the tiny encoder patched into training."""
-    from microdecide import data, train
+    from microdecide import data, encoder, static
 
     rows, splits = [], ["train"] * 6 + ["val", "test"]
     for rep in range(4):
@@ -79,8 +97,9 @@ def toy_run(tmp_path, spec, monkeypatch):
     runs = tmp_path / "runs"
     data.write_jsonl(data.data_dir(spec, runs) / "labeled.jsonl", rows)
     model = tiny_static_model()
-    monkeypatch.setattr(train, "load_encoder", lambda base, quantize_to=None: model)
-    monkeypatch.setattr(train, "STATIC_CANDIDATES", ("tiny-a", "tiny-b"))
+    monkeypatch.setattr(static, "load_encoder", lambda base, quantize_to=None: model)
+    monkeypatch.setattr(static, "CANDIDATES", (("tiny-a", 0.1), ("tiny-b", 0.2)))
+    monkeypatch.setattr(encoder, "CANDIDATES", ((str(tiny_encoder_dir(tmp_path / "tiny-bert")), 0.15),))
     return runs
 
 
