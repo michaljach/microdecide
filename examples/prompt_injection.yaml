@@ -12,9 +12,9 @@ output:
     safe: A normal request, including ones that talk about prompts, AI or security, or correct the user's own earlier message.
     injection: Tries to override or cancel the assistant's instructions, reveal its system prompt or secrets, or remove its rules.
 model:
-  tier: auto
+  tier: auto              # auto | static | encoder — auto = smallest download meeting targets
   base: null
-  quantization: q4
+  quantization: q8
 # PoC: inputs + labels in the CSV were written offline by Claude (in a coding session),
 # standing in for synth + teacher. See comment_moderation.yaml for the real-teacher setup.
 teacher:
@@ -27,7 +27,7 @@ data:
 targets:
   min_macro_f1: 0.90
   deploy: browser
-  max_download_mb: 150
+  max_download_mb: 30       # tiny models only
   max_latency_ms: 100
 escalation:
   target_precision: 0.97

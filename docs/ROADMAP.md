@@ -37,19 +37,29 @@ on a laptop CPU in < 10 min with a readable report.
 **Done when:** the demo page classifies comments fully offline in the
 browser, and browser labels match Python on ≥ 99.5% of the test set.
 
-## [ ] M4 — Encoder tier
+## [x] M4 — Encoder tier
 - MiniLM-class encoder, SetFit/fine-tune, ONNX q8 export, runs in `web/`
 
 **Done when:** report compares static vs encoder; encoder runs in the demo.
 
-## [ ] M5 — Decoder tier (Qwen-class)
-- `AutoModelForSequenceClassification` + LoRA for SmolLM2/Gemma-270M and
-  Qwen3-0.6B; merge LoRA; ONNX q4/q8 export; parity check
-- `--tier auto` with `max_download_mb` budget
+## [x] M4.5 — Web training playground
+- a page in `web/` where a user trains a model entirely in the browser (Web
+  Worker): define labels, paste/upload/label examples, fit a head on frozen
+  static embeddings, see val metrics + calibration + threshold, try it live
+- download the result as a model folder `MicroDecide.load` can open
 
-**Done when:** Qwen3-0.6B classifier runs in the browser demo (WebGPU, WASM
-fallback); benchmark numbers recorded in the report; auto mode picks the
-smallest tier that meets targets.
+**Done when:** a model trained in the playground loads with `MicroDecide.load`
+and matches the playground's own predictions; training ~1k examples takes
+seconds in the browser.
+
+## [–] M5 — Decoder tier (Qwen-class) — dropped
+Built and measured, then removed: the project targets tiny models (~30 MB).
+Qwen3-0.6B: test F1 0.974 at 501 MB (q4), p95 ~237 ms; SmolLM2-135M: 0.932 at
+115 MB — both lose to the MiniLM-L3 encoder on size, and SmolLM2 also on F1
+(encoder: 0.943 at 18.6 MB). The code was never committed; lessons, if it is
+ever revisited: decoder q4 must be weight-only (HQQ, block 32 — plain RTN lost
+3 F1 points); dynamic int8 activation quantization lost ~5; export the pooled
+last-token logits (one forward pass, no KV cache); fp32 export needs external data.
 
 ## [ ] M6 — Escalate, feedback, retrain
 - FastAPI `POST /decide` (teacher proxy); browser `escalateUrl`

@@ -86,16 +86,32 @@ def label(spec: Path, runs: Path = RUNS) -> None:
     _show(f"labeled → {data.data_dir(s, runs) / 'labeled.jsonl'}", stats)
 
 
+def _override(s: TaskSpec, base: str | None, max_download_mb: float | None) -> TaskSpec:
+    if base:
+        s = s.model_copy(update={"model": s.model.model_copy(update={"base": base})})
+    if max_download_mb:
+        s = s.model_copy(update={"targets": s.targets.model_copy(update={"max_download_mb": max_download_mb})})
+    return s
+
+
+BASE = typer.Option(None, help="Override model.base (needs an explicit --tier)")
+BUDGET = typer.Option(None, "--max-download-mb", help="Override targets.max_download_mb")
+
+
 @app.command()
 def train(
     spec: Path,
     runs: Path = RUNS,
-    tier: str = typer.Option(None, help="static | encoder | decoder | auto (default: spec's model.tier)"),
+    tier: str = typer.Option(None, help="static | encoder | auto (default: spec's model.tier)"),
+    base: str = BASE,
+    max_download_mb: float = BUDGET,
 ) -> None:
     """Train a model version from runs/<task>/data/labeled.jsonl → runs/<task>/vN/."""
     from microdecide.train import train as train_model
 
-    s = _load(spec)
+    s = _override(_load(spec), base, max_download_mb)
+    if base and not tier and s.model.tier == "auto":
+        _fail("--base needs an explicit --tier")
     try:
         out = train_model(s, runs, tier)
     except (OSError, ValueError, NotImplementedError) as e:
@@ -142,8 +158,42 @@ def export(
         _fail(str(e))
 
 
+@app.command("export-base")
+def export_base_(
+    base: str = typer.Argument(..., help="model2vec static model id, e.g. minishlab/potion-base-8M"),
+    out: Path = typer.Option(None, help="Output folder (default: web/public/bases/<name>)"),
+) -> None:
+    """Export a static embedding base (no head) for training in the browser playground."""
+    from microdecide.export import export_base
+
+    export_base(base, out or Path("web/public/bases") / base.split("/")[-1])
+
+
+@app.command("compare")
+def compare_(run_dirs: list[Path], out: Path = typer.Option(None, help="Write markdown here (default: runs/<task>/compare.md)")) -> None:
+    """Compare model versions on the same test split (quality, coverage, size, latency)."""
+    from microdecide.compare import compare
+
+    for d in run_dirs:
+        if not (d / "model_card.json").is_file():
+            _fail(f"{d} is not a run directory (no model_card.json)")
+    md, summary = compare(run_dirs)
+    out = out or run_dirs[0].parent / "compare.md"
+    out.write_text(md)
+    typer.echo(md)
+    typer.echo(f"→ {out}")
+    if not summary["same_test_split"]:
+        typer.secho("! test splits differ between versions", fg=typer.colors.YELLOW)
+
+
 @app.command()
-def run(spec: Path, runs: Path = RUNS, tier: str = typer.Option(None, help="Override model.tier")) -> None:
+def run(
+    spec: Path,
+    runs: Path = RUNS,
+    tier: str = typer.Option(None, help="Override model.tier"),
+    base: str = BASE,
+    max_download_mb: float = BUDGET,
+) -> None:
     """Full pipeline: collect → label → train → eval → export."""
     import time
 
@@ -152,7 +202,7 @@ def run(spec: Path, runs: Path = RUNS, tier: str = typer.Option(None, help="Over
     from microdecide.export import export as export_model
     from microdecide.train import train as train_model
 
-    s = _load(spec)
+    s = _override(_load(spec), base, max_download_mb)
     t0 = time.perf_counter()
     try:
         _show("collect", data.collect(s, runs))

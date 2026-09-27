@@ -1,10 +1,10 @@
-import { type ModelEntry, esc, loadCatalog, pct, title } from "./catalog";
+import { type CatalogEntry, esc, loadCatalog, pct, title } from "./catalog";
 import { MODEL_URL } from "./common";
-import { mountPlayground } from "./playground";
+import { mountClassifier } from "./classify";
 
 const $ = (id: string) => document.getElementById(id)!;
 
-function render(m: ModelEntry) {
+function render(m: CatalogEntry) {
   document.title = `microdecide · ${title(m.task)}`;
   $("title").innerHTML = `${esc(title(m.task))} <span class="muted">${esc(m.version)}</span>`;
   $("description").textContent = m.description;
@@ -12,7 +12,7 @@ function render(m: ModelEntry) {
     m.id,
     `${m.tier} tier`,
     m.base,
-    m.sizeMB != null ? `${m.sizeMB.toFixed(1)} MB` : null,
+    Number.isFinite(m.downloadMB) ? `${m.downloadMB.toFixed(1)} MB` : null,
     `trained ${m.created.slice(0, 10)}`,
   ].filter(Boolean).join(" · ");
 
@@ -42,27 +42,27 @@ function render(m: ModelEntry) {
 
   $("usage").textContent = `import { MicroDecide } from "microdecide-web";
 
-const m = await MicroDecide.load("${m.url}");
+const m = await MicroDecide.load("${m.path}");
 const d = await m.decide(${JSON.stringify(m.examples[0] ?? "…")});
 // d.label is one of: ${Object.keys(m.labels).join(", ")}
 if (!m.isConfident(d)) { /* below ${pct(m.threshold)}: escalate */ }`;
 
-  const q2 = `?model=${encodeURIComponent(m.url)}`;
+  const q2 = `?model=${encodeURIComponent(m.path)}`;
   for (const id of ["bench", "nav-bench"]) $(id).setAttribute("href", `./bench.html${q2}`);
   for (const id of ["parity", "nav-parity"]) $(id).setAttribute("href", `./parity.html${q2}`);
-  $("report").setAttribute("href", `${m.url}/report.md`);
+  $("report").setAttribute("href", `${m.path}/report.md`);
 }
 
 async function main() {
-  let entry: ModelEntry | undefined;
+  let entry: CatalogEntry | undefined;
   try {
-    entry = (await loadCatalog()).find((m) => m.url === MODEL_URL);
+    entry = (await loadCatalog()).find((m) => m.path === MODEL_URL);
   } catch {
     // no catalog: still playable, just without the card
   }
   if (entry) render(entry);
-  else $("description").textContent = `${MODEL_URL} is not in the model catalog.`;
-  mountPlayground(MODEL_URL, entry?.examples ?? []);
+  else $("description").textContent = `${MODEL_URL} isn't in the model catalog (for example, a model saved from the training playground).`;
+  mountClassifier(MODEL_URL, entry?.examples ?? []);
 }
 
 void main();

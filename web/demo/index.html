@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<nav aria-label="Main"><b aria-current="page">microdecide</b><a href="./models.html">Models</a><a href="#try">Demo</a><a href="#bench">Benchmark</a><a href="#parity">Parity</a><a href="#how">How it works</a></nav>
+<nav aria-label="Main"><b aria-current="page">microdecide</b><a href="./models.html">Models</a><a href="./playground.html">Train your own</a><a href="#try">Demo</a><a href="#bench">Benchmark</a><a href="#parity">Parity</a><a href="#how">How it works</a></nav>
 
 <h1>microdecide</h1>
 <p>Turn one decision into a tiny model that runs in your browser. You describe the <b>input</b> and a fixed
@@ -16,24 +16,22 @@ set of typed <b>labels</b>, a bigger teacher model labels examples, and microdec
 classifier for exactly that task. Each answer is one forward pass with no text generation, so there's nothing to
 parse and it can't return a label outside your set. When it isn't sure, it hands the input to the teacher.</p>
 
-<p><a href="#try">Try the demo</a> · <a href="./models.html">Browse ready-made models</a> · <a href="#how">How it works</a></p>
+<p><a href="#try">Try the demo</a> · <a href="./models.html">Browse ready-made models</a> · <a href="./playground.html">Train your own in the browser</a> · <a href="#how">How it works</a></p>
 
 <section id="try" aria-labelledby="try-heading">
-<h2 id="try-heading">Demo <span class="muted">comment moderation</span></h2>
+<h2 id="try-heading">Demo</h2>
 <p class="small">The model is downloaded once and runs entirely in this tab, so nothing you type leaves your browser.
-It sorts blog comments into <code>ok</code>, <code>spam</code> and <code>toxic</code>.</p>
+<span id="demo-desc">It sorts blog comments into <code>ok</code>, <code>spam</code> and <code>toxic</code>.</span></p>
 <div class="cols tight">
 <section>
   <h3>Input</h3>
   <div class="controls">
+    <label for="model">Model</label>
+    <select id="model"></select>
     <label for="backend">Backend</label>
-    <select id="backend">
-      <option value="static">static (plain JS)</option>
-      <option value="onnx:wasm">onnx · wasm</option>
-      <option value="onnx:webgpu">onnx · webgpu</option>
-    </select>
+    <select id="backend"></select>
   </div>
-  <textarea id="text" aria-label="Comment" placeholder="Type a comment…">Finally dark mode! Been waiting for this forever.</textarea>
+  <textarea id="text" aria-label="Input" placeholder="Type something…">Finally dark mode! Been waiting for this forever.</textarea>
   <ul class="examples" id="examples" aria-label="Examples"></ul>
 </section>
 <section aria-live="polite">
@@ -46,16 +44,16 @@ It sorts blog comments into <code>ok</code>, <code>spam</code> and <code>toxic</
   </div>
 </section>
 </div>
-<p class="small">More models to try: <span id="more"><a href="./models.html">all models</a></span>.</p>
+<p class="small">See every model with its labels and quality numbers on the <a href="./models.html">Models</a> page.</p>
 </section>
 
 <section id="bench" aria-labelledby="bench-heading">
 <h2 id="bench-heading">Benchmark</h2>
-<p class="small">Load time, per-input latency and batch throughput for each browser backend, on the model's
+<p class="small">Load time, per-input latency and batch throughput for each browser backend, on the selected model's
 test inputs. Cold load includes the download; warm load reads the model back from the browser cache.</p>
 <p class="muted small" id="bench-sub"></p>
 <div class="scroll"><table id="bench-table"></table></div>
-<div class="controls"><button id="bench-run">Run in this browser</button><a href="./bench.html">Open on its own page</a></div>
+<div class="controls"><button id="bench-run">Run in this browser</button><a id="bench-page" href="./bench.html">Open on its own page</a></div>
 </section>
 
 <section id="parity" aria-labelledby="parity-heading">
@@ -64,7 +62,7 @@ test inputs. Cold load includes the download; warm load reads the model back fro
 backend on the test inputs and compares labels and probabilities with Python's answers (target ≥ 99.5%).</p>
 <p class="muted small" id="parity-sub"></p>
 <div class="scroll"><table id="parity-table"></table></div>
-<div class="controls"><button id="parity-run">Check parity</button><a href="./parity.html">Open on its own page</a></div>
+<div class="controls"><button id="parity-run">Check parity</button><a id="parity-page" href="./parity.html">Open on its own page</a></div>
 </section>
 
 <section id="how" aria-labelledby="how-heading">
@@ -78,7 +76,7 @@ output:
     ok:    Normal comment. Can be positive, negative or off topic, but harmless.
     spam:  Ads, links to unrelated products or services, SEO junk, scams.
     toxic: Insults, harassment, threats or hate toward people or groups.
-targets:    {min_macro_f1: 0.90, deploy: browser, max_download_mb: 150}
+targets:    {min_macro_f1: 0.90, deploy: browser, max_download_mb: 30}
 escalation: {target_precision: 0.97}</code></pre>
 <p>One command collects inputs, has the teacher label them (every call is cached on disk), trains the
 smallest tier that meets your targets, calibrates it and exports it for the browser:</p>
@@ -106,9 +104,8 @@ if (!m.isConfident(d)) { /* below the calibrated threshold: escalate */ }</code>
 <h2>Tiers</h2>
 <table>
 <tr><th>tier</th><th>model</th><th>trains on</th><th>runs in the browser as</th></tr>
-<tr><td>static</td><td>static embeddings (model2vec) + logistic regression</td><td>CPU</td><td>plain JS or ONNX</td></tr>
-<tr><td>encoder</td><td>small sentence-transformer, fine-tuned with SetFit</td><td>CPU</td><td>ONNX int8, WASM or WebGPU</td></tr>
-<tr><td>decoder</td><td>Qwen-class model, LoRA + classification head</td><td>GPU (CUDA or MPS)</td><td>ONNX q4, WebGPU</td></tr>
+<tr><td>static</td><td>static embeddings (model2vec) + logistic regression</td><td>CPU, or in the browser</td><td>plain JS or ONNX</td></tr>
+<tr><td>encoder</td><td>small sentence-transformer (MiniLM), fine-tuned</td><td>CPU</td><td>transformers.js, ONNX q8, WASM or WebGPU</td></tr>
 </table>
 <p class="small">With <code>tier: auto</code>, microdecide trains from the smallest tier up and keeps the
 smallest one that reaches <code>min_macro_f1</code> within the download budget.</p>

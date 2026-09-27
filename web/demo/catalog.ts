@@ -1,4 +1,6 @@
-// The model catalog written by scripts/sync-model.mjs (public/models/index.json).
+// Catalog entries from models/index.json (written by scripts/sync-model.mjs) with the card fields
+// the Models and model pages show.
+import { type ModelEntry, modelIndex } from "./common";
 
 export interface LabelMetrics {
   precision: number;
@@ -7,19 +9,14 @@ export interface LabelMetrics {
   support: number;
 }
 
-export interface ModelEntry {
-  id: string;
+export interface CatalogEntry extends ModelEntry {
   task: string;
   version: string;
-  url: string;
   description: string;
   labels: Record<string, string>;
-  tier: string;
-  base: string;
   threshold: number;
   created: string;
   data: { train: number; val: number; test: number };
-  sizeMB: number | null;
   metrics: {
     macroF1: number;
     accuracy: number;
@@ -34,10 +31,8 @@ export interface ModelEntry {
   examples: string[];
 }
 
-export async function loadCatalog(): Promise<ModelEntry[]> {
-  const res = await fetch("/models/index.json");
-  if (!res.ok) throw new Error("no model catalog — run `npm run sync-model`");
-  return ((await res.json()) as { models: ModelEntry[] }).models;
+export async function loadCatalog(): Promise<CatalogEntry[]> {
+  return (await modelIndex()).filter((m): m is CatalogEntry => "task" in m && "labels" in m);
 }
 
 /** support_triage → Support triage */
@@ -48,4 +43,4 @@ export const esc = (s: string) =>
 
 export const pct = (x: number | null | undefined, d = 1) => (x == null ? "—" : `${(x * 100).toFixed(d)}%`);
 
-export const modelPage = (m: ModelEntry) => `./model.html?model=${encodeURIComponent(m.url)}`;
+export const modelPage = (m: ModelEntry) => `./model.html?model=${encodeURIComponent(m.path)}`;

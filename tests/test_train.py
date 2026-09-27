@@ -5,7 +5,7 @@ import pytest
 from conftest import TOY_ROWS, tiny_static_model
 from typer.testing import CliRunner
 
-from microdecide import calibrate, data, train
+from microdecide import calibrate, data, static, train
 from microdecide.evaluate import evaluate
 from microdecide.runtime import Runtime
 
@@ -92,12 +92,10 @@ def test_head_folds_scaler(toy_run, spec):
 
 def test_train_budget_and_tiers(toy_run, spec):
     tight = spec.model_copy(update={"targets": spec.targets.model_copy(update={"max_download_mb": 0.5})})
-    with pytest.raises(ValueError, match="no static base fits"):
+    with pytest.raises(ValueError, match="no candidate fits"):
         train.train(tight, toy_run, log=lambda _: None)
-    with pytest.raises(NotImplementedError, match="M4"):
-        train.train(spec, toy_run, tier="encoder")
-    with pytest.raises(NotImplementedError, match="M5"):
-        train.train(spec, toy_run, tier="decoder")
+    with pytest.raises(ValueError, match="unknown tier"):
+        train.classifier_for("huge")
 
 
 def test_train_requires_labels(tmp_path, spec):
@@ -128,8 +126,8 @@ def test_cli_run_end_to_end(tmp_path, spec, monkeypatch):
     model = tiny_static_model()
     # orthogonal vectors: no near-duplicates among the (deliberately similar) toy rows
     monkeypatch.setattr(data, "model2vec_embedder", lambda *a, **k: lambda texts: np.eye(len(texts), dtype=np.float32))
-    monkeypatch.setattr(train, "load_encoder", lambda base, quantize_to=None: model)
-    monkeypatch.setattr(train, "STATIC_CANDIDATES", ("tiny",))
+    monkeypatch.setattr(static, "load_encoder", lambda base, quantize_to=None: model)
+    monkeypatch.setattr(static, "CANDIDATES", (("tiny", 0.1),))
 
     r = CliRunner().invoke(app, ["run", str(spec_path), "--runs", str(tmp_path / "runs")])
     assert r.exit_code == 0, r.output

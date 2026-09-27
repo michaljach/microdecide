@@ -6,8 +6,8 @@ A user describes **one decision** (input, allowed outputs, quality/latency
 target). microdecide produces a **specialized micro model** for exactly that
 decision:
 
-- small enough to **download and run in a browser** (WASM, WebGPU when
-  available): ~10 MB to ~400 MB depending on tier
+- **tiny**: ~10–35 MB to download (target ~30 MB), runs in a browser (WASM,
+  WebGPU optional)
 - returns a **typed decision + calibrated confidence**
 - runs client-side: offline, private, no per-call cost
 - **escalates** to a teacher model (Jev, an LLM, or a human) when unsure,
@@ -38,9 +38,9 @@ output:
     spam: Ads, links to unrelated products, SEO junk.
     toxic: Insults, harassment, hate.
 model:
-  tier: auto                        # auto | static | encoder | decoder
-  base: null                        # override base model id, e.g. Qwen/Qwen3-0.6B
-  quantization: q4                  # q8 | q4 (decoder), q8 (encoder)
+  tier: auto                        # auto | static | encoder
+  base: null                        # override base model id (needs an explicit tier)
+  quantization: q8
 teacher:
   kind: llm                         # llm | jev | csv
   model: claude-haiku-4-5-20251001  # configurable (llm, jev)
@@ -55,7 +55,7 @@ data:
 targets:
   min_macro_f1: 0.90
   deploy: browser                   # browser | node | python
-  max_download_mb: 150              # hard budget for the model files
+  max_download_mb: 30               # hard budget for the model files
   max_latency_ms: 100               # p95 in browser, WASM backend, short input
 escalation:
   target_precision: 0.97            # auto-pick threshold to hit this
@@ -127,15 +127,12 @@ Sizes/latencies are rough targets; measure with the benchmark page (M3).
 | Tier | Base (default, configurable) | Method | Download | Train on |
 |---|---|---|---|---|
 | static | model2vec potion-base-8M → 32M (int8 embeddings) | logistic regression head | ~9–33 MB | CPU, seconds |
-| encoder | small sentence encoder (MiniLM-class, ~20–30M params) | SetFit or full fine-tune + head | ~20–40 MB (q8) | CPU/GPU, minutes |
-| decoder-S | ~135–360M decoder (e.g. SmolLM2-135M/360M, Gemma 3 270M) | LoRA + seq-classification head | ~80–250 MB (q4/q8) | GPU, <1 h |
-| decoder-M | Qwen3-0.6B (or Qwen2.5-0.5B) | LoRA + seq-classification head | ~350–500 MB (q4) | GPU, ~1 h |
+| encoder | MiniLM-L3 → MiniLM-L6 → bge-small (17–33M params) | full fine-tune, `*ForSequenceClassification` | ~18–35 MB (q8) | CPU, < 1 min |
 
-Decoder tiers: load with `AutoModelForSequenceClassification` (score head on
-last token), LoRA on attention + MLP, merge LoRA into weights before export.
-Use the task description + label descriptions only at train time via the
-teacher; at inference the model sees just the input text (short prompt
-template optional, fixed in `model_card.json`).
+Decoder tier (SmolLM2/Qwen3 + LoRA): **dropped.** Built and measured in M5 — Qwen3-0.6B
+reached test F1 0.974 vs 0.943 for the encoder, but at 501 MB (q4) vs 18.6 MB and
+p95 237 ms (Python, MPS) vs 3 ms (CPU); SmolLM2-135M (115 MB) was *worse* than the encoder. The project
+targets tiny models (~30 MB), so the tier was removed.
 
 Static tier details: embeddings are quantized to int8 at train time (no F1
 loss measured; no train/export mismatch). Standardization is folded into the
@@ -145,14 +142,18 @@ tries its bases smallest-first and keeps the first meeting `min_macro_f1` on
 val within budget. Head C is chosen by val macro F1; teacher confidence is
 the sample weight.
 
-**Auto mode**: train from smallest up; pick the smallest tier that meets
-`min_macro_f1` **and** fits `max_download_mb`. If none fits, report the gap
+Encoder tier details: standard `AutoModelForSequenceClassification` (so the
+export runs in transformers.js unchanged), AdamW 1e-4, 6 epochs, warmup 10%,
+max 256 tokens, teacher confidence as sample weight, best epoch by val macro F1.
+Trains on CPU by default (reproducible); `MICRODECIDE_DEVICE=mps|cuda` to speed up.
+
+**Auto mode**: try every (tier, base) candidate smallest estimated download
+first, across tiers; pick the first that meets `min_macro_f1` on val **and**
+fits `max_download_mb` (else the best val F1 within budget). "Smallest" is the
+download: on the example task the encoder (MiniLM-L3, 18.6 MB q8, F1 0.943)
+beats the larger static model (potion-32M, 33 MB, F1 0.897). If none fits, report the gap
 and recommend: more/better data, a larger budget, or escalation-heavy mode.
 
-Reality check to keep in the report: decoder tiers are 10–50× larger to
-download than encoders and much slower on WASM; they earn their place only on
-tasks needing more language understanding (sarcasm, context, multilingual).
-Qwen-class 0.6B is the *upper* bound, not the default.
 
 ### 4.5 Calibrate
 Temperature scaling (or isotonic if val set is large) fit on val.
@@ -180,7 +181,13 @@ parity.jsonl              test-split predictions from Python (browser parity inp
 model_card.json           card + export parity + download sizes (+ bench.json from web/)
 ```
 - Static tier: embeddings are already int8 from training, so export adds no
-  quantization loss. Encoder q8; decoder q4 (fallback q8 if F1 drops > 1 point).
+  quantization loss. Encoder: `torch.onnx.export` (dynamo) → `onnx/model.onnx`
+  (fp32) + dynamic int8 `onnx/model_quantized.onnx` (transformers.js "q8"), plus
+  the HF tokenizer/config files. A failed export (parity) is marked in its model
+  card and not published by `web/scripts/sync-model.mjs`.
+- `parity.jsonl` holds the predictions of the artifact the browser runs (static
+  format, or the q8 ONNX), so browser parity isolates runtime differences from
+  quantization loss (which the export parity check measures).
 - **Parity check** at export: training-time model vs exported static format vs
   exported ONNX on the test split — label agreement, max |Δp|, F1 delta; export
   fails if F1 drops > 2 pts. `export.reference_probabilities` re-implements
@@ -191,22 +198,45 @@ model_card.json           card + export parity + download sizes (+ bench.json fr
 ### 4.8 Browser runtime (`web/`, npm package `microdecide-web`)
 ```ts
 const m = await MicroDecide.load("/models/comment_moderation/v1", {
-  backend: "static",             // static (plain JS, default) | onnx
-  device: "auto",                // onnx only: webgpu if available, else wasm
+  backend: "static",             // static tier: static (plain JS, default) | onnx
+  device: "auto",                // onnx: wasm (measured faster than webgpu at this size)
+  dtype: "q8",                   // encoder: q8 (default) | fp32
 });
 const d = await m.decide("Buy cheap followers at ...");   // Decision
 m.isConfident(d);                // false → escalate (escalateUrl lands in M6)
 ```
-- Tokenization via `@huggingface/tokenizers` (transformers.js' tokenizer);
-  ONNX via `onnxruntime-web` (transformers.js' runtime), loaded lazily so the
-  static path never downloads it. transformers.js pipelines are used for tiers
-  with standard architectures (M4+); the static tier is a custom graph.
+- Static tier: `@huggingface/tokenizers` (transformers.js' tokenizer) + plain JS,
+  or its ONNX graph on `onnxruntime-web`. Encoder tier: transformers.js
+  `AutoTokenizer` + `AutoModelForSequenceClassification`, files served from the
+  page's origin only (never the Hub or a CDN, so it works offline). One shared
+  onnxruntime-web; loaded lazily so the static path never downloads it.
+- Device default is measured, not assumed (M2 Pro, Metal): static JS p95 0.1 ms;
+  encoder q8 WASM p50 2.5 ms vs WebGPU 9.8 ms fp32 / 14.6 ms q8 single-input.
+  WebGPU wins only on large batches at this size.
 - Model files cached in the browser (Cache API) after first load; the demo adds
   an app-shell service worker so it reloads and classifies with the network off
 - Runs in a Web Worker so the UI never blocks; batching supported
 - `web/demo`: paste text → decision + probabilities; **benchmark page** (load
   time, p50/p95, WASM vs WebGPU); **parity page** (browser vs Python labels).
   `npm run parity|bench|offline` drive them in headless Chromium.
+
+### 4.8.1 Training playground (`web/demo/playground.html`)
+Train a static-tier model entirely in the browser; data never leaves the page.
+- Labels + examples: example dataset, CSV/JSONL upload or paste (`text,label[,confidence]`),
+  one-by-one entry, or a labeling queue for unlabeled lines (keys 1–9, s = skip).
+  Persisted in `localStorage`.
+- Embedding base: a static model exported without a head
+  (`microdecide export-base minishlab/potion-base-8M` → `web/public/bases/`).
+- `trainStaticHead` (library export, `src/train.ts`) is the Python static recipe in
+  TS: standardize (folded), class-balanced (weighted, as sklearn ≥ 1.8) + sample-weighted
+  multinomial LR via L-BFGS, C by val macro F1, temperature + threshold + ECE.
+  Checked against sklearn/`calibrate.py` on a fixture; on the example task's own split
+  it reproduces the Python static-8M test F1 exactly (0.8589).
+- Output: "Save in this browser" writes the model folder into the Cache API that
+  `MicroDecide.load` reads first (`/playground-models/<name>`, no server, offline);
+  "Download .zip" gives the same folder (static JS backend; no ONNX file).
+- Measured (M2 Pro, 1,711 examples): potion-8M trains in 0.8 s, potion-32M in 1.4 s
+  (test F1 0.884, 75% handled alone); reloaded model matches the playground 100%.
 
 ### 4.9 Server: escalate + feedback
 `Runtime` wraps model + optional teacher:
@@ -231,9 +261,10 @@ microdecide init <task>            # scaffold spec yaml
 microdecide check <spec>           # validate a spec
 microdecide collect <spec>         # 4.1
 microdecide label <spec>           # 4.2
-microdecide train <spec> [--tier static|encoder|decoder|auto]
+microdecide train <spec> [--tier static|encoder|auto] [--base ID] [--max-download-mb N]
 microdecide eval <run_dir>
-microdecide export <run_dir> [--format onnx|numpy]
+microdecide compare <run_dir> <run_dir>...   # same test split, side by side → runs/<task>/compare.md
+microdecide export <run_dir>
 microdecide serve <run_dir> [--teacher]
 microdecide retrain <spec>
 microdecide run <spec>             # collect → label → train → eval → export

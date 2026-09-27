@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>microdecide · Train your own</title>
+<link rel="stylesheet" href="./style.css">
+<link rel="stylesheet" href="./playground.css">
+</head>
+<body class="wide">
+<nav aria-label="Main"><a href="./">microdecide</a><a href="./models.html">Models</a><b aria-current="page">Train your own</b><a href="./bench.html">Benchmark</a><a href="./parity.html">Parity</a></nav>
+<h1>Train your own</h1>
+<p>Train a text classifier in your browser. Define labels, add examples, train in a few seconds, then try it,
+save it in this browser or download it. Your data never leaves this page.</p>
+
+<h2>1. Task</h2>
+<div class="controls">
+  <label for="name">Name</label>
+  <input id="name" value="my_task" spellcheck="false">
+</div>
+<div class="controls">
+  <label for="new-label">Labels</label>
+  <span id="labels" class="chips"></span>
+  <input id="new-label" placeholder="add label…" size="12" spellcheck="false">
+  <button id="add-label">Add</button>
+</div>
+
+<h2>2. Examples <span id="count" class="muted"></span></h2>
+<div class="controls">
+  <button id="load-example">Load example dataset</button>
+  <label class="button">Upload CSV / JSONL<input id="upload" type="file" accept=".csv,.jsonl,.txt" hidden></label>
+  <button id="toggle-paste" class="secondary">Paste…</button>
+  <button id="clear" class="secondary">Clear</button>
+  <span id="ex-status" class="muted small"></span>
+</div>
+<div id="paste" hidden>
+  <textarea id="paste-text" placeholder="CSV with a header (text,label[,confidence]) or JSONL, or plain lines to label one by one"></textarea>
+  <div class="controls">
+    <button id="import-labeled">Import labeled CSV / JSONL</button>
+    <button id="queue-lines" class="secondary">Queue lines for labeling</button>
+  </div>
+</div>
+<div id="queue" class="queue" hidden>
+  <p class="muted small" id="queue-progress"></p>
+  <p id="queue-text" class="queue-text"></p>
+  <div id="queue-buttons" class="controls"></div>
+</div>
+<div class="controls add-one">
+  <input id="one-text" placeholder="Type an example…" aria-label="New example">
+  <select id="one-label" aria-label="Its label"></select>
+  <button id="add-one">Add</button>
+</div>
+<p id="per-label" class="counts small"></p>
+<div class="scroll"><table id="examples"></table></div>
+
+<h2>3. Train</h2>
+<div class="controls">
+  <label for="base">Embeddings</label>
+  <select id="base">
+    <option value="bases/potion-base-8M">potion-base-8M · 8 MB · fastest</option>
+    <option value="bases/potion-base-32M">potion-base-32M · 33 MB · more accurate</option>
+  </select>
+  <label for="target">Escalation precision</label>
+  <input id="target" type="number" min="0.5" max="1" step="0.01" value="0.97" style="width: 5em">
+  <label for="seed">Seed</label>
+  <input id="seed" type="number" value="42" style="width: 5em">
+  <button id="train">Train</button>
+</div>
+<div id="progress" class="progress" hidden><div></div><span></span></div>
+<div id="results" hidden>
+  <table id="tiles" class="kv"></table>
+  <div class="cols">
+    <section><h3>Per label (test)</h3><div class="scroll"><table id="per-label-table"></table></div></section>
+    <section><h3>Confusion (rows = true)</h3><div class="scroll"><table id="confusion"></table></div></section>
+  </div>
+  <h3>Most confident mistakes (test)</h3>
+  <div class="scroll"><table id="errors"></table></div>
+  <p class="muted small" id="train-meta"></p>
+</div>
+
+<div class="cols try">
+<section>
+  <h2>4. Try it</h2>
+  <textarea id="try" aria-label="Input" placeholder="Train a model, then type here…"></textarea>
+</section>
+<section aria-live="polite">
+  <h2>Result</h2>
+  <p class="muted small" id="try-empty">Train a model to see its answers here.</p>
+  <div id="try-result" hidden>
+    <table class="probs" id="try-bars"></table>
+    <p class="small" id="try-esc"></p>
+  </div>
+</section>
+</div>
+
+<h2>5. Use it</h2>
+<div class="controls">
+  <button id="save" disabled>Save in this browser</button>
+  <button id="download" class="secondary" disabled>Download .zip</button>
+  <span id="save-status" class="muted small"></span>
+</div>
+<pre id="snippet" hidden></pre>
+
+<script type="module" src="./playground.ts"></script>
+</body>
+</html>

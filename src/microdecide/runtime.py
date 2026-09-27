@@ -10,11 +10,11 @@ import numpy as np
 
 from microdecide.calibrate import softmax
 from microdecide.spec import Decision
-from microdecide.train import StaticClassifier
+from microdecide.train import classifier_for
 
 
 class Runtime:
-    def __init__(self, model: StaticClassifier, card: dict):
+    def __init__(self, model, card: dict):
         self.model = model
         self.card = card
         self.labels: list[str] = card["labels"]
@@ -27,9 +27,7 @@ class Runtime:
     def load(cls, run_dir: str | Path) -> Runtime:
         run_dir = Path(run_dir)
         card = json.loads((run_dir / "model_card.json").read_text())
-        if card["tier"] != "static":
-            raise NotImplementedError(f"runtime for tier {card['tier']!r} not implemented yet")
-        return cls(StaticClassifier.load(run_dir), card)
+        return cls(classifier_for(card["tier"]).load(run_dir), card)
 
     def probabilities(self, texts: list[str]) -> np.ndarray:
         texts = [t[: self.max_chars] for t in texts]

@@ -8,7 +8,7 @@ import { Model } from "./model.js";
 import type { Decision, LoadOptions, ModelInfo } from "./types.js";
 import type { Request } from "./worker.js";
 
-export type { Backend, Decision, Device, LoadOptions, ModelConfig, ModelInfo } from "./types.js";
+export type { Backend, Decision, Device, EncoderConfig, LoadOptions, ModelConfig, ModelInfo, StaticConfig } from "./types.js";
 export { clearModelCache } from "./fetch.js";
 export { Model } from "./model.js";
 
@@ -70,3 +70,6 @@ export class MicroDecide {
     this.worker?.terminate();
   }
 }
+export { StaticEmbedder, StaticTokenizer, applyHead } from "./engines.js";
+export { type EmbeddingBase, modelFiles, saveModelToCache, zipModel } from "./package.js";
+export { type Split, type TrainInput, type TrainReport, type TrainedHead, stratifiedSplit, trainStaticHead } from "./train.js";

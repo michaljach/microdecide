@@ -1,5 +1,5 @@
 import { MicroDecide } from "../src";
-import { CONFIGS, MODEL_URL, fmt, parityRows, webgpuAvailable } from "./common";
+import { MODEL_URL, ORT_WASM, configsFor, fmt, modelTier, parityRows, webgpuAvailable } from "./common";
 
 const MIN_AGREEMENT = 0.995;
 
@@ -13,6 +13,8 @@ interface ParityResult {
 }
 
 export interface ParityRun {
+  model: string;
+  tier: string;
   n: number;
   results: ParityResult[];
   pass: boolean;
@@ -20,16 +22,18 @@ export interface ParityRun {
 }
 
 /** Browser labels vs the Python labels in parity.jsonl, for every backend. */
-export async function runParity(): Promise<ParityRun> {
-  const rows = await parityRows();
+export async function runParity(model = MODEL_URL): Promise<ParityRun> {
+  const rows = await parityRows(model);
   const gpu = await webgpuAvailable();
+  const tier = await modelTier(model);
   const results: ParityResult[] = [];
-  for (const cfg of CONFIGS) {
+  for (const cfg of await configsFor(model)) {
+    if (!cfg.parity) continue;
     if (cfg.device === "webgpu" && !gpu) {
       results.push({ name: cfg.name, skipped: "WebGPU not available" });
       continue;
     }
-    const m = await MicroDecide.load(MODEL_URL, { backend: cfg.backend, device: cfg.device });
+    const m = await MicroDecide.load(model, { backend: cfg.backend, device: cfg.device, dtype: cfg.dtype, ortWasmPaths: ORT_WASM });
     const ds = await m.decideBatch(rows.map((r) => r.text));
     let same = 0;
     let maxDiff = 0;
@@ -41,7 +45,7 @@ export async function runParity(): Promise<ParityRun> {
     results.push({ name: cfg.name, device: m.info.device, agreement, maxProbDiff: maxDiff, pass: agreement >= MIN_AGREEMENT });
     m.dispose();
   }
-  return { n: rows.length, results, pass: results.every((r) => r.skipped || r.pass), webgpu: gpu };
+  return { model, tier, n: rows.length, results, pass: results.every((r) => r.skipped || r.pass), webgpu: gpu };
 }
 
 export const paritySummary = (r: ParityRun) =>

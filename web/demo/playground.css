@@ -1,0 +1,25 @@
+input:not([type="file"]) { font: inherit; padding: 4px 8px; border: 1px solid #999; border-radius: 3px; background: #fff; color: #000; }
+input:focus { outline: 2px solid #00e; outline-offset: -1px; }
+button.secondary, label.button { font: inherit; padding: 4px 13px; background: #fff; color: #00e; border: 1px solid #00e; border-radius: 3px; cursor: pointer; }
+button.secondary:hover, label.button:hover { background: #eef2ff; }
+button.secondary:disabled { color: #99f; border-color: #99f; background: #fff; }
+.chips { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.chip { display: inline-flex; align-items: center; gap: 2px; padding: 1px 2px 1px 8px; border: 1px solid #999; border-radius: 3px; font-size: 14px; }
+.chip button { padding: 0 6px; background: none; color: #666; }
+.chip button:hover { background: none; color: #c00; }
+.add-one input { flex: 1; min-width: 200px; }
+.counts { color: #666; display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 4px 0; }
+#examples td button { padding: 0 8px; background: none; color: #666; }
+#examples td button:hover { color: #c00; }
+.queue { margin: 12px 0; padding: 12px; border: 1px dashed #00e; }
+.queue p { margin: 0; }
+.queue-text { font-size: 18px; margin: 8px 0 12px !important; }
+#queue-buttons button { background: #fff; color: #000; border: 1px solid #999; }
+#queue-buttons button:hover { border-color: #00e; }
+.progress { position: relative; height: 22px; margin-top: 12px; background: #eee; overflow: hidden; }
+.progress div { height: 100%; width: 0; background: #00e; opacity: .3; transition: width .1s; }
+.progress span { position: absolute; inset: 0; display: grid; place-items: center; font-size: 13px; }
+#tiles { margin-top: 12px; }
+td.text { max-width: 520px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+th.num, td.num { text-align: right; }
+.cols.try { margin-top: 16px; }
