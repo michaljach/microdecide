@@ -6,7 +6,7 @@ export const url = (path: string) => BASE + path.replace(/^\/+/, "");
 export const ORT_WASM = url("ort/");
 
 export const params = new URLSearchParams(location.search);
-export const MODEL_URL = params.get("model") ?? url("models/comment_moderation/v2");
+export const MODEL_URL = params.get("model") ?? url("models/comment_moderation/v3");
 
 export interface ModelEntry {
   id: string;

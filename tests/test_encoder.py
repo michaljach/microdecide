@@ -57,12 +57,27 @@ def test_encoder_export(encoder_run):
 def test_auto_plan_orders_by_download_size(spec, monkeypatch):
     monkeypatch.setattr(static, "CANDIDATES", (("s-small", 5.0), ("s-big", 40.0)))
     monkeypatch.setattr(encoder, "CANDIDATES", (("e-small", 20.0), ("e-big", 30.0)))
-    assert train.plan(spec, None) == [("static", "s-small"), ("encoder", "e-small"), ("encoder", "e-big"), ("static", "s-big")]
+    # s-big (40 MB) is over the spec's 30 MB budget: not trained at all
+    assert train.plan(spec, None) == [("static", "s-small"), ("encoder", "e-small"), ("encoder", "e-big")]
     assert train.plan(spec, "encoder") == [("encoder", "e-small"), ("encoder", "e-big")]
     forced = spec.model_copy(update={"model": spec.model.model_copy(update={"tier": "encoder", "base": "my/model"})})
     assert train.plan(forced, None) == [("encoder", "my/model")]
+    tight = spec.model_copy(update={"targets": spec.targets.model_copy(update={"max_download_mb": 1})})
+    with pytest.raises(ValueError, match="no candidate fits"):
+        train.plan(tight, None)
     with pytest.raises(ValueError, match="explicit model.tier"):
         train.plan(spec.model_copy(update={"model": spec.model.model_copy(update={"base": "my/model"})}), None)
+
+
+def test_best_fit_prefers_quality_then_size():
+    def c(f1, mb):
+        return {"val_macro_f1": f1, "est_download_mb": mb}
+
+    # clearly better and within budget beats smaller; over budget never wins
+    assert train.best_fit([c(0.90, 8), c(0.94, 18), c(0.95, 40)], budget=30) == 1
+    # near-tie (within F1_TIE): the smaller one wins
+    assert train.best_fit([c(0.935, 8), c(0.94, 18)], budget=30) == 0
+    assert train.best_fit([c(0.9, 40)], budget=30) is None
 
 
 def test_compare_static_vs_encoder(toy_run, spec, tmp_path):

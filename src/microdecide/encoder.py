@@ -13,7 +13,7 @@ from pathlib import Path
 import numpy as np
 
 # (base, estimated q8 download MB ≈ params + tokenizer), smallest first; without model.base,
-# the smallest meeting targets wins
+# train.best_fit picks among those within budget
 CANDIDATES = (
     ("sentence-transformers/paraphrase-MiniLM-L3-v2", 18.4),
     ("sentence-transformers/all-MiniLM-L6-v2", 23.7),

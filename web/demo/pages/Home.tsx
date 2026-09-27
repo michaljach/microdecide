@@ -131,8 +131,8 @@ function Home() {
         <p>You write a task spec. Label descriptions matter: the teacher reads them when it labels data.</p>
         <pre><code>{SPEC}</code></pre>
         <p>
-          One command collects inputs, has the teacher label them (every call is cached on disk), trains the smallest tier
-          that meets your targets, calibrates it and exports it for the browser:
+          One command collects inputs, has the teacher label them (every call is cached on disk), trains every model that fits
+          your download budget, keeps the best one, calibrates it and exports it for the browser:
         </p>
         <pre><code>uv run microdecide run examples/comment_moderation.yaml</code></pre>
         <p>
@@ -156,8 +156,8 @@ function Home() {
           </tbody>
         </table>
         <p className="small">
-          With <code>tier: auto</code>, microdecide trains from the smallest tier up and keeps the smallest one that reaches{" "}
-          <code>min_macro_f1</code> within the download budget.
+          With <code>tier: auto</code>, microdecide trains every candidate that fits the download budget and keeps the
+          best fit: the highest validation F1, or the smaller model when two are practically tied.
         </p>
       </section>
     </Layout>
