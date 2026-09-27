@@ -1,5 +1,6 @@
 import { createReadStream, existsSync } from "node:fs";
 import { extname, resolve } from "node:path";
+import react from "@vitejs/plugin-react";
 import { type Plugin, defineConfig } from "vite";
 
 // COOP/COEP make the page crossOriginIsolated → multi-threaded WASM for onnxruntime-web.
@@ -24,7 +25,7 @@ const serveOrtRaw: Plugin = {
 };
 
 export default defineConfig({
-  plugins: [serveOrtRaw],
+  plugins: [react(), serveOrtRaw],
   // "/" locally; BASE=/microdecide/ for GitHub Pages (scripts/deploy-pages.sh)
   base: process.env.BASE ?? "/",
   root: "demo",
@@ -43,6 +44,8 @@ export default defineConfig({
         bench: resolve(import.meta.dirname, "demo/bench.html"),
         parity: resolve(import.meta.dirname, "demo/parity.html"),
         playground: resolve(import.meta.dirname, "demo/playground.html"),
+        models: resolve(import.meta.dirname, "demo/models.html"),
+        model: resolve(import.meta.dirname, "demo/model.html"),
       },
     },
   },

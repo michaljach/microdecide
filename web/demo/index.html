@@ -1,35 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>microdecide demo</title>
-  <link rel="stylesheet" href="./style.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>microdecide</title>
+<meta name="description" content="Turn one decision into a tiny, calibrated model that runs in your browser.">
+<link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <main>
-    <h1>microdecide · comment moderation</h1>
-    <p class="sub">A tiny classifier running entirely in your browser. <a id="bench-link" href="./bench.html">Benchmark</a> · <a id="parity-link" href="./parity.html">Parity</a> · <a href="./playground.html">Train your own</a></p>
-    <div class="card">
-      <div class="row" style="justify-content: space-between; margin-bottom: 10px">
-        <div class="row">
-          <label>Model <select id="model"></select></label>
-          <label>Backend <select id="backend"></select></label>
-        </div>
-        <span id="status" class="meta">loading…</span>
-      </div>
-      <textarea id="text" placeholder="Type a comment…">Finally dark mode! Been waiting for this forever.</textarea>
-      <div class="row chips" id="examples" style="margin-top: 8px"></div>
-    </div>
-    <div class="card" id="result" hidden>
-      <div class="row" style="justify-content: space-between">
-        <span class="label" id="label"></span>
-        <span class="badge" id="esc"></span>
-      </div>
-      <div id="bars" style="margin-top: 8px"></div>
-      <div class="meta" id="lat"></div>
-    </div>
-  </main>
-  <script type="module" src="./main.ts"></script>
+<div id="root"></div>
+<script type="module" src="./pages/Home.tsx"></script>
 </body>
 </html>

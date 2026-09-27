@@ -90,8 +90,8 @@ export interface ParityRow {
   probabilities: Record<string, number>;
 }
 
-export async function parityRows(): Promise<ParityRow[]> {
-  const res = await fetch(`${MODEL_URL}/parity.jsonl`);
+export async function parityRows(model = MODEL_URL): Promise<ParityRow[]> {
+  const res = await fetch(`${model}/parity.jsonl`);
   return (await res.text())
     .trim()
     .split("\n")

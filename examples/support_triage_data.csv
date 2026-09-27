@@ -1,0 +1,332 @@
+text,label,confidence,source
+I forgot my password and the reset email never arrives.,account,0.95,synthetic
+How do I change the email address on my account?,account,0.95,synthetic
+I lost my phone and can't get past two-factor authentication.,account,0.95,synthetic
+Please delete my account and all my data.,account,0.95,synthetic
+My account was locked after too many login attempts.,account,0.95,synthetic
+I think someone else logged into my account.,account,0.95,synthetic
+How do I transfer ownership of the workspace to a colleague?,account,0.95,synthetic
+Can I merge my two accounts into one?,account,0.95,synthetic
+I need to change my username.,account,0.95,synthetic
+Please remove my personal data under GDPR.,account,0.95,synthetic
+I no longer have access to the email I signed up with.,account,0.95,synthetic
+How do I enable two-factor authentication?,account,0.95,synthetic
+I want to log out of all devices.,account,0.95,synthetic
+Can I change the account owner? The previous admin left the company.,account,0.95,synthetic
+"My account shows as suspended, why?",account,0.95,synthetic
+How do I remove a former employee from our team?,account,0.95,synthetic
+I signed up with Google but want to use a password instead.,account,0.95,synthetic
+How do I make someone an admin?,account,0.95,synthetic
+I'm not receiving the verification email.,account,0.95,synthetic
+Can I have two accounts with the same email?,account,0.95,synthetic
+My login code isn't coming through by SMS.,account,0.95,synthetic
+How do I reset 2FA for a team member?,account,0.95,synthetic
+"I got an email about a login from another country, was that me?",account,0.95,synthetic
+I want to change my display name.,account,0.95,synthetic
+Please reactivate my deactivated account.,account,0.95,synthetic
+How can I export all my personal data?,account,0.95,synthetic
+I can't find where to update my phone number.,account,0.95,synthetic
+Our SSO login stopped letting new users in.,account,0.95,synthetic
+I'm locked out after changing my password.,account,0.95,synthetic
+"Remove my account, I don't use this service anymore.",account,0.95,synthetic
+How do I invite my coworker to the workspace?,account,0.95,synthetic
+"I accidentally deleted my account, can it be restored?",account,0.95,synthetic
+The password reset link says it has expired.,account,0.95,synthetic
+Can I change which email gets security alerts?,account,0.95,synthetic
+I want to leave a workspace I was invited to.,account,0.95,synthetic
+How do I set up a recovery email?,account,0.95,synthetic
+"My colleague can't see the projects I shared, how do I give them access?",account,0.95,synthetic
+"I think my account was hacked, the password was changed.",account,0.95,synthetic
+How do I switch between my personal and work accounts?,account,0.95,synthetic
+Unlink my Facebook login please.,account,0.95,synthetic
+How do I change my account's language and region?,account,0.95,synthetic
+Is there a way to require 2FA for everyone in my organization?,account,0.95,synthetic
+I need to update my profile photo but the option is greyed out.,account,0.95,synthetic
+How do I change a member's role from editor to viewer?,account,0.95,synthetic
+"The account email is my old work address, how do I update it?",account,0.95,synthetic
+"I'm getting ""account does not exist"" but I've used it for years.",account,0.95,synthetic
+How do I close my company account?,account,0.95,synthetic
+Please verify my identity so I can regain access.,account,0.95,synthetic
+Can I recover an account if I don't remember the email?,account,0.95,synthetic
+Revoke access for an old API token linked to my account.,account,0.95,synthetic
+"cant login, locked out",account,0.95,synthetic
+how to change password?,account,0.95,synthetic
+"new phone, lost authenticator codes, help",account,0.95,synthetic
+Please unlock my account.,account,0.95,synthetic
+Our IT team wants to enforce SAML for all logins.,account,0.95,synthetic
+Where do I manage active sessions?,account,0.95,synthetic
+I need to change the primary email on the team account.,account,0.95,synthetic
+Can I delete my profile but keep the team data?,account,0.95,synthetic
+How do I stop getting security code emails every login?,account,0.95,synthetic
+"The login page keeps saying invalid password, even after resetting.",account,0.75,synthetic
+"If I cancel, will my account be deleted?",account,0.75,synthetic
+Can I move my account to another region's data center?,account,0.75,synthetic
+Is my data deleted after I close my account or kept?,account,0.75,synthetic
+How do I add a second owner to the account?,account,0.75,synthetic
+I was charged twice for my subscription this month.,billing,0.95,synthetic
+Can I get a refund for the annual plan? I only used it for a week.,billing,0.95,synthetic
+My credit card was declined but I know it has funds.,billing,0.95,synthetic
+Where can I download my invoices for last year?,billing,0.95,synthetic
+Why did my bill go up from $12 to $18?,billing,0.95,synthetic
+Please cancel my subscription and stop charging me.,billing,0.95,synthetic
+"I need to update the card on file, it expired.",billing,0.95,synthetic
+Do you offer discounts for nonprofits?,billing,0.95,synthetic
+I was billed after my free trial even though I cancelled.,billing,0.95,synthetic
+Can I switch from monthly to yearly billing?,billing,0.95,synthetic
+The invoice is missing our company VAT number.,billing,0.95,synthetic
+How much does the Pro plan cost for 10 users?,billing,0.95,synthetic
+I got charged for seats we removed last month.,billing,0.95,synthetic
+Can I pay by bank transfer instead of card?,billing,0.95,synthetic
+Please send me a receipt for order #88213.,billing,0.95,synthetic
+There's an unknown charge from you on my statement.,billing,0.95,synthetic
+When will my refund show up on my card?,billing,0.95,synthetic
+Can you change the billing email to finance@acme.io?,billing,0.95,synthetic
+Is there a way to pause my subscription instead of cancelling?,billing,0.95,synthetic
+Your pricing page says $9 but I was charged $11.,billing,0.95,synthetic
+We need a quote for 50 licenses.,billing,0.95,synthetic
+The payment failed and now my account is on hold.,billing,0.95,synthetic
+Do you accept PayPal?,billing,0.95,synthetic
+I want to downgrade to the free plan at the end of this cycle.,billing,0.95,synthetic
+How is the prorated amount calculated when upgrading?,billing,0.95,synthetic
+I was double charged when I upgraded mid-month.,billing,0.95,synthetic
+Can we get an invoice addressed to our parent company?,billing,0.95,synthetic
+Is sales tax included in the price?,billing,0.95,synthetic
+My coupon code didn't apply at checkout.,billing,0.95,synthetic
+Please issue a credit note for the overcharge.,billing,0.95,synthetic
+Why am I still being billed for an add-on I removed?,billing,0.95,synthetic
+Our PO number needs to be on the invoice.,billing,0.95,synthetic
+What happens to my billing if I remove a team member?,billing,0.95,synthetic
+"Charged in USD but I'm in Europe, can I pay in EUR?",billing,0.95,synthetic
+I need a W-9 form for our accounting team.,billing,0.95,synthetic
+Can I get a partial refund for the outage days?,billing,0.95,synthetic
+The renewal price is higher than what I signed up for.,billing,0.95,synthetic
+Payment went through but the plan still shows Free.,billing,0.95,synthetic
+Is there an education discount for students?,billing,0.95,synthetic
+"Cancel my plan please, it's too expensive for us now.",billing,0.95,synthetic
+How do I stop auto-renewal?,billing,0.95,synthetic
+"My bank flagged your charge as suspicious, can you confirm the amount?",billing,0.95,synthetic
+"You charged my old card, I removed it months ago.",billing,0.95,synthetic
+"Can I get a refund, I bought the wrong plan by mistake.",billing,0.95,synthetic
+We were promised a 20% discount by your sales rep.,billing,0.95,synthetic
+Where do I find my billing history?,billing,0.95,synthetic
+"refund pls, charged 3 times",billing,0.95,synthetic
+what's the difference in price between team and business?,billing,0.95,synthetic
+The checkout page keeps saying payment method invalid.,billing,0.95,synthetic
+Can I split the invoice between two cost centers?,billing,0.95,synthetic
+Annual invoice total doesn't match the quote we received.,billing,0.95,synthetic
+Do you charge per user or per workspace?,billing,0.95,synthetic
+"I need the invoice in PDF, not just the email.",billing,0.95,synthetic
+Trial ended and I got charged $240 without warning.,billing,0.95,synthetic
+Can you waive the late fee this once?,billing,0.95,synthetic
+Is there a lifetime deal?,billing,0.95,synthetic
+The price in the app store is different from your website.,billing,0.95,synthetic
+Are there any hidden fees for extra storage?,billing,0.95,synthetic
+I want my money back.,billing,0.95,synthetic
+"Our finance team needs invoices sent monthly, not annually.",billing,0.95,synthetic
+Please remove my card details from your system.,billing,0.95,synthetic
+How do I apply the promo code from your newsletter?,billing,0.95,synthetic
+"Your latest update is great, but I'm confused why I'm paying for features I can't use on the basic plan.",billing,0.75,synthetic
+Can I add more storage without upgrading the whole plan?,billing,0.75,synthetic
+"If I delete my account, do I still get charged this month?",billing,0.75,synthetic
+The upgrade button charged me but nothing changed in my account.,billing,0.75,synthetic
+Is the Enterprise plan billed per seat or flat?,billing,0.75,synthetic
+"We're a startup, is there any special pricing?",billing,0.75,synthetic
+Does the price include priority support?,billing,0.75,synthetic
+The receipt email never arrived after I paid.,billing,0.75,synthetic
+The app crashes every time I open the settings page.,bug,0.95,synthetic
+Export to CSV produces an empty file.,bug,0.95,synthetic
+I get a 500 error when I try to upload an image.,bug,0.95,synthetic
+The sync is stuck at 99% since yesterday.,bug,0.95,synthetic
+Notifications stopped working after the latest update.,bug,0.95,synthetic
+Dark mode makes the text invisible in the sidebar.,bug,0.95,synthetic
+Search returns no results even for exact titles.,bug,0.95,synthetic
+The calendar shows events on the wrong day.,bug,0.95,synthetic
+When I click save nothing happens.,bug,0.95,synthetic
+"The page is blank on Safari, works fine in Chrome.",bug,0.95,synthetic
+"Attachments larger than 5 MB fail with ""network error"".",bug,0.95,synthetic
+The iOS app freezes when I scroll the feed.,bug,0.95,synthetic
+Dates are shown in the wrong timezone in reports.,bug,0.95,synthetic
+"The chart doesn't render, just a grey box.",bug,0.95,synthetic
+Copy-paste from Word breaks the formatting completely.,bug,0.95,synthetic
+Emails from your system go to spam with broken links.,bug,0.95,synthetic
+The mobile app drains my battery since version 4.2.,bug,0.95,synthetic
+"Clicking ""Forgot password"" gives a 404.",bug,0.95,synthetic
+The API returns duplicate records on page 2.,bug,0.95,synthetic
+Keyboard shortcuts stopped working in the editor.,bug,0.95,synthetic
+Uploading a PDF shows a spinner forever.,bug,0.95,synthetic
+Tasks I delete keep coming back after refresh.,bug,0.95,synthetic
+The totals in the invoice table are calculated wrong.,bug,0.95,synthetic
+Video calls drop after exactly 10 minutes.,bug,0.95,synthetic
+The Android widget shows yesterday's data.,bug,0.95,synthetic
+Filters reset every time I go back to the list.,bug,0.95,synthetic
+"I'm getting ""Something went wrong"" on the checkout page.",bug,0.95,synthetic
+Images are rotated sideways after upload.,bug,0.95,synthetic
+The desktop app won't launch on Windows 11.,bug,0.95,synthetic
+The progress bar goes backwards during import.,bug,0.95,synthetic
+Webhook requests are being sent twice.,bug,0.95,synthetic
+The drag and drop in the board view doesn't work on Firefox.,bug,0.95,synthetic
+Emoji show as question marks in comments.,bug,0.95,synthetic
+"The ""mark all as read"" button doesn't do anything.",bug,0.95,synthetic
+The app logs me out whenever I switch tabs.,bug,0.95,synthetic
+Printing a report cuts off the last column.,bug,0.95,synthetic
+Two-factor codes from the app are always rejected.,bug,0.95,synthetic
+"The map doesn't load, console shows a CORS error.",bug,0.95,synthetic
+Characters like ä and ß get corrupted when exported.,bug,0.95,synthetic
+The mobile layout overlaps the menu with the content.,bug,0.95,synthetic
+Duplicate notifications for every comment.,bug,0.95,synthetic
+Sorting by date puts March before January.,bug,0.95,synthetic
+The import silently skips rows with commas in them.,bug,0.95,synthetic
+After the update my saved templates are gone.,bug,0.95,synthetic
+The audio is out of sync with the video in recordings.,bug,0.95,synthetic
+The API docs example returns a validation error.,bug,0.95,synthetic
+The sidebar flickers constantly on my 4K monitor.,bug,0.95,synthetic
+The app crashes on launch after updating to iOS 18.,bug,0.95,synthetic
+The integration with Slack stopped posting messages.,bug,0.95,synthetic
+Zoom level resets every time I open a document.,bug,0.95,synthetic
+The graph shows negative values that don't exist in my data.,bug,0.95,synthetic
+The dropdown is cut off at the bottom of the screen.,bug,0.95,synthetic
+Autosave overwrote my changes with an older version.,bug,0.95,synthetic
+Can't scroll past the first 50 items in the list.,bug,0.95,synthetic
+The link preview shows someone else's page title.,bug,0.95,synthetic
+Recurring events are created twice.,bug,0.95,synthetic
+Error code E-1042 when connecting the printer.,bug,0.95,synthetic
+the app just shows a white screen now,bug,0.95,synthetic
+"broken again after update, won't open",bug,0.95,synthetic
+Pressing enter in the search box reloads the whole page.,bug,0.95,synthetic
+"I can't log in, it says ""unexpected error"" even with the right password.",bug,0.75,synthetic
+My payment went through but the page crashed and the order doesn't show.,bug,0.75,synthetic
+The invoice PDF download link is broken.,bug,0.75,synthetic
+"It's been slow all day, pages take 30 seconds to load.",bug,0.75,synthetic
+Is it normal that the export takes over an hour? It never finishes.,bug,0.75,synthetic
+"Not sure if this is a bug, but the numbers on the dashboard don't add up.",bug,0.75,synthetic
+The feature you announced doesn't show up in my app.,bug,0.75,synthetic
+"Please add a dark mode, my eyes are dying at night.",feature_request,0.95,synthetic
+"It would be great if we could export to Excel, not just CSV.",feature_request,0.95,synthetic
+Can you add support for Apple Pencil?,feature_request,0.95,synthetic
+I'd love an integration with Notion.,feature_request,0.95,synthetic
+Please let us set different time zones per project.,feature_request,0.95,synthetic
+Could you add a Gantt chart view?,feature_request,0.95,synthetic
+Would be nice to have keyboard shortcuts for moving tasks.,feature_request,0.95,synthetic
+Please add two-level subtasks.,feature_request,0.95,synthetic
+Any plans for a Linux desktop app?,feature_request,0.95,synthetic
+"We need SAML SSO for our enterprise rollout, please add it.",feature_request,0.95,synthetic
+Can you make the sidebar collapsible?,feature_request,0.95,synthetic
+Suggestion: allow custom colors for tags.,feature_request,0.95,synthetic
+It'd be awesome if reports could be scheduled.,feature_request,0.95,synthetic
+Please support right-to-left languages like Arabic.,feature_request,0.95,synthetic
+I wish I could snooze notifications for an hour.,feature_request,0.95,synthetic
+Add an option to hide completed tasks by default.,feature_request,0.95,synthetic
+Feature request: bulk edit for due dates.,feature_request,0.95,synthetic
+Could you add a public API for comments?,feature_request,0.95,synthetic
+Please bring back the compact list view.,feature_request,0.95,synthetic
+It would help if we could attach files to comments.,feature_request,0.95,synthetic
+Can you add a word counter to the editor?,feature_request,0.95,synthetic
+Please add Google Sheets sync.,feature_request,0.95,synthetic
+Would love recurring reminders on mobile.,feature_request,0.95,synthetic
+Could the search support regex?,feature_request,0.95,synthetic
+Please allow emoji reactions on messages.,feature_request,0.95,synthetic
+It'd be great to have an offline mode on mobile.,feature_request,0.95,synthetic
+Add a way to star or favorite documents.,feature_request,0.95,synthetic
+We'd like per-user permissions on individual fields.,feature_request,0.95,synthetic
+Please add a calendar integration for Outlook.,feature_request,0.95,synthetic
+Can you add an undo button for deletes?,feature_request,0.95,synthetic
+Suggest adding templates for common workflows.,feature_request,0.95,synthetic
+Would be useful to have a changelog inside the app.,feature_request,0.95,synthetic
+Please add a Swedish translation.,feature_request,0.95,synthetic
+Allow us to export the whole workspace as a backup.,feature_request,0.95,synthetic
+I'd pay extra for a timeline view.,feature_request,0.95,synthetic
+Please let us customize the email notification text.,feature_request,0.95,synthetic
+Add support for importing from Trello.,feature_request,0.95,synthetic
+It would be nice if the widget showed upcoming tasks.,feature_request,0.95,synthetic
+Could you add audit logs for admins?,feature_request,0.95,synthetic
+Please make the font size adjustable.,feature_request,0.95,synthetic
+A pomodoro timer built in would be amazing.,feature_request,0.95,synthetic
+Would love to see a native Apple Watch app.,feature_request,0.95,synthetic
+Let us pin comments to the top of a thread.,feature_request,0.95,synthetic
+Please support webhooks for task deletion too.,feature_request,0.95,synthetic
+Add the ability to set a default assignee per project.,feature_request,0.95,synthetic
+Can you add a “focus mode” that hides everything but the editor?,feature_request,0.95,synthetic
+Would be great if charts could be exported as PNG.,feature_request,0.95,synthetic
+Please add multi-currency support to invoices.,feature_request,0.95,synthetic
+Add a read-only guest role.,feature_request,0.95,synthetic
+I'd love a way to link tasks across projects.,feature_request,0.95,synthetic
+It would be nice to have voice notes on mobile.,feature_request,0.95,synthetic
+Please add a command palette like in VS Code.,feature_request,0.95,synthetic
+Could you support Markdown tables?,feature_request,0.95,synthetic
+We need an EU data residency option.,feature_request,0.95,synthetic
+Please let us schedule messages to send later.,feature_request,0.95,synthetic
+Add a dark theme for the email digests too.,feature_request,0.95,synthetic
+Idea: let users vote on feature requests in the app.,feature_request,0.95,synthetic
+it'd be cool if we could drag tasks between boards,feature_request,0.95,synthetic
+pls add spotify integration lol,feature_request,0.95,synthetic
+Why is there no way to export to PDF? Please add it.,feature_request,0.75,synthetic
+Is there any plan to support SSO? We really need it.,feature_request,0.75,synthetic
+The app would be perfect if it had a calendar view.,feature_request,0.75,synthetic
+"I can't find a bulk delete option, can you add one?",feature_request,0.75,synthetic
+"Does it support Zapier? If not, please consider it.",feature_request,0.75,synthetic
+"It's annoying that I can't reorder columns, please fix.",feature_request,0.75,synthetic
+How do I export my project to PDF?,how_to,0.95,synthetic
+Where can I find the keyboard shortcuts?,how_to,0.95,synthetic
+How do I share a board with someone outside my team?,how_to,0.95,synthetic
+Is there a way to duplicate a template?,how_to,0.95,synthetic
+How can I connect the app to Google Calendar?,how_to,0.95,synthetic
+How do I set up recurring tasks?,how_to,0.95,synthetic
+Can you explain how the tags work?,how_to,0.95,synthetic
+How do I change the default currency in reports?,how_to,0.95,synthetic
+What's the best way to import data from Excel?,how_to,0.95,synthetic
+How do I archive old projects without deleting them?,how_to,0.95,synthetic
+Where do I find the API key for integrations?,how_to,0.95,synthetic
+How do I turn off email notifications for comments?,how_to,0.95,synthetic
+Can I schedule a report to be emailed weekly?,how_to,0.95,synthetic
+How do I add a custom field to tasks?,how_to,0.95,synthetic
+How do I embed a form on my website?,how_to,0.95,synthetic
+Is it possible to work offline in the desktop app?,how_to,0.95,synthetic
+How do I undo a bulk edit?,how_to,0.95,synthetic
+How do I filter by assignee and due date together?,how_to,0.95,synthetic
+"What does the ""sync mode"" setting actually do?",how_to,0.95,synthetic
+How do I set a project deadline?,how_to,0.95,synthetic
+How can I print the calendar view?,how_to,0.95,synthetic
+How do I add a logo to my invoices?,how_to,0.95,synthetic
+How do I use the API to create a record?,how_to,0.95,synthetic
+Where can I see the change history of a document?,how_to,0.95,synthetic
+How do I move a task to another project?,how_to,0.95,synthetic
+How do I set up automations when a status changes?,how_to,0.95,synthetic
+Can I use markdown in comments?,how_to,0.95,synthetic
+How do I change the start day of the week to Monday?,how_to,0.95,synthetic
+How do I merge two lists?,how_to,0.95,synthetic
+How do I set permissions on a single folder?,how_to,0.95,synthetic
+Can I pin a project to the top of the sidebar?,how_to,0.95,synthetic
+How do I restore a deleted file from the trash?,how_to,0.95,synthetic
+How do I set up the Zapier integration?,how_to,0.95,synthetic
+Where do I change the theme to dark mode?,how_to,0.95,synthetic
+How do I create a dashboard with multiple charts?,how_to,0.95,synthetic
+Can I bulk upload users with a CSV?,how_to,0.95,synthetic
+How do I translate the interface into German?,how_to,0.95,synthetic
+How can I see how much storage I'm using?,how_to,0.95,synthetic
+How do I install the browser extension?,how_to,0.95,synthetic
+What's the difference between a project and a workspace?,how_to,0.95,synthetic
+How do I set up webhooks?,how_to,0.95,synthetic
+How do I mention a teammate in a comment?,how_to,0.95,synthetic
+How do I export only the filtered rows?,how_to,0.95,synthetic
+"Is there a mobile app for Android, and how do I sign in to it?",how_to,0.95,synthetic
+How do I lock a document so others can't edit it?,how_to,0.95,synthetic
+How do I group tasks by priority?,how_to,0.95,synthetic
+Is there a way to snooze notifications during the weekend?,how_to,0.95,synthetic
+How do I add a signature to outgoing emails?,how_to,0.95,synthetic
+How do I change the column order in the table?,how_to,0.95,synthetic
+Can you walk me through setting up a new pipeline?,how_to,0.95,synthetic
+How do I create a public link for a file?,how_to,0.95,synthetic
+how do i add a new column,how_to,0.95,synthetic
+where is the export button??,how_to,0.95,synthetic
+How do I make a copy of a whole workspace?,how_to,0.95,synthetic
+Is there a video tutorial for getting started?,how_to,0.95,synthetic
+How do I use the search operators like from: and has:?,how_to,0.95,synthetic
+How do I set reminders for tasks?,how_to,0.95,synthetic
+Can I customize the email templates?,how_to,0.95,synthetic
+How do I connect my own domain?,how_to,0.95,synthetic
+Is there a way to get a weekly summary of my team's activity?,how_to,0.75,synthetic
+Can the app automatically assign tasks round-robin?,how_to,0.75,synthetic
+How do I see invoices for my team? I'm an admin.,how_to,0.75,synthetic
+Where do I find the settings to add more seats?,how_to,0.75,synthetic
+Can I change who gets billing emails? Where is that setting?,how_to,0.75,synthetic
+"Does the API support pagination, and how?",how_to,0.75,synthetic

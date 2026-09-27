@@ -1,9 +1,9 @@
 import { MicroDecide } from "../src";
-import { MODEL_URL, ORT_WASM, configsFor, fmt, modelTier, parityRows, webgpuAvailable } from "./common";
+import { MODEL_URL, ORT_WASM, configsFor, modelTier, parityRows, webgpuAvailable } from "./common";
 
-const MIN_AGREEMENT = 0.995;
+export const MIN_AGREEMENT = 0.995;
 
-interface ParityResult {
+export interface ParityResult {
   name: string;
   device?: string;
   agreement?: number;
@@ -12,18 +12,28 @@ interface ParityResult {
   skipped?: string;
 }
 
-async function main() {
-  const rows = await parityRows();
+export interface ParityRun {
+  model: string;
+  tier: string;
+  n: number;
+  results: ParityResult[];
+  pass: boolean;
+  webgpu: boolean;
+}
+
+/** Browser labels vs the Python labels in parity.jsonl, for every backend. */
+export async function runParity(model = MODEL_URL): Promise<ParityRun> {
+  const rows = await parityRows(model);
   const gpu = await webgpuAvailable();
-  const tier = await modelTier();
+  const tier = await modelTier(model);
   const results: ParityResult[] = [];
-  for (const cfg of await configsFor()) {
+  for (const cfg of await configsFor(model)) {
     if (!cfg.parity) continue;
     if (cfg.device === "webgpu" && !gpu) {
       results.push({ name: cfg.name, skipped: "WebGPU not available" });
       continue;
     }
-    const m = await MicroDecide.load(MODEL_URL, { backend: cfg.backend, device: cfg.device, dtype: cfg.dtype, ortWasmPaths: ORT_WASM });
+    const m = await MicroDecide.load(model, { backend: cfg.backend, device: cfg.device, dtype: cfg.dtype, ortWasmPaths: ORT_WASM });
     const ds = await m.decideBatch(rows.map((r) => r.text));
     let same = 0;
     let maxDiff = 0;
@@ -35,19 +45,5 @@ async function main() {
     results.push({ name: cfg.name, device: m.info.device, agreement, maxProbDiff: maxDiff, pass: agreement >= MIN_AGREEMENT });
     m.dispose();
   }
-  const pass = results.every((r) => r.skipped || r.pass);
-  document.getElementById("sub")!.innerHTML =
-    `${rows.length} test inputs vs Python · target ≥ ${MIN_AGREEMENT * 100}% · <b class="${pass ? "pass" : "fail"}">${pass ? "PASS" : "FAIL"}</b>`;
-  document.getElementById("table")!.innerHTML =
-    "<tr><th>backend</th><th>device</th><th>label agreement</th><th>max |Δp|</th><th></th></tr>" +
-    results
-      .map((r) =>
-        r.skipped
-          ? `<tr><td>${r.name}</td><td colspan="4" class="meta">${r.skipped}</td></tr>`
-          : `<tr><td>${r.name}</td><td>${r.device}</td><td>${fmt(r.agreement! * 100, 2)}%</td><td>${r.maxProbDiff!.toExponential(2)}</td><td class="${r.pass ? "pass" : "fail"}">${r.pass ? "✓" : "✗"}</td></tr>`,
-      )
-      .join("");
-  (window as unknown as { __result: unknown }).__result = { model: MODEL_URL, tier, n: rows.length, results, pass, webgpu: gpu };
+  return { model, tier, n: rows.length, results, pass: results.every((r) => r.skipped || r.pass), webgpu: gpu };
 }
-
-void main();

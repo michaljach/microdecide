@@ -4,7 +4,7 @@ import { MODEL_URL, ORT_WASM, configsFor, fmt, gpuAdapterInfo, modelTier, parity
 
 const N_SINGLE = 200;
 
-interface BenchResult {
+export interface BenchResult {
   name: string;
   device?: string;
   coldLoadMs?: number;
@@ -28,12 +28,12 @@ async function memoryMB(): Promise<number | null> {
   }
 }
 
-async function bench(cfg: Config, texts: string[]): Promise<BenchResult> {
+async function bench(model: string, cfg: Config, texts: string[]): Promise<BenchResult> {
   await clearModelCache();
   const opts = { backend: cfg.backend, device: cfg.device, dtype: cfg.dtype, ortWasmPaths: ORT_WASM };
-  const cold = await MicroDecide.load(MODEL_URL, opts);
+  const cold = await MicroDecide.load(model, opts);
   cold.dispose();
-  const m = await MicroDecide.load(MODEL_URL, opts); // warm: model files from the Cache API
+  const m = await MicroDecide.load(model, opts); // warm: model files from the Cache API
   await m.decide(texts[0]);
   const wall: number[] = [];
   const engine: number[] = [];
@@ -62,40 +62,34 @@ async function bench(cfg: Config, texts: string[]): Promise<BenchResult> {
   };
 }
 
-async function main() {
-  const texts = (await parityRows()).map((r) => r.text);
+export interface BenchRun {
+  model: string;
+  tier: string;
+  gpuAdapter: Record<string, string> | null;
+  results: BenchResult[];
+  webgpu: boolean;
+  crossOriginIsolated: boolean;
+  userAgent: string;
+  n: number;
+}
+
+/** Cold/warm load, per-input latency and batch throughput for every backend; `onUpdate` after each. */
+export async function runBench(model = MODEL_URL, onUpdate: (rs: BenchResult[]) => void = () => {}): Promise<BenchRun> {
+  const texts = (await parityRows(model)).map((r) => r.text);
   const gpu = await webgpuAvailable();
-  const tier = await modelTier();
+  const tier = await modelTier(model);
   const results: BenchResult[] = [];
-  for (const cfg of await configsFor()) {
+  for (const cfg of await configsFor(model)) {
     if (cfg.device === "webgpu" && !gpu) {
       results.push({ name: cfg.name, error: "WebGPU not available" });
-      continue;
+    } else {
+      try {
+        results.push(await bench(model, cfg, texts));
+      } catch (err) {
+        results.push({ name: cfg.name, error: err instanceof Error ? err.message : String(err) });
+      }
     }
-    try {
-      results.push(await bench(cfg, texts));
-    } catch (err) {
-      results.push({ name: cfg.name, error: err instanceof Error ? err.message : String(err) });
-    }
-    render(results);
+    onUpdate(results);
   }
-  render(results);
-  document.getElementById("sub")!.textContent =
-    `${MODEL_URL} · ${texts.length} test inputs · crossOriginIsolated=${crossOriginIsolated} · WebGPU=${gpu} · ${navigator.userAgent}`;
-  (window as unknown as { __result: unknown }).__result = { model: MODEL_URL, tier, gpuAdapter: await gpuAdapterInfo(), results, webgpu: gpu, crossOriginIsolated, userAgent: navigator.userAgent };
+  return { model, tier, gpuAdapter: await gpuAdapterInfo(), results, webgpu: gpu, crossOriginIsolated, userAgent: navigator.userAgent, n: texts.length };
 }
-
-function render(rs: BenchResult[]) {
-  const head = "<tr><th>backend</th><th>cold load</th><th>warm load</th><th>model</th><th>p50</th><th>p95</th><th>engine p50</th><th>batch/input</th><th>memory</th></tr>";
-  document.getElementById("table")!.innerHTML =
-    head +
-    rs
-      .map((r) =>
-        r.error
-          ? `<tr><td>${r.name}</td><td colspan="8" class="meta">${r.error}</td></tr>`
-          : `<tr><td>${r.name}</td><td>${fmt(r.coldLoadMs!, 0)} ms</td><td>${fmt(r.warmLoadMs!, 0)} ms</td><td>${fmt(r.modelMB!, 1)} MB</td><td>${fmt(r.p50Ms!)} ms</td><td>${fmt(r.p95Ms!)} ms</td><td>${fmt(r.engineP50Ms!, 3)} ms</td><td>${fmt(r.batchMsPerInput!, 3)} ms</td><td>${r.memoryMB == null ? "—" : fmt(r.memoryMB, 0) + " MB"}</td></tr>`,
-      )
-      .join("");
-}
-
-void main();

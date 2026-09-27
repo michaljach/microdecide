@@ -52,8 +52,8 @@ uv run microdecide compare runs/comment_moderation/v1 runs/comment_moderation/v2
 uv run microdecide export-base minishlab/potion-base-8M   # embedding base for the playground
 
 cd web && npm install
-npm run sync-model               # copy every runs/*/v*/export + ORT wasm into public/
-npm run dev                      # demo at /, /bench.html, /parity.html
+npm run sync-model               # copy every runs/*/v*/export + ORT wasm into public/, write models/index.json
+npm run dev                      # demo at /, /models.html, /model.html?model=…, /playground.html, /bench.html, /parity.html
 npm test && npm run typecheck    # vitest (incl. Node parity vs Python) + tsc
 MODEL=/models/<task>/<version> npm run parity   # headless Chromium: labels vs Python ≥ 99.5%
 npm run bench                    # → export/bench.json; `microdecide eval` adds it to report.md
