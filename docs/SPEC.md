@@ -199,7 +199,7 @@ model_card.json           card + export parity + download sizes (+ bench.json fr
 
 ### 4.8 Browser runtime (`web/`, npm package `microdecide-web`)
 ```ts
-const m = await MicroDecide.load("/models/comment_moderation/v1", {
+const m = await MicroDecide.load("/models/comment_moderation/v3", {
   backend: "static",             // static tier: static (plain JS, default) | onnx
   device: "auto",                // onnx: wasm (measured faster than webgpu at this size)
   dtype: "q8",                   // encoder: q8 (default) | fp32

@@ -7,7 +7,7 @@ files are cached with the Cache API. Encoder models must be served from the page
 ```ts
 import { MicroDecide } from "microdecide-web";
 
-const m = await MicroDecide.load("/models/comment_moderation/v1"); // an `microdecide export` folder
+const m = await MicroDecide.load("/models/comment_moderation/v3"); // an `microdecide export` folder
 const d = await m.decide("Buy cheap followers at ...");
 // { label: "spam", probabilities: {...}, confidence: 0.99, source: "micro", ... }
 if (!m.isConfident(d)) { /* below the calibrated threshold: escalate */ }
@@ -37,7 +37,7 @@ so your bundler (Vite, webpack 5, …) compiles the worker and its dependencies.
 ## Demo site
 
 `demo/` is a static React site (Vite, one HTML entry per page, so deep links work on GitHub Pages
-without a router): `index.html` (demo, benchmark, parity), `models.html` (catalog from
+without a router): `index.html` (demo, benchmark, parity), `repository.html` (catalog from
 `models/index.json`), `model.html?model=…`, `playground.html` (train your own), `bench.html`,
 `parity.html`. Pages live in `demo/pages/`, shared components in `demo/ui/`. React is a dev
 dependency only; the library in `src/` doesn't use it.

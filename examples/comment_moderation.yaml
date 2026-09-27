@@ -11,7 +11,7 @@ output:
     spam: Ads, links to unrelated products or services, SEO junk, scams.
     toxic: Insults, harassment, threats or hate toward people or groups.
 model:
-  tier: auto              # auto | static | encoder — auto = best fit within the download budget
+  tier: encoder           # auto | static | encoder — auto = best fit within the download budget
   base: null              # e.g. sentence-transformers/all-MiniLM-L6-v2 with tier: encoder
   quantization: q8
 # PoC: no API key yet. Inputs + labels in the CSV were written offline by Claude

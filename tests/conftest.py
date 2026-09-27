@@ -29,7 +29,10 @@ def _isolated_cache(tmp_path, monkeypatch):
 
 @pytest.fixture
 def spec():
-    return load_spec(EXAMPLE)
+    """The example spec with tier: auto, so pipeline tests exercise both tiers (the example itself
+    pins tier: encoder)."""
+    s = load_spec(EXAMPLE)
+    return s.model_copy(update={"model": s.model.model_copy(update={"tier": "auto"})})
 
 
 def tiny_static_model(dim: int = 32, int8: bool = True):

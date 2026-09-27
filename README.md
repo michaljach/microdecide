@@ -35,7 +35,7 @@ The test data is synthetic — expect lower numbers on real comments.
 ```bash
 uv sync
 uv run microdecide run examples/comment_moderation.yaml   # collect → label → train → eval → export
-uv run microdecide compare runs/comment_moderation/v1 runs/comment_moderation/v2
+uv run microdecide compare runs/comment_moderation/v2 runs/comment_moderation/v3
 
 cd web && npm install && npm run sync-model && npm run dev # demo, benchmark, parity, playground
 ```

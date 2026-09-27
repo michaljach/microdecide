@@ -88,7 +88,7 @@ function Model() {
 
   return (
     <Layout page="model" wide model={MODEL_URL}>
-      <p><a href="./models.html">← All models</a></p>
+      <p><a href="./repository.html">← Repository</a></p>
       {m ? (
         <>
           <h1>{title(m.task)} <span className="muted">{m.version}</span></h1>

@@ -36,18 +36,18 @@ function Item({ m, older }: { m: CatalogEntry; older: CatalogEntry[] }) {
   );
 }
 
-function Models() {
+function Repository() {
   const index = useModels();
   const byTask = new Map<string, CatalogEntry[]>();
   for (const m of catalogOf(index).sort(byVersionDesc)) byTask.set(m.task, [...(byTask.get(m.task) ?? []), m]);
   const groups = [...byTask.values()].sort((a, b) => a[0].task.localeCompare(b[0].task));
 
   return (
-    <Layout page="models">
-      <h1>Models</h1>
+    <Layout page="repository">
+      <h1>Repository</h1>
       <p>
-        Ready-made models for common decisions. Each one runs in your browser, is a few MB to download and was trained
-        with microdecide from a task spec in <code>examples/</code>. Open one to try it.
+        Ready-made models for common decisions. Each one is a small fine-tuned encoder (about 24 MB) that runs in your
+        browser, trained with microdecide from a task spec in <code>examples/</code>. Open one to try it.
       </p>
       <ul className="model-list">
         {!index && <li className="muted">loading…</li>}
@@ -65,4 +65,4 @@ function Models() {
   );
 }
 
-mount(<Models />);
+mount(<Repository />);

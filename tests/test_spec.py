@@ -23,7 +23,7 @@ def test_example_spec_loads():
     s = load_spec(EXAMPLE)
     assert s.task == "comment_moderation"
     assert s.labels == ["ok", "spam", "toxic"]
-    assert s.model.tier == "auto"
+    assert s.model.tier == "encoder"
     assert s.targets.min_macro_f1 == 0.90
 
 
@@ -194,7 +194,7 @@ def test_cli_check(tmp_path):
     r = CliRunner().invoke(app, ["check", str(EXAMPLE)])
     assert r.exit_code == 0 and "ok" in r.output
     bad = tmp_path / "bad.yaml"
-    bad.write_text(EXAMPLE.read_text().replace("tier: auto", "tier: huge"))
+    bad.write_text(EXAMPLE.read_text().replace("tier: encoder", "tier: huge"))
     r = CliRunner().invoke(app, ["check", str(bad)])
     assert r.exit_code == 1
     assert "model.tier" in r.output
