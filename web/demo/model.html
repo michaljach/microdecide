@@ -4,52 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>microdecide · Model</title>
+<meta name="description" content="Try a microdecide model in your browser.">
 <link rel="stylesheet" href="./style.css">
 </head>
-<body class="wide">
-<nav aria-label="Main"><a href="./">microdecide</a><a href="./models.html">Models</a><a id="nav-bench" href="./bench.html">Benchmark</a><a id="nav-parity" href="./parity.html">Parity</a></nav>
-<p><a href="./models.html">← All models</a></p>
-<h1 id="title">Model</h1>
-<p id="description"></p>
-<p class="muted small" id="facts"></p>
-
-<div class="cols">
-<section>
-  <h2>Input</h2>
-  <div class="controls">
-    <label for="backend">Backend</label>
-    <select id="backend"></select>
-  </div>
-  <textarea id="text" aria-label="Input" placeholder="Type something…"></textarea>
-  <ul class="examples" id="examples" aria-label="Examples"></ul>
-</section>
-<section aria-live="polite">
-  <h2>Result</h2>
-  <p id="status" class="muted small">loading…</p>
-  <div id="result" hidden>
-    <table class="probs" id="probs"></table>
-    <p class="small" id="verdict"></p>
-    <p class="muted small" id="lat"></p>
-  </div>
-</section>
-</div>
-
-<div class="cols">
-<section>
-  <h2>Labels</h2>
-  <div class="scroll"><table id="labels"></table></div>
-</section>
-<section>
-  <h2>Quality</h2>
-  <p class="small" id="quality-note"></p>
-  <table class="kv" id="quality"></table>
-</section>
-</div>
-
-<h2>Use it</h2>
-<pre><code id="usage"></code></pre>
-<p class="small"><a id="report" href="#">Full evaluation report</a> · <a id="bench" href="./bench.html">Benchmark this model</a> · <a id="parity" href="./parity.html">Check parity</a></p>
-
-<script type="module" src="./model.ts"></script>
+<body>
+<div id="root"></div>
+<script type="module" src="./pages/Model.tsx"></script>
 </body>
 </html>

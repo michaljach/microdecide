@@ -4,19 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>microdecide · Parity</title>
+<meta name="description" content="Browser vs Python parity check for a microdecide model.">
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<nav aria-label="Main"><a href="./">microdecide</a><a href="./bench.html">Benchmark</a><b aria-current="page">Parity</b></nav>
-<h1>Parity</h1>
-<p class="muted small" id="sub">running…</p>
-<div class="scroll"><table id="table"></table></div>
-<script type="module">
-  import { paritySummary, parityTable, runParity } from "./parity.ts";
-  const r = await runParity();
-  document.getElementById("sub").innerHTML = paritySummary(r);
-  document.getElementById("table").innerHTML = parityTable(r.results);
-  window.__result = r;
-</script>
+<div id="root"></div>
+<script type="module" src="./pages/Parity.tsx"></script>
 </body>
 </html>

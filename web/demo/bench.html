@@ -4,21 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>microdecide · Benchmark</title>
+<meta name="description" content="Browser benchmark for a microdecide model.">
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<nav aria-label="Main"><a href="./">microdecide</a><b aria-current="page">Benchmark</b><a href="./parity.html">Parity</a></nav>
-<h1>Benchmark</h1>
-<p class="muted small" id="sub">running…</p>
-<div class="scroll"><table id="table"></table></div>
-<script type="module">
-  import { benchTable, runBench } from "./bench.ts";
-  import { MODEL_URL } from "./common.ts";
-  const table = document.getElementById("table");
-  const r = await runBench((rs) => (table.innerHTML = benchTable(rs)));
-  document.getElementById("sub").textContent =
-    `${MODEL_URL} · ${r.n} test inputs · crossOriginIsolated=${r.crossOriginIsolated} · WebGPU=${r.webgpu} · ${r.userAgent}`;
-  window.__result = r;
-</script>
+<div id="root"></div>
+<script type="module" src="./pages/Bench.tsx"></script>
 </body>
 </html>

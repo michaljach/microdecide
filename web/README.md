@@ -34,4 +34,12 @@ The demo's `playground.html` is a full UI around this (see docs/SPEC.md §4.8.1)
 The package ships as plain ESM that uses `new Worker(new URL("./worker.js", import.meta.url))`,
 so your bundler (Vite, webpack 5, …) compiles the worker and its dependencies.
 
+## Demo site
+
+`demo/` is a static React site (Vite, one HTML entry per page, so deep links work on GitHub Pages
+without a router): `index.html` (demo, benchmark, parity), `models.html` (catalog from
+`models/index.json`), `model.html?model=…`, `playground.html` (train your own), `bench.html`,
+`parity.html`. Pages live in `demo/pages/`, shared components in `demo/ui/`. React is a dev
+dependency only; the library in `src/` doesn't use it.
+
 Development: see the Commands section in [CLAUDE.md](../CLAUDE.md).

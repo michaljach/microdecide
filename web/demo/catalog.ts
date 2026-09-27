@@ -1,5 +1,6 @@
 // Catalog entries from models/index.json (written by scripts/sync-model.mjs) with the card fields
 // the Models and model pages show.
+import { useEffect, useState } from "react";
 import { type ModelEntry, modelIndex } from "./common";
 
 export interface LabelMetrics {
@@ -31,16 +32,24 @@ export interface CatalogEntry extends ModelEntry {
   examples: string[];
 }
 
-export async function loadCatalog(): Promise<CatalogEntry[]> {
-  return (await modelIndex()).filter((m): m is CatalogEntry => "task" in m && "labels" in m);
+const isCatalogEntry = (m: ModelEntry): m is CatalogEntry => "task" in m && "labels" in m;
+
+/** All models in the index (null while loading); catalog entries carry the card fields. */
+export function useModels(): ModelEntry[] | null {
+  const [models, setModels] = useState<ModelEntry[] | null>(null);
+  useEffect(() => void modelIndex().then(setModels), []);
+  return models;
 }
+
+export const catalogOf = (models: ModelEntry[] | null): CatalogEntry[] => (models ?? []).filter(isCatalogEntry);
 
 /** support_triage → Support triage */
 export const title = (task: string) => task.charAt(0).toUpperCase() + task.slice(1).replaceAll("_", " ");
 
-export const esc = (s: string) =>
-  s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
-
 export const pct = (x: number | null | undefined, d = 1) => (x == null ? "—" : `${(x * 100).toFixed(d)}%`);
 
 export const modelPage = (m: ModelEntry) => `./model.html?model=${encodeURIComponent(m.path)}`;
+
+/** Newest version first: v10 > v2 > v1. */
+export const byVersionDesc = (a: CatalogEntry, b: CatalogEntry) =>
+  (Number(b.version.replace(/\D/g, "")) || 0) - (Number(a.version.replace(/\D/g, "")) || 0);

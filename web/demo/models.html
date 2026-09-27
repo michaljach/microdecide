@@ -4,16 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>microdecide · Models</title>
+<meta name="description" content="Ready-made microdecide models that run in your browser.">
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<nav aria-label="Main"><a href="./">microdecide</a><b aria-current="page">Models</b><a href="./bench.html">Benchmark</a><a href="./parity.html">Parity</a></nav>
-<h1>Models</h1>
-<p>Ready-made models for common decisions. Each one runs in your browser, is a few MB to download and was
-trained with microdecide from a task spec in <code>examples/</code>. Open one to try it.</p>
-<ul class="model-list" id="list"><li class="muted">loading…</li></ul>
-<p class="muted small">The training data is synthetic and small, so expect lower accuracy on real inputs. To add your own,
-write a spec, run <code>uv run microdecide run &lt;spec&gt;</code>, then <code>npm run sync-model</code>.</p>
-<script type="module" src="./models.ts"></script>
+<div id="root"></div>
+<script type="module" src="./pages/Models.tsx"></script>
 </body>
 </html>

@@ -1,9 +1,9 @@
 import { MicroDecide } from "../src";
-import { MODEL_URL, ORT_WASM, configsFor, fmt, modelTier, parityRows, webgpuAvailable } from "./common";
+import { MODEL_URL, ORT_WASM, configsFor, modelTier, parityRows, webgpuAvailable } from "./common";
 
-const MIN_AGREEMENT = 0.995;
+export const MIN_AGREEMENT = 0.995;
 
-interface ParityResult {
+export interface ParityResult {
   name: string;
   device?: string;
   agreement?: number;
@@ -46,20 +46,4 @@ export async function runParity(model = MODEL_URL): Promise<ParityRun> {
     m.dispose();
   }
   return { model, tier, n: rows.length, results, pass: results.every((r) => r.skipped || r.pass), webgpu: gpu };
-}
-
-export const paritySummary = (r: ParityRun) =>
-  `${r.n} test inputs vs Python · target ≥ ${MIN_AGREEMENT * 100}% · <b class="${r.pass ? "pass" : "fail"}">${r.pass ? "PASS" : "FAIL"}</b>`;
-
-export function parityTable(rs: ParityResult[]): string {
-  return (
-    "<tr><th>backend</th><th>device</th><th>label agreement</th><th>max |Δp|</th><th></th></tr>" +
-    rs
-      .map((r) =>
-        r.skipped
-          ? `<tr><td>${r.name}</td><td colspan="4" class="muted">${r.skipped}</td></tr>`
-          : `<tr class="num"><td>${r.name}</td><td>${r.device}</td><td>${fmt(r.agreement! * 100, 2)}%</td><td>${r.maxProbDiff!.toExponential(2)}</td><td class="${r.pass ? "pass" : "fail"}">${r.pass ? "✓" : "✗"}</td></tr>`,
-      )
-      .join("")
-  );
 }

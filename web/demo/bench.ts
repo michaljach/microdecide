@@ -93,17 +93,3 @@ export async function runBench(model = MODEL_URL, onUpdate: (rs: BenchResult[]) 
   }
   return { model, tier, gpuAdapter: await gpuAdapterInfo(), results, webgpu: gpu, crossOriginIsolated, userAgent: navigator.userAgent, n: texts.length };
 }
-
-export function benchTable(rs: BenchResult[]): string {
-  const head = "<tr><th>backend</th><th>cold load</th><th>warm load</th><th>model</th><th>p50</th><th>p95</th><th>engine p50</th><th>batch/input</th><th>memory</th></tr>";
-  return (
-    head +
-    rs
-      .map((r) =>
-        r.error
-          ? `<tr><td>${r.name}</td><td colspan="8" class="muted">${r.error}</td></tr>`
-          : `<tr class="num"><td>${r.name}</td><td>${fmt(r.coldLoadMs!, 0)} ms</td><td>${fmt(r.warmLoadMs!, 0)} ms</td><td>${fmt(r.modelMB!, 1)} MB</td><td>${fmt(r.p50Ms!)} ms</td><td>${fmt(r.p95Ms!)} ms</td><td>${fmt(r.engineP50Ms!, 3)} ms</td><td>${fmt(r.batchMsPerInput!, 3)} ms</td><td>${r.memoryMB == null ? "—" : fmt(r.memoryMB, 0) + " MB"}</td></tr>`,
-      )
-      .join("")
-  );
-}
