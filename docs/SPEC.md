@@ -126,7 +126,7 @@ Sizes/latencies are rough targets; measure with the benchmark page (M3).
 
 | Tier | Base (default, configurable) | Method | Download | Train on |
 |---|---|---|---|---|
-| static | model2vec static embeddings | logistic regression head | ~5–30 MB | CPU, minutes |
+| static | model2vec potion-base-8M → 32M (int8 embeddings) | logistic regression head | ~9–33 MB | CPU, seconds |
 | encoder | small sentence encoder (MiniLM-class, ~20–30M params) | SetFit or full fine-tune + head | ~20–40 MB (q8) | CPU/GPU, minutes |
 | decoder-S | ~135–360M decoder (e.g. SmolLM2-135M/360M, Gemma 3 270M) | LoRA + seq-classification head | ~80–250 MB (q4/q8) | GPU, <1 h |
 | decoder-M | Qwen3-0.6B (or Qwen2.5-0.5B) | LoRA + seq-classification head | ~350–500 MB (q4) | GPU, ~1 h |
@@ -136,6 +136,14 @@ last token), LoRA on attention + MLP, merge LoRA into weights before export.
 Use the task description + label descriptions only at train time via the
 teacher; at inference the model sees just the input text (short prompt
 template optional, fixed in `model_card.json`).
+
+Static tier details: embeddings are quantized to int8 at train time (no F1
+loss measured; no train/export mismatch). Standardization is folded into the
+head, so `head.json` is just `logits = emb @ coef.T + intercept` and can be
+evaluated (or refit) outside Python. Without `model.base`, the static tier
+tries its bases smallest-first and keeps the first meeting `min_macro_f1` on
+val within budget. Head C is chosen by val macro F1; teacher confidence is
+the sample weight.
 
 **Auto mode**: train from smallest up; pick the smallest tier that meets
 `min_macro_f1` **and** fits `max_download_mb`. If none fits, report the gap

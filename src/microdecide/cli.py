@@ -84,3 +84,63 @@ def label(spec: Path, runs: Path = RUNS) -> None:
     except (OSError, ValueError, TeacherError) as e:
         _fail(str(e))
     _show(f"labeled → {data.data_dir(s, runs) / 'labeled.jsonl'}", stats)
+
+
+@app.command()
+def train(
+    spec: Path,
+    runs: Path = RUNS,
+    tier: str = typer.Option(None, help="static | encoder | decoder | auto (default: spec's model.tier)"),
+) -> None:
+    """Train a model version from runs/<task>/data/labeled.jsonl → runs/<task>/vN/."""
+    from microdecide.train import train as train_model
+
+    s = _load(spec)
+    try:
+        out = train_model(s, runs, tier)
+    except (OSError, ValueError, NotImplementedError) as e:
+        _fail(str(e))
+    typer.echo(str(out))
+
+
+@app.command("eval")
+def eval_(run_dir: Path) -> None:
+    """Evaluate a trained version on its test split → report.md + report.json."""
+    from microdecide.evaluate import evaluate
+
+    if not (run_dir / "model_card.json").is_file():
+        _fail(f"{run_dir} is not a run directory (no model_card.json)")
+    _summary(evaluate(run_dir))
+
+
+def _summary(r: dict) -> None:
+    t, e = r["test"], r["escalation"]
+    typer.echo(
+        f"{r['model']}: macro F1 {t['macro_f1']:.3f}, accuracy {t['accuracy']:.1%}, "
+        f"coverage {e['coverage']:.1%} @ threshold {e['threshold']:.3f} "
+        f"({e['accuracy_on_covered'] or 0:.1%} accurate), {r['size_mb']} MB, "
+        f"p95 {r['latency']['p95_ms']:.2f} ms"
+    )
+    for rec in r["recommendations"]:
+        typer.secho(f"  ! {rec}", fg=typer.colors.YELLOW)
+
+
+@app.command()
+def run(spec: Path, runs: Path = RUNS, tier: str = typer.Option(None, help="Override model.tier")) -> None:
+    """Full pipeline: collect → label → train → eval."""
+    import time
+
+    from microdecide.evaluate import evaluate
+    from microdecide.train import train as train_model
+
+    s = _load(spec)
+    t0 = time.perf_counter()
+    try:
+        _show("collect", data.collect(s, runs))
+        _show("label", data.label(s, CachedTeacher(make_teacher(s)), runs, log=lambda _: None))
+        out = train_model(s, runs, tier)
+        report = evaluate(out)
+    except (OSError, ValueError, TeacherError, NotImplementedError) as e:
+        _fail(str(e))
+    _summary(report)
+    typer.echo(f"done in {time.perf_counter() - t0:.1f}s → {out / 'report.md'}")

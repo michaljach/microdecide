@@ -30,3 +30,34 @@ def _isolated_cache(tmp_path, monkeypatch):
 @pytest.fixture
 def spec():
     return load_spec(EXAMPLE)
+
+
+def tiny_static_model(dim: int = 32):
+    """A real model2vec StaticModel over a small word vocab: no download, save/load works."""
+    from model2vec import StaticModel
+    from tokenizers import Tokenizer, models, pre_tokenizers
+
+    words = sorted({w for t in TOY_TEXTS for w in t.lower().replace(",", " ").replace("!", " ").split()})
+    vocab = {"[UNK]": 0, "[PAD]": 1, **{w: i + 2 for i, w in enumerate(words)}}
+    tok = Tokenizer(models.WordLevel(vocab, unk_token="[UNK]"))
+    tok.pre_tokenizer = pre_tokenizers.Whitespace()
+    rng = np.random.default_rng(0)
+    vectors = rng.normal(size=(len(vocab), dim)).astype(np.float32)
+    for w, i in vocab.items():  # make label-ish words point in consistent directions
+        if w in {"buy", "cheap", "followers", "discount", "click", "casino", "loans"}:
+            vectors[i, 0] += 4
+        if w in {"idiot", "moron", "loser", "stupid", "clown", "pathetic"}:
+            vectors[i, 1] += 4
+    return StaticModel(vectors=vectors, tokenizer=tok, normalize=True, config={"normalize": True})
+
+
+_OK = ["great update thanks", "love the dark mode", "does export support csv", "sync broke on android please fix",
+       "nice post about remote work", "is there a linux version", "the new sidebar is confusing", "thanks for the changelog"]
+_SPAM = ["buy cheap followers now", "click here for discount", "cheap casino bonus click", "fast loans buy now",
+         "buy followers cheap discount", "click for cheap loans", "casino discount click now", "buy cheap stuff click"]
+_TOXIC = ["you are an idiot", "shut up loser", "what a moron", "stupid clown team", "pathetic idiot devs",
+          "you stupid loser", "moron clown author", "pathetic stupid post"]
+TOY_TEXTS = _OK + _SPAM + _TOXIC
+TOY_ROWS = (
+    [(t, "ok") for t in _OK] + [(t, "spam") for t in _SPAM] + [(t, "toxic") for t in _TOXIC]
+)

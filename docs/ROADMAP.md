@@ -20,7 +20,7 @@ labels, unknown output type/tier) fail with clear errors; tests pass.
 **Done when:** collect+label produces a labeled dataset; second run makes
 zero teacher calls (cache); labels always within the label set.
 
-## [ ] M2 — Static tier end to end (first PoC, Python)
+## [x] M2 — Static tier end to end (first PoC, Python)
 - static embeddings + logistic regression; calibration; threshold; report
 - `runtime.py`: `Runtime.load(...).decide(text) -> Decision`
 - CLI: `train`, `eval`, `run`

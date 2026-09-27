@@ -122,7 +122,7 @@ def dedup_near(
 def model2vec_embedder(model: str = DEFAULT_EMBED_MODEL) -> Embedder:
     from model2vec import StaticModel
 
-    m = StaticModel.from_pretrained(model)
+    m = StaticModel.from_pretrained(model, force_download=False)
     return lambda texts: m.encode(texts)
 
 
