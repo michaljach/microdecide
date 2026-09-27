@@ -67,7 +67,7 @@ def compare(run_dirs: list[str | Path], log=print) -> tuple[str, dict]:
         ("escalation rate", [pct(r["escalation"]["escalation_rate"]) for r in reports]),
         ("ECE after calibration", [f(r["calibration"]["test_ece_after"]) for r in reports]),
         ("download", [f"{r['size_mb']} MB" for r in reports]),
-        ("latency p95, python CPU", [f"{r['latency']['p95_ms']:.2f} ms" for r in reports]),
+        ("latency p95, python", [f"{r['latency']['p95_ms']:.2f} ms ({r['latency']['backend'].split('(')[-1].split(')')[0]})" for r in reports]),
         ("latency p95, browser (best)", [_best_browser(r) for r in reports]),
         ("train time", [f"{c['training']['train_seconds']:.0f} s" for c in cards]),
     ]

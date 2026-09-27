@@ -94,8 +94,8 @@ def test_train_budget_and_tiers(toy_run, spec):
     tight = spec.model_copy(update={"targets": spec.targets.model_copy(update={"max_download_mb": 0.5})})
     with pytest.raises(ValueError, match="no candidate fits"):
         train.train(tight, toy_run, log=lambda _: None)
-    with pytest.raises(NotImplementedError, match="M5"):
-        train.train(spec, toy_run, tier="decoder")
+    with pytest.raises(ValueError, match="unknown tier"):
+        train.classifier_for("huge")
 
 
 def test_train_requires_labels(tmp_path, spec):

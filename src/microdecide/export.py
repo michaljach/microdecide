@@ -61,7 +61,7 @@ def export(run_dir: str | Path, out: str | Path | None = None, log=print) -> dic
     elif rt.card["tier"] == "encoder":
         artifacts, primary, download = _export_encoder(rt, run_dir, out, base_config, log)
     else:
-        raise NotImplementedError(f"export for tier {rt.card['tier']!r} lands in M5")
+        raise ValueError(f"unknown tier {rt.card['tier']!r}")
 
     # parity: training-time model vs every exported artifact, on the test split
     test = [r for r in read_jsonl(run_dir / "labeled.jsonl") if r["split"] == "test"]
@@ -78,11 +78,12 @@ def export(run_dir: str | Path, out: str | Path | None = None, log=print) -> dic
         ),
     )
     info = {"format": FORMAT, "format_version": FORMAT_VERSION, "parity": parity, "parity_reference": primary, **download}
+    failed = [f"{n} export F1 dropped {parity[n]['f1_drop']:.3f} (> {MAX_F1_DROP})" for n in artifacts if parity[n]["f1_drop"] > MAX_F1_DROP]
+    if failed:
+        info["failed"] = "; ".join(failed)  # kept for inspection; web/scripts/sync-model.mjs skips it
     (out / "model_card.json").write_text(json.dumps({**rt.card, "export": info}, indent=2))
-
-    for name in artifacts:
-        if parity[name]["f1_drop"] > MAX_F1_DROP:
-            raise ExportError(f"{name} export F1 dropped {parity[name]['f1_drop']:.3f} (> {MAX_F1_DROP})")
+    if failed:
+        raise ExportError(info["failed"])
     sizes = ", ".join(f"{k.removesuffix('_download_mb')} {v} MB" for k, v in download.items())
     agree = ", ".join(f"{k} {parity[k]['label_agreement']:.2%}" for k in artifacts)
     log(f"exported → {out}  {sizes}; label agreement vs training model: {agree}")
@@ -419,3 +420,4 @@ def encoder_onnx_probabilities(export_dir: Path, texts: list[str], model_path: P
         (logits,) = session.run(["logits"], {k: enc[k].astype(np.int64) for k in names})
         out.append(logits)
     return softmax(np.concatenate(out), config["temperature"])
+

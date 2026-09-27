@@ -16,11 +16,12 @@ Example spec: `examples/comment_moderation.yaml`.
   and what's next. Update the checkbox in `docs/ROADMAP.md`.
 - Keep it minimal. Prefer a few clear modules over abstractions. No plugin
   systems until a second implementation actually exists.
-- Every tier must **run in the browser** via transformers.js (WASM, WebGPU
-  when available). Static and encoder tiers must also **train on CPU**.
-  The decoder tier (Qwen-class) trains with LoRA on a GPU (CUDA or Apple MPS).
-- Classification is **one forward pass, no text generation**: decoder models
-  use a sequence-classification head, not prompting + parsing.
+- **Tiny models only**: target ~30 MB downloads (static and encoder tiers).
+  The decoder tier (SmolLM2/Qwen, 115–500 MB) was built, measured and dropped
+  on purpose — don't reintroduce large models (see ROADMAP M5).
+- Every tier must **run in the browser** (plain JS / onnxruntime-web /
+  transformers.js; WASM by default) and must **train on CPU**.
+- Classification is **one forward pass, no text generation**.
 
 ## Stack
 
@@ -30,7 +31,7 @@ Example spec: `examples/comment_moderation.yaml`.
 - `scikit-learn` for the tiny tier head + calibration
 - `model2vec` (static embeddings) for the tiny tier encoder
 - `setfit` / `sentence-transformers` for the encoder tier
-- `transformers` + `peft` for the decoder tier (LoRA + classification head)
+- `transformers` + `torch` for the encoder tier (fine-tuned classification head)
 - `torch.onnx.export` (dynamo, needs `onnxscript`) + `onnxruntime.quantization` for ONNX
   export + int8 quantization (`optimum-onnx` pins transformers < 4.58, incompatible with v5)
 - **Browser runtime** in `web/`: TypeScript + `@huggingface/transformers`
@@ -54,7 +55,7 @@ cd web && npm install
 npm run sync-model               # copy every runs/*/v*/export + ORT wasm into public/
 npm run dev                      # demo at /, /bench.html, /parity.html
 npm test && npm run typecheck    # vitest (incl. Node parity vs Python) + tsc
-MODEL=/models/<task>/<version> npm run parity   # headless Chromium (real GPU): labels vs Python ≥ 99.5%
+MODEL=/models/<task>/<version> npm run parity   # headless Chromium: labels vs Python ≥ 99.5%
 npm run bench                    # → export/bench.json; `microdecide eval` adds it to report.md
 npm run offline                  # network cut: page + model reload from caches, still classifies
 npm run playground               # train in the browser, save, reload with MicroDecide.load (≥ 99.5%)

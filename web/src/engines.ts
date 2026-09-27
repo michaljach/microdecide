@@ -98,8 +98,8 @@ type Ort = typeof import("onnxruntime-web/webgpu");
 /**
  * "auto" → WASM for the static and encoder tiers: measured on an M2 Pro (Metal), single-input
  * latency is lower on WASM (encoder q8: p50 2.5 ms vs 9.8 ms fp32 / 14.6 ms q8 on WebGPU); GPU
- * dispatch overhead dominates for models this small. WebGPU wins on large batches and will be
- * the default for the decoder tier. Pass device: "webgpu" to force it.
+ * dispatch overhead dominates for models this small; WebGPU wins only on large batches.
+ * Pass device: "webgpu" to force it.
  */
 async function resolveDevice(device: "auto" | "webgpu" | "wasm"): Promise<"webgpu" | "wasm"> {
   return device === "auto" ? "wasm" : device;

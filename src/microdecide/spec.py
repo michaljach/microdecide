@@ -70,7 +70,7 @@ class OutputSpec(_Strict):
 
 
 class ModelSpec(_Strict):
-    tier: Literal["auto", "static", "encoder", "decoder"] = "auto"
+    tier: Literal["auto", "static", "encoder"] = "auto"
     base: str | None = None
     quantization: Literal["q8", "q4"] = "q8"
 
@@ -222,9 +222,9 @@ output:
     label_a: Describe when this label applies.
     label_b: Describe when this label applies.
 model:
-  tier: auto                # auto | static | encoder | decoder
+  tier: auto                # auto | static | encoder
   base: null                # override base model id
-  quantization: q8          # q8 | q4 (decoder only)
+  quantization: q8
 teacher:
   kind: llm                 # llm | jev | csv
   model: claude-haiku-4-5-20251001
@@ -235,7 +235,7 @@ data:
 targets:
   min_macro_f1: 0.90
   deploy: browser           # browser | node | python
-  max_download_mb: 150
+  max_download_mb: 30
   max_latency_ms: 100
 escalation:
   target_precision: 0.97

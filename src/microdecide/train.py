@@ -18,7 +18,7 @@ from microdecide import calibrate, encoder, static
 from microdecide.data import data_dir, read_jsonl
 from microdecide.spec import TaskSpec
 
-TIER_ORDER = ("static", "encoder", "decoder")
+TIER_ORDER = ("static", "encoder")
 TIERS = {"static": static, "encoder": encoder}
 
 
@@ -27,7 +27,7 @@ def classifier_for(tier: str):
         return static.StaticClassifier
     if tier == "encoder":
         return encoder.EncoderClassifier
-    raise NotImplementedError(f"tier {tier!r} lands in M5")
+    raise ValueError(f"unknown tier {tier!r}")
 
 
 def plan(spec: TaskSpec, override: str | None) -> list[tuple[str, str]]:
@@ -35,9 +35,6 @@ def plan(spec: TaskSpec, override: str | None) -> list[tuple[str, str]]:
     tiers in auto mode ("smallest that meets targets" — an encoder can beat a larger static model)."""
     tier = override or spec.model.tier
     tiers = [t for t in TIER_ORDER if t in TIERS] if tier == "auto" else [tier]
-    for t in tiers:
-        if t not in TIERS:
-            raise NotImplementedError(f"tier {t!r} lands in M5")
     if spec.model.base:
         if tier == "auto":
             raise ValueError("model.base needs an explicit model.tier (the base belongs to one tier)")
@@ -57,6 +54,7 @@ def dir_size_mb(path: Path) -> float:
 
 
 def train(spec: TaskSpec, runs: str | Path = "runs", tier: str | None = None, log=print) -> Path:
+    """Train the next version. `tier` overrides spec.model.tier (use spec.model.base / targets for the rest)."""
     runs = Path(runs)
     candidates_plan = plan(spec, tier)
     labeled = data_dir(spec, runs) / "labeled.jsonl"

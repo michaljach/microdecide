@@ -68,8 +68,8 @@ export interface LoadOptions {
   backend?: Backend;
   /** Encoder tier only: "q8" (default, smallest) or "fp32" (often better on WebGPU). */
   dtype?: "q8" | "fp32";
-  /** ONNX only. "auto" = WASM for static/encoder models (lower single-input latency than
-   *  WebGPU at this size; see engines.ts), WebGPU for decoders. */
+  /** ONNX only. "auto" = WASM: lower single-input latency than WebGPU for models this size
+   *  (see engines.ts). Pass "webgpu" to force it. */
   device?: Device;
   /** Run inference in a Web Worker so the UI never blocks. Default true where Workers exist. */
   worker?: boolean;

@@ -47,7 +47,7 @@ def _latency(rt: Runtime, texts: list[str]) -> dict:
         "p50_ms": float(np.percentile(times, 50)),
         "p95_ms": float(np.percentile(times, 95)),
         "batch_ms_per_input": batch_ms,
-        "backend": "python (CPU); browser numbers come from the benchmark page (M3)",
+        "backend": f"python ({getattr(rt.model, 'device', 'cpu')}); browser numbers: web/ `npm run bench`",
     }
 
 
@@ -196,7 +196,7 @@ def render_markdown(r: dict) -> str:
         f"| escalation rate | {_pct(e['escalation_rate'])} |",
         f"| ECE (test) | {c['test_ece_before']:.3f} → {c['test_ece_after']:.3f} after temperature {c['temperature']:.2f} |",
         f"| download size | {r['size_mb']} MB (budget {tg['max_download_mb']['target']} MB {ok(tg['max_download_mb']['met'])}) |",
-        f"| latency (python, single input) | p50 {lat['p50_ms']:.2f} ms · p95 {lat['p95_ms']:.2f} ms |",
+        f"| latency ({lat['backend'].split(';')[0]}, single input) | p50 {lat['p50_ms']:.2f} ms · p95 {lat['p95_ms']:.2f} ms |",
         "",
     ]
     if r["recommendations"]:

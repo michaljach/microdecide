@@ -6,8 +6,8 @@ A user describes **one decision** (input, allowed outputs, quality/latency
 target). microdecide produces a **specialized micro model** for exactly that
 decision:
 
-- small enough to **download and run in a browser** (WASM, WebGPU when
-  available): ~10 MB to ~400 MB depending on tier
+- **tiny**: ~10–35 MB to download (target ~30 MB), runs in a browser (WASM,
+  WebGPU optional)
 - returns a **typed decision + calibrated confidence**
 - runs client-side: offline, private, no per-call cost
 - **escalates** to a teacher model (Jev, an LLM, or a human) when unsure,
@@ -38,9 +38,9 @@ output:
     spam: Ads, links to unrelated products, SEO junk.
     toxic: Insults, harassment, hate.
 model:
-  tier: auto                        # auto | static | encoder | decoder
-  base: null                        # override base model id, e.g. Qwen/Qwen3-0.6B
-  quantization: q4                  # q8 | q4 (decoder), q8 (encoder)
+  tier: auto                        # auto | static | encoder
+  base: null                        # override base model id (needs an explicit tier)
+  quantization: q8
 teacher:
   kind: llm                         # llm | jev | csv
   model: claude-haiku-4-5-20251001  # configurable (llm, jev)
@@ -55,7 +55,7 @@ data:
 targets:
   min_macro_f1: 0.90
   deploy: browser                   # browser | node | python
-  max_download_mb: 150              # hard budget for the model files
+  max_download_mb: 30               # hard budget for the model files
   max_latency_ms: 100               # p95 in browser, WASM backend, short input
 escalation:
   target_precision: 0.97            # auto-pick threshold to hit this
@@ -128,14 +128,11 @@ Sizes/latencies are rough targets; measure with the benchmark page (M3).
 |---|---|---|---|---|
 | static | model2vec potion-base-8M → 32M (int8 embeddings) | logistic regression head | ~9–33 MB | CPU, seconds |
 | encoder | MiniLM-L3 → MiniLM-L6 → bge-small (17–33M params) | full fine-tune, `*ForSequenceClassification` | ~18–35 MB (q8) | CPU, < 1 min |
-| decoder-S | ~135–360M decoder (e.g. SmolLM2-135M/360M, Gemma 3 270M) | LoRA + seq-classification head | ~80–250 MB (q4/q8) | GPU, <1 h |
-| decoder-M | Qwen3-0.6B (or Qwen2.5-0.5B) | LoRA + seq-classification head | ~350–500 MB (q4) | GPU, ~1 h |
 
-Decoder tiers: load with `AutoModelForSequenceClassification` (score head on
-last token), LoRA on attention + MLP, merge LoRA into weights before export.
-Use the task description + label descriptions only at train time via the
-teacher; at inference the model sees just the input text (short prompt
-template optional, fixed in `model_card.json`).
+Decoder tier (SmolLM2/Qwen3 + LoRA): **dropped.** Built and measured in M5 — Qwen3-0.6B
+reached test F1 0.974 vs 0.943 for the encoder, but at 501 MB (q4) vs 18.6 MB and
+p95 237 ms (Python, MPS) vs 3 ms (CPU); SmolLM2-135M (115 MB) was *worse* than the encoder. The project
+targets tiny models (~30 MB), so the tier was removed.
 
 Static tier details: embeddings are quantized to int8 at train time (no F1
 loss measured; no train/export mismatch). Standardization is folded into the
@@ -157,10 +154,6 @@ download: on the example task the encoder (MiniLM-L3, 18.6 MB q8, F1 0.943)
 beats the larger static model (potion-32M, 33 MB, F1 0.897). If none fits, report the gap
 and recommend: more/better data, a larger budget, or escalation-heavy mode.
 
-Reality check to keep in the report: decoder tiers are 10–50× larger to
-download than encoders and much slower on WASM; they earn their place only on
-tasks needing more language understanding (sarcasm, context, multilingual).
-Qwen-class 0.6B is the *upper* bound, not the default.
 
 ### 4.5 Calibrate
 Temperature scaling (or isotonic if val set is large) fit on val.
@@ -190,7 +183,8 @@ model_card.json           card + export parity + download sizes (+ bench.json fr
 - Static tier: embeddings are already int8 from training, so export adds no
   quantization loss. Encoder: `torch.onnx.export` (dynamo) → `onnx/model.onnx`
   (fp32) + dynamic int8 `onnx/model_quantized.onnx` (transformers.js "q8"), plus
-  the HF tokenizer/config files. Decoder q4 (fallback q8 if F1 drops > 1 point).
+  the HF tokenizer/config files. A failed export (parity) is marked in its model
+  card and not published by `web/scripts/sync-model.mjs`.
 - `parity.jsonl` holds the predictions of the artifact the browser runs (static
   format, or the q8 ONNX), so browser parity isolates runtime differences from
   quantization loss (which the export parity check measures).
@@ -205,7 +199,7 @@ model_card.json           card + export parity + download sizes (+ bench.json fr
 ```ts
 const m = await MicroDecide.load("/models/comment_moderation/v1", {
   backend: "static",             // static tier: static (plain JS, default) | onnx
-  device: "auto",                // onnx: wasm for static/encoder (measured faster), webgpu for decoders
+  device: "auto",                // onnx: wasm (measured faster than webgpu at this size)
   dtype: "q8",                   // encoder: q8 (default) | fp32
 });
 const d = await m.decide("Buy cheap followers at ...");   // Decision
@@ -267,7 +261,7 @@ microdecide init <task>            # scaffold spec yaml
 microdecide check <spec>           # validate a spec
 microdecide collect <spec>         # 4.1
 microdecide label <spec>           # 4.2
-microdecide train <spec> [--tier static|encoder|decoder|auto]
+microdecide train <spec> [--tier static|encoder|auto] [--base ID] [--max-download-mb N]
 microdecide eval <run_dir>
 microdecide compare <run_dir> <run_dir>...   # same test split, side by side → runs/<task>/compare.md
 microdecide export <run_dir>

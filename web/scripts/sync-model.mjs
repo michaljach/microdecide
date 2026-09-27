@@ -34,6 +34,10 @@ for (const src of exports) {
     continue;
   }
   const card = JSON.parse(readFileSync(join(src, "model_card.json"), "utf8"));
+  if (card.export?.failed) {
+    console.warn(`skip ${src}: export failed its parity check (${card.export.failed})`);
+    continue;
+  }
   const [task, version] = cfg.model.split("@");
   const dest = join(web, "public/models", task, version);
   rmSync(dest, { recursive: true, force: true });
