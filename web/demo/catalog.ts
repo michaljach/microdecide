@@ -1,5 +1,5 @@
 // Catalog entries from models/index.json (written by scripts/sync-model.mjs) with the card fields
-// the Models and model pages show.
+// the Repository and model pages show.
 import { useEffect, useState } from "react";
 import { type ModelEntry, modelIndex } from "./common";
 

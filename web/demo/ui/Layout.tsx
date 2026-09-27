@@ -1,9 +1,9 @@
 import { type ReactNode, useLayoutEffect } from "react";
 
-export type Page = "home" | "models" | "train" | "bench" | "parity" | "model";
+export type Page = "home" | "repository" | "train" | "bench" | "parity" | "model";
 
 const NAV: [Page, string, string][] = [
-  ["models", "Models", "./models.html"],
+  ["repository", "Repository", "./repository.html"],
   ["train", "Train your own", "./playground.html"],
   ["bench", "Benchmark", "./bench.html"],
   ["parity", "Parity", "./parity.html"],

@@ -44,7 +44,7 @@ export default defineConfig({
         bench: resolve(import.meta.dirname, "demo/bench.html"),
         parity: resolve(import.meta.dirname, "demo/parity.html"),
         playground: resolve(import.meta.dirname, "demo/playground.html"),
-        models: resolve(import.meta.dirname, "demo/models.html"),
+        repository: resolve(import.meta.dirname, "demo/repository.html"),
         model: resolve(import.meta.dirname, "demo/model.html"),
       },
     },

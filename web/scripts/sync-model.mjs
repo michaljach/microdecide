@@ -10,7 +10,8 @@ const web = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const runs = join(web, "../runs");
 const readJson = (f) => JSON.parse(readFileSync(f, "utf8"));
 let exports = process.argv.slice(2).map((p) => resolve(p));
-if (!exports.length && existsSync(runs)) {
+const syncAll = !exports.length;
+if (syncAll && existsSync(runs)) {
   for (const task of readdirSync(runs)) {
     const dir = join(runs, task);
     if (!statSync(dir).isDirectory()) continue;
@@ -41,6 +42,9 @@ function examples(dir) {
   const unsure = [...rows].sort((a, b) => a.conf - b.conf)[0];
   return [...byLabel.values(), ...(unsure ? [unsure.text] : [])];
 }
+
+// a full sync mirrors runs/: models deleted there must not linger in public/ (or the deployed site)
+if (syncAll) rmSync(join(web, "public/models"), { recursive: true, force: true });
 
 const index = [];
 for (const src of exports) {

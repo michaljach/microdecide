@@ -14,7 +14,7 @@ const web = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const mode = process.argv[2] ?? "parity";
 const site = process.env.SITE?.replace(/\/?$/, "/");
 const basePath = site ? new URL(site).pathname : (process.env.BASE ?? "/");
-const model = process.env.MODEL ?? `${basePath}models/comment_moderation/v1`;
+const model = process.env.MODEL ?? `${basePath}models/comment_moderation/v3`;
 
 // production build + preview: what users get, and realistic benchmark numbers
 const configFile = join(web, "vite.config.ts");

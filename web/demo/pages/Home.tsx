@@ -29,7 +29,7 @@ escalation: {target_precision: 0.97}`;
 
 const USAGE = `import { MicroDecide } from "microdecide-web";
 
-const m = await MicroDecide.load("/models/comment_moderation/v1");
+const m = await MicroDecide.load("/models/comment_moderation/v3");
 const d = await m.decide("Buy cheap followers at ...");
 if (!m.isConfident(d)) { /* below the calibrated threshold: escalate */ }`;
 
@@ -39,7 +39,7 @@ const DECISION = `{
   "confidence": 0.93,
   "escalated": false,
   "source": "micro",
-  "model": "comment_moderation@v1",
+  "model": "comment_moderation@v3",
   "latency_ms": 0.4
 }`;
 
@@ -84,7 +84,7 @@ function Home() {
         label outside your set. When it isn't sure, it hands the input to the teacher.
       </p>
       <p>
-        <a href="#try">Try the demo</a> · <a href="./models.html">Browse ready-made models</a> ·{" "}
+        <a href="#try">Try the demo</a> · <a href="./repository.html">Browse the model repository</a> ·{" "}
         <a href="./playground.html">Train your own in the browser</a> · <a href="#how">How it works</a>
       </p>
 
@@ -104,7 +104,7 @@ function Home() {
         </p>
         {index && <Classifier key={model} model={model} examples={examples} heading="h3" picker={picker} />}
         <p className="small">
-          See every model with its labels and quality numbers on the <a href="./models.html">Models</a> page.
+          See every model with its labels and quality numbers in the <a href="./repository.html">repository</a>.
         </p>
       </section>
 
