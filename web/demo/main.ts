@@ -31,8 +31,11 @@ const modelSel = $<HTMLSelectElement>("model");
 const backendSel = $<HTMLSelectElement>("backend");
 
 async function setupModels() {
-  const models = await modelIndex();
-  const entries = models.length ? models : [{ id: MODEL_URL, path: MODEL_URL, tier: await modelTier(), base: "", downloadMB: NaN }];
+  const entries = await modelIndex();
+  if (!entries.some((m) => m.path === MODEL_URL)) {
+    // e.g. a model saved from the playground (/playground-models/...), served from the Cache API
+    entries.unshift({ id: MODEL_URL.split("/").pop()!, path: MODEL_URL, tier: await modelTier(), base: "", downloadMB: NaN });
+  }
   modelSel.innerHTML = entries
     .map((m) => `<option value="${m.path}">${m.id} · ${m.tier}${Number.isFinite(m.downloadMB) ? ` · ${fmt(m.downloadMB, 1)} MB` : ""}</option>`)
     .join("");

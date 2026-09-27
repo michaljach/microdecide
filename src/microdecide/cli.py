@@ -142,6 +142,17 @@ def export(
         _fail(str(e))
 
 
+@app.command("export-base")
+def export_base_(
+    base: str = typer.Argument(..., help="model2vec static model id, e.g. minishlab/potion-base-8M"),
+    out: Path = typer.Option(None, help="Output folder (default: web/public/bases/<name>)"),
+) -> None:
+    """Export a static embedding base (no head) for training in the browser playground."""
+    from microdecide.export import export_base
+
+    export_base(base, out or Path("web/public/bases") / base.split("/")[-1])
+
+
 @app.command("compare")
 def compare_(run_dirs: list[Path], out: Path = typer.Option(None, help="Write markdown here (default: runs/<task>/compare.md)")) -> None:
     """Compare model versions on the same test split (quality, coverage, size, latency)."""

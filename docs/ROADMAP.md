@@ -42,7 +42,7 @@ browser, and browser labels match Python on ≥ 99.5% of the test set.
 
 **Done when:** report compares static vs encoder; encoder runs in the demo.
 
-## [ ] M4.5 — Web training playground
+## [x] M4.5 — Web training playground
 - a page in `web/` where a user trains a model entirely in the browser (Web
   Worker): define labels, paste/upload/label examples, fit a head on frozen
   static embeddings, see val metrics + calibration + threshold, try it live

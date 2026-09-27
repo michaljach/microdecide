@@ -26,48 +26,70 @@ export class StaticTokenizer {
   }
 }
 
-/** Plain JS: mean of int8 embedding rows → L2 normalize → linear head. */
-export class StaticEngine implements Engine {
-  readonly device = "js" as const;
-  private readonly pooled: Float64Array;
-
+/** Static-tier sentence embedding: mean of int8 rows → L2 normalize (= model2vec encode). */
+export class StaticEmbedder {
   constructor(
     private readonly table: Int8Array,
-    private readonly config: StaticConfig,
-    private readonly tokenizer: StaticTokenizer,
+    readonly config: StaticConfig,
+    readonly tokenizer: StaticTokenizer,
   ) {
     if (table.length !== config.vocab_size * config.dim) {
       throw new Error(`embedding table has ${table.length} values, expected ${config.vocab_size}x${config.dim}`);
     }
-    this.pooled = new Float64Array(config.dim);
+  }
+
+  get dim(): number {
+    return this.config.dim;
+  }
+
+  /** The raw int8 table (to save a trained model next to its base). */
+  get weights(): Int8Array {
+    return this.table;
+  }
+
+  embed(text: string, out: Float64Array = new Float64Array(this.config.dim)): Float64Array {
+    const { dim, normalize } = this.config;
+    const ids = this.tokenizer.ids(text);
+    out.fill(0);
+    for (const id of ids) {
+      const off = id * dim;
+      for (let j = 0; j < dim; j++) out[j] += this.table[off + j];
+    }
+    if (ids.length) for (let j = 0; j < dim; j++) out[j] /= ids.length;
+    if (normalize) {
+      let sq = 0;
+      for (let j = 0; j < dim; j++) sq += out[j] * out[j];
+      const norm = Math.sqrt(sq) + 1e-32;
+      for (let j = 0; j < dim; j++) out[j] /= norm;
+    }
+    return out;
+  }
+}
+
+/** Linear head over an embedding: logits = coef · v + intercept. */
+export function applyHead(v: ArrayLike<number>, coef: ArrayLike<number>[], intercept: ArrayLike<number>): Float64Array {
+  const out = new Float64Array(intercept.length);
+  for (let k = 0; k < out.length; k++) {
+    const w = coef[k];
+    let z = intercept[k];
+    for (let j = 0; j < v.length; j++) z += v[j] * w[j];
+    out[k] = z;
+  }
+  return out;
+}
+
+/** Plain JS: StaticEmbedder → linear head. */
+export class StaticEngine implements Engine {
+  readonly device = "js" as const;
+  private readonly pooled: Float64Array;
+
+  constructor(private readonly embedder: StaticEmbedder) {
+    this.pooled = new Float64Array(embedder.dim);
   }
 
   async logits(texts: string[]): Promise<Float64Array[]> {
-    return texts.map((t) => this.one(this.tokenizer.ids(t)));
-  }
-
-  private one(ids: number[]): Float64Array {
-    const { dim, normalize, head } = this.config;
-    const v = this.pooled.fill(0);
-    for (const id of ids) {
-      const off = id * dim;
-      for (let j = 0; j < dim; j++) v[j] += this.table[off + j];
-    }
-    if (ids.length) for (let j = 0; j < dim; j++) v[j] /= ids.length;
-    if (normalize) {
-      let sq = 0;
-      for (let j = 0; j < dim; j++) sq += v[j] * v[j];
-      const norm = Math.sqrt(sq) + 1e-32;
-      for (let j = 0; j < dim; j++) v[j] /= norm;
-    }
-    const out = new Float64Array(head.intercept.length);
-    for (let k = 0; k < out.length; k++) {
-      const w = head.coef[k];
-      let z = head.intercept[k];
-      for (let j = 0; j < dim; j++) z += v[j] * w[j];
-      out[k] = z;
-    }
-    return out;
+    const { coef, intercept } = this.embedder.config.head;
+    return texts.map((t) => applyHead(this.embedder.embed(t, this.pooled), coef, intercept));
   }
 }
 

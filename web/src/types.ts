@@ -17,12 +17,23 @@ interface BaseConfig {
   temperature: number;
   threshold: number;
   max_chars: number;
-  onnx: { file: string; fp32_file?: string; dtype?: string; inputs: string[]; output: string };
+}
+
+interface OnnxRef {
+  file: string;
+  fp32_file?: string;
+  dtype?: string;
+  inputs: string[];
+  output: string;
 }
 
 /** `microdecide.json` for the static tier: int8 embedding table + linear head. */
 export interface StaticConfig extends BaseConfig {
   tier: "static";
+  /** "base" = embedding table without a head (training playground input). */
+  kind?: "base";
+  /** Absent for models trained in the browser (static JS backend only). */
+  onnx?: OnnxRef;
   normalize: boolean;
   dim: number;
   vocab_size: number;
@@ -40,6 +51,7 @@ export interface StaticConfig extends BaseConfig {
 /** `microdecide.json` for the encoder tier: a transformers.js sequence classifier. */
 export interface EncoderConfig extends BaseConfig {
   tier: "encoder";
+  onnx: OnnxRef;
   tokenizer: { file: string; add_special_tokens: boolean; max_tokens: number; truncation: boolean };
 }
 

@@ -25,7 +25,8 @@
     "test": "vitest run",
     "parity": "node scripts/browser-check.mjs parity",
     "bench": "node scripts/browser-check.mjs bench",
-    "offline": "node scripts/browser-check.mjs offline"
+    "offline": "node scripts/browser-check.mjs offline",
+    "playground": "node scripts/browser-check.mjs playground"
   },
   "license": "MIT",
   "dependencies": {

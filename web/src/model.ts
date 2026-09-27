@@ -1,5 +1,5 @@
 /** Load an exported model folder and turn texts into Decisions. Runs in a worker or the main thread. */
-import { type Engine, StaticEngine, StaticOnnxEngine, StaticTokenizer, TransformersEngine } from "./engines.js";
+import { type Engine, StaticEmbedder, StaticEngine, StaticOnnxEngine, StaticTokenizer, TransformersEngine } from "./engines.js";
 import { type Fetcher, decodeJson, joinUrl, makeFetcher } from "./fetch.js";
 import { argmax, softmax } from "./text.js";
 import type { Decision, LoadOptions, ModelConfig, ModelInfo } from "./types.js";
@@ -30,15 +30,17 @@ export class Model {
     const wasmPaths = options.ortWasmPaths ?? "/ort/";
     let engine: Engine;
     if (config.tier === "static") {
+      if (backend === "onnx" && !config.onnx) throw new Error(`${config.model} has no ONNX export; use backend "static"`);
+      if (!config.labels.length) throw new Error(`${config.model} is an embedding base without a head`);
       const [tokJson, tokConfig, weights] = await Promise.all([
         fetchCounted(config.tokenizer.file).then((b) => decodeJson<object>(b)),
         fetchCounted("tokenizer_config.json").then((b) => decodeJson<object>(b)),
-        fetchCounted(backend === "static" ? config.static.embeddings : config.onnx.file),
+        fetchCounted(backend === "static" ? config.static.embeddings : config.onnx!.file),
       ]);
       const tokenizer = new StaticTokenizer(tokJson, tokConfig, config);
       engine =
         backend === "static"
-          ? new StaticEngine(new Int8Array(weights), config, tokenizer)
+          ? new StaticEngine(new StaticEmbedder(new Int8Array(weights), config, tokenizer))
           : await StaticOnnxEngine.create(weights, tokenizer, device, wasmPaths);
     } else {
       if (backend !== "onnx") throw new Error(`backend "${backend}" is only for static-tier models`);

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>microdecide playground</title>
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./playground.css" />
+</head>
+<body>
+  <main class="wide">
+    <h1>microdecide · training playground</h1>
+    <p class="sub">Train a text classifier in your browser. Your data never leaves this page. <a href="./index.html">Demo</a></p>
+
+    <section class="card">
+      <h2><span class="step">1</span> Task</h2>
+      <div class="row">
+        <label>Name <input id="name" value="my_task" spellcheck="false" /></label>
+      </div>
+      <div class="row" style="margin-top: 10px">
+        <span class="meta">Labels</span>
+        <span id="labels" class="row"></span>
+        <input id="new-label" placeholder="add label…" size="12" spellcheck="false" />
+        <button id="add-label">Add</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="step">2</span> Examples <span id="count" class="meta"></span></h2>
+      <div class="row">
+        <button id="load-example">Load example dataset</button>
+        <label class="button">Upload CSV / JSONL<input id="upload" type="file" accept=".csv,.jsonl,.txt" hidden /></label>
+        <button id="toggle-paste">Paste…</button>
+        <button id="clear" class="danger">Clear</button>
+        <span id="ex-status" class="meta"></span>
+      </div>
+      <div id="paste" hidden style="margin-top: 10px">
+        <textarea id="paste-text" placeholder="CSV with a header (text,label[,confidence]) or JSONL — or plain lines to label one by one"></textarea>
+        <div class="row" style="margin-top: 6px">
+          <button id="import-labeled">Import labeled CSV / JSONL</button>
+          <button id="queue-lines">Queue lines for labeling</button>
+        </div>
+      </div>
+      <div id="queue" class="queue" hidden>
+        <div class="meta" id="queue-progress"></div>
+        <div id="queue-text" class="queue-text"></div>
+        <div id="queue-buttons" class="row"></div>
+      </div>
+      <div class="row add-one">
+        <input id="one-text" placeholder="Type an example…" />
+        <select id="one-label"></select>
+        <button id="add-one">Add</button>
+      </div>
+      <div id="per-label" class="row chips-counts"></div>
+      <table id="examples"></table>
+    </section>
+
+    <section class="card">
+      <h2><span class="step">3</span> Train</h2>
+      <div class="row">
+        <label>Embeddings
+          <select id="base">
+            <option value="/bases/potion-base-8M">potion-base-8M · 8 MB · fastest</option>
+            <option value="/bases/potion-base-32M">potion-base-32M · 33 MB · more accurate</option>
+          </select>
+        </label>
+        <label>Escalation precision <input id="target" type="number" min="0.5" max="1" step="0.01" value="0.97" style="width: 5em" /></label>
+        <label>Seed <input id="seed" type="number" value="42" style="width: 5em" /></label>
+        <button id="train" class="primary">Train</button>
+      </div>
+      <div id="progress" class="progress" hidden><div></div><span></span></div>
+      <div id="results" hidden>
+        <div id="tiles" class="tiles"></div>
+        <div class="grid2">
+          <div><h3>Per label (test)</h3><table id="per-label-table"></table></div>
+          <div><h3>Confusion (rows = true)</h3><table id="confusion"></table></div>
+        </div>
+        <h3>Most confident mistakes (test)</h3>
+        <table id="errors"></table>
+        <p class="meta" id="train-meta"></p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="step">4</span> Try it</h2>
+      <textarea id="try" placeholder="Train a model, then type here…"></textarea>
+      <div id="try-result" hidden>
+        <div class="row" style="justify-content: space-between; margin-top: 10px">
+          <span class="label" id="try-label"></span><span class="badge" id="try-esc"></span>
+        </div>
+        <div id="try-bars"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="step">5</span> Use it</h2>
+      <div class="row">
+        <button id="save" disabled>Save in this browser</button>
+        <button id="download" disabled>Download .zip</button>
+        <span id="save-status" class="meta"></span>
+      </div>
+      <pre id="snippet" hidden></pre>
+    </section>
+  </main>
+  <script type="module" src="./playground.ts"></script>
+</body>
+</html>

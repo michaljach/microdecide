@@ -70,3 +70,6 @@ export class MicroDecide {
     this.worker?.terminate();
   }
 }
+export { StaticEmbedder, StaticTokenizer, applyHead } from "./engines.js";
+export { type EmbeddingBase, modelFiles, saveModelToCache, zipModel } from "./package.js";
+export { type Split, type TrainInput, type TrainReport, type TrainedHead, stratifiedSplit, trainStaticHead } from "./train.js";

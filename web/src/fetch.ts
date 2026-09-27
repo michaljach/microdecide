@@ -1,7 +1,7 @@
 /** Fetch model files, via the Cache API when available so later loads work offline. */
 export type Fetcher = (url: string) => Promise<ArrayBuffer>;
 
-const CACHE_NAME = "microdecide-models-v1";
+export const CACHE_NAME = "microdecide-models-v1";
 
 export function makeFetcher(useCache = true): Fetcher {
   const cacheOk = useCache && typeof caches !== "undefined";

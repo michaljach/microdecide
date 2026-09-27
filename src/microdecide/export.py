@@ -168,6 +168,52 @@ def _export_static(rt: Runtime, run_dir: Path, out: Path, config: dict) -> tuple
     )
 
 
+def export_base(base: str, out: str | Path, max_chars: int = 2000, log=print) -> Path:
+    """A static embedding base without a head, for training in the browser (web playground):
+    same files and format as a static-tier export, with labels [] and an empty head."""
+    from microdecide.static import load_encoder
+
+    out = Path(out)
+    enc = load_encoder(base)
+    if out.exists():
+        shutil.rmtree(out)
+    (out / "static").mkdir(parents=True)
+    config = {
+        "format": FORMAT,
+        "format_version": FORMAT_VERSION,
+        "tier": "static",
+        "kind": "base",
+        "model": base,
+        "labels": [],
+        "temperature": 1.0,
+        "threshold": 1.0,
+        "max_chars": max_chars,
+        "normalize": bool(enc.normalize),
+        "dim": int(enc.dim),
+        "vocab_size": int(enc.embedding.shape[0]),
+        "tokenizer": {
+            "file": "tokenizer.json",
+            "add_special_tokens": False,
+            "median_token_length": int(enc.median_token_length),
+            "max_tokens": STATIC_MAX_TOKENS,
+            "drop_token_ids": [int(enc.unk_token_id)] if enc.unk_token_id is not None else [],
+        },
+        "static": {"embeddings": "static/embeddings.i8", "dtype": "int8"},
+        "head": {"coef": [], "intercept": []},
+    }
+    _write_config(out, config)
+    np.ascontiguousarray(enc.embedding).tofile(out / "static" / "embeddings.i8")
+    tmp = out / ".tok"
+    enc.save_pretrained(tmp)
+    shutil.copy(tmp / "tokenizer.json", out / "tokenizer.json")
+    shutil.rmtree(tmp)
+    (out / "tokenizer_config.json").write_text(
+        json.dumps({"tokenizer_class": "BertTokenizer", "do_lower_case": True, "model_max_length": STATIC_MAX_TOKENS})
+    )
+    log(f"base {base} → {out} ({_mb(out / 'static' / 'embeddings.i8', out / 'tokenizer.json')} MB)")
+    return out
+
+
 class ExportedTokenizer:
     def __init__(self, export_dir: Path, config: dict):
         from tokenizers import Tokenizer
