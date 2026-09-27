@@ -63,6 +63,8 @@ def export(run_dir: str | Path, out: str | Path | None = None, log=print) -> dic
     else:
         raise ValueError(f"unknown tier {rt.card['tier']!r}")
 
+    _record_file_sizes(out)
+
     # parity: training-time model vs every exported artifact, on the test split
     test = [r for r in read_jsonl(run_dir / "labeled.jsonl") if r["split"] == "test"]
     texts = [r["text"] for r in test]
@@ -109,6 +111,18 @@ def _compare(p_ref: np.ndarray, p: np.ndarray, y: np.ndarray) -> dict:
 
 def _write_config(out: Path, config: dict) -> None:
     (out / "microdecide.json").write_text(json.dumps(config))
+
+
+def _record_file_sizes(out: Path) -> None:
+    """Add {relative path: bytes} of the model files to microdecide.json. The browser uses them as the
+    download total: servers that gzip on the fly send no Content-Length, or the compressed one."""
+    config = json.loads((out / "microdecide.json").read_text())
+    config["files"] = {
+        p.relative_to(out).as_posix(): p.stat().st_size
+        for p in sorted(out.rglob("*"))
+        if p.is_file() and p.name not in {"microdecide.json", "model_card.json", "parity.jsonl", "bench.json"}
+    }
+    _write_config(out, config)
 
 
 # --- static tier ---------------------------------------------------------------------------

@@ -35,6 +35,10 @@ def test_export_layout_and_parity(run_dir):
     assert cfg["labels"] == ["ok", "spam", "toxic"] and cfg["tokenizer"]["drop_token_ids"] == [0]
     assert (out / "static/embeddings.i8").stat().st_size == cfg["vocab_size"] * cfg["dim"]
     assert json.loads((out / "config.json").read_text())["id2label"] == {"0": "ok", "1": "spam", "2": "toxic"}
+    # file sizes for the browser's download progress (not the config itself or eval-only files)
+    assert cfg["files"]["static/embeddings.i8"] == (out / "static/embeddings.i8").stat().st_size
+    assert cfg["files"]["onnx/model_quantized.onnx"] == (out / "onnx/model_quantized.onnx").stat().st_size
+    assert not {"microdecide.json", "parity.jsonl", "model_card.json"} & set(cfg["files"])
 
     for name in ("static", "onnx"):
         assert info["parity"][name]["label_agreement"] == 1.0

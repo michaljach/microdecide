@@ -17,6 +17,8 @@ interface BaseConfig {
   temperature: number;
   threshold: number;
   max_chars: number;
+  /** Model file sizes in bytes by relative path (download progress totals). Absent in older exports. */
+  files?: Record<string, number>;
 }
 
 interface OnnxRef {
