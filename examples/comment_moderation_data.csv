@@ -1,0 +1,1712 @@
+text,label,confidence,source
+"With all due respect, you're an idiot.",toxic,0.85,synthetic
+"No offense, but the author is clearly not very bright.",toxic,0.82,synthetic
+I say this with love: your dev team is a bunch of incompetent clowns.,toxic,0.8,synthetic
+Kindly shut up and let people who know what they're talking about speak.,toxic,0.83,synthetic
+"Not to be rude, but only a moron would design it this way.",toxic,0.78,synthetic
+Sincerely hope the PM who made this call gets what's coming to him.,toxic,0.81,synthetic
+"Thanks for nothing, you useless bunch of liars. Have a nice day. 🙂",toxic,0.84,synthetic
+"Respectfully, your support staff are a waste of oxygen.",toxic,0.79,synthetic
+"Good luck with the launch, you'll need it with a team this stupid.",toxic,0.77,synthetic
+"I'm sure your mother is proud of you, idiot. 😊",toxic,0.8,synthetic
+"My coworker called me an idiot for using a to-do app. Joke's on him, I'm the one who ships on time.",ok,0.9,synthetic
+"Someone in the forum told me to ""kill myself"" over a feature request. That's not ok, please moderate that.",ok,0.88,synthetic
+"The support rep said the error message ""stupid input"" was a placeholder. Please change it, it's rude to users.",ok,0.87,synthetic
+"Our team calls the bug tracker ""the graveyard"" lol, that's where tickets go to die.",ok,0.9,synthetic
+"My daughter yelled ""I hate this!"" at her homework list, then finished it. Great app for parenting.",ok,0.86,synthetic
+I kill every task on my list before lunch now. Feels amazing.,ok,0.89,synthetic
+This blog post killed me 😂 the section about meeting culture is so true.,ok,0.88,synthetic
+"The bug report template asks ""what stupid thing did the app do?"" which made me laugh, keep it.",ok,0.87,synthetic
+"Is it just me or is ""Execute"" a creepy name for the button that runs automations? Haha.",ok,0.9,synthetic
+My old manager used to scream at us about deadlines. Tools like this make that culture unnecessary.,ok,0.86,synthetic
+"The comment above calling the author names is uncalled for. Critique the work, not the person.",ok,0.84,synthetic
+"Moderators, there's a pretty hateful comment near the bottom, please remove it.",ok,0.88,synthetic
+"I was a ""lazy"" student until I found a system that works. This app is part of it.",ok,0.9,synthetic
+"""Dumb"" features like the confetti are what make me happy to open the app.",ok,0.87,synthetic
+"I hate spam, so thank you for adding the spam filter to shared forms.",ok,0.85,synthetic
+"Is there an option to filter out the phrase ""urgent"" from notifications? My boss uses it for everything.",ok,0.88,synthetic
+We use it for crime novel plotting. 12 murders scheduled for this month. 📚,ok,0.9,synthetic
+"My gaming clan uses this to coordinate raids. ""Destroy the boss"" is a recurring task lol.",ok,0.86,synthetic
+"Can anyone recommend a good crypto tax tool that integrates with this app? Asking seriously, no links please.",ok,0.87,synthetic
+"I'm a nurse and I wanted to share how much this helps on night shifts. Not affiliated, just grateful.",ok,0.85,synthetic
+"I'll admit I thought the author was wrong at first, but the data changed my mind.",ok,0.84,synthetic
+"Do you have plans to add a way to earn ""points"" for completing tasks? Gamification would help me.",ok,0.89,synthetic
+"The ""free money"" section of the post about refunds was helpful, didn't know I could get prorated credit.",ok,0.87,synthetic
+"Check out the official template gallery if you haven't, it's under Settings → Templates.",ok,0.9,synthetic
+My review of the app: 9/10. Would be 10 if the Android widget worked.,ok,0.86,synthetic
+Anyone else here from the r/productivity thread? Hi!,ok,0.88,synthetic
+"I don't agree with a single word of this article, but I appreciate you writing it.",ok,0.85,synthetic
+Honestly the most aggressive thing about this app is how many reminders it sends me. Can I tone it down?,ok,0.87,synthetic
+"Is it possible to hide the ""buy Pro"" button for workspace members who aren't admins?",ok,0.9,synthetic
+"Tried to pay with my company card and got ""suspected fraud"" error. Anyone else?",ok,0.88,synthetic
+Does anyone know where I can get Pro cheaper? I found a site selling it for $5: pro-cheap.example,spam,0.8,synthetic
+"Quick question, has anyone tried the money-making method on my profile? It really works!",spam,0.78,synthetic
+"How do I contact support? I called +1 (833) 555-0184 and they fixed my account immediately, recommend.",spam,0.82,synthetic
+"Is this app better than FocusMax? I've been using FocusMax (focusmax.example, code SAVE30 for 30% off) and love it.",spam,0.75,synthetic
+Anybody interested in a side hustle? Reply and I'll send you the details.,spam,0.77,synthetic
+"Where can I learn more about passive income? Asking for everyone reading this, check my bio 😉",spam,0.79,synthetic
+Has anyone received their $500 reward from the survey? Mine arrived today! Link: reward-survey.example,spam,0.83,synthetic
+"Can the team add integration with PayQuick? It's the best payment app, sign up with my link for $20 free.",spam,0.76,synthetic
+"Wondering if anyone else has tried investing with the app's partner broker? Made 200% last month, DM me.",spam,0.74,synthetic
+Is it true that you can unlock Pro for free with this trick? freepro-trick.example,spam,0.8,synthetic
+"Great tips! Speaking of productivity, anyone want a free trial of my coaching program?",spam,0.72,synthetic
+"Does anyone need a reliable plumber in Chicago? Asking because mine was great, here's his number: 312-555-0147.",spam,0.78,synthetic
+"What's the best VPN to use with this app? I recommend SecureNet, 80% off here: securenet.example",spam,0.75,synthetic
+"Anyone have issues with billing? My friend at billingfix.example helped me get a full refund, contact them.",spam,0.81,synthetic
+Loved the article. Question for readers: would you pay $10 for a template pack? I'm launching one at templates.example.,spam,0.73,synthetic
+Is the author always this clueless or is today special?,toxic,0.72,synthetic
+Question for the devs: do you enjoy being this incompetent?,toxic,0.75,synthetic
+"Serious question, how does someone this dumb get hired to write a blog?",toxic,0.7,synthetic
+Does anyone else think the PM should be publicly shamed for this?,toxic,0.74,synthetic
+Can we all agree that Brian in the comments is the most annoying person alive?,toxic,0.77,synthetic
+"Is anyone else confused why this post says ""revolutionary"" about what's basically a checkbox?",ok,0.7,synthetic
+Does the team realize how frustrating it is to lose data? This is the second time for me.,ok,0.72,synthetic
+Serious question: does anyone at the company actually use the Android app?,ok,0.68,synthetic
+Can we get an honest answer on why prices went up 40%?,ok,0.71,synthetic
+Why is the new icon so ugly? Genuinely curious what the reasoning was.,ok,0.74,synthetic
+Finally dark mode! Been waiting for this since forever.,ok,0.98,synthetic
+Does the new export feature support CSV or only PDF?,ok,0.97,synthetic
+"Thanks for the detailed changelog, super helpful.",ok,0.98,synthetic
+The update broke sync on my Android phone. Anyone else seeing this?,ok,0.97,synthetic
+"Love the new keyboard shortcuts, my workflow is so much faster now.",ok,0.98,synthetic
+Is there a way to roll back to the previous version? The new layout is confusing me.,ok,0.96,synthetic
+Great write-up on the outage. Appreciate the transparency.,ok,0.98,synthetic
+Will this be available on the free plan or only Pro?,ok,0.97,synthetic
+I've been using this app for three years and this is the best release yet.,ok,0.98,synthetic
+"Small typo in the second paragraph: ""recieve"" should be ""receive"".",ok,0.97,synthetic
+Can you add an option to disable the animations? They make me a bit dizzy.,ok,0.96,synthetic
+"The tutorial was clear, got everything set up in 10 minutes.",ok,0.98,synthetic
+Any plans for a Linux version?,ok,0.97,synthetic
+Congrats to the team on the launch!,ok,0.98,synthetic
+How does the new pricing affect existing annual subscribers?,ok,0.97,synthetic
+I don't really like the new icon but the features are solid.,ok,0.96,synthetic
+This is exactly what I needed for my small team. Thank you!,ok,0.98,synthetic
+Is the API rate limit per user or per workspace?,ok,0.97,synthetic
+"The offline mode works great on my commute, well done.",ok,0.98,synthetic
+Would love to see integration with Google Calendar at some point.,ok,0.97,synthetic
+The screenshots in this post don't load for me on Firefox.,ok,0.97,synthetic
+Nice to see you listening to user feedback.,ok,0.98,synthetic
+"Honestly the old version was faster, but maybe that's just my machine.",ok,0.96,synthetic
+Where can I find the full list of supported file formats?,ok,0.97,synthetic
+"Just upgraded to the team plan, onboarding was smooth.",ok,0.98,synthetic
+Any chance of a student discount?,ok,0.97,synthetic
+Really enjoyed the behind-the-scenes post about how you built the search.,ok,0.98,synthetic
+The link to the docs at the end of the post is broken.,ok,0.97,synthetic
+"Not sure I get the point of the new ""focus"" feature, can someone explain the use case?",ok,0.96,synthetic
+"Five stars, would recommend to anyone managing freelance projects.",ok,0.98,synthetic
+"my notifications stopped working after the update, iphone 13, ios 17",ok,0.97,synthetic
+thank you!!,ok,0.98,synthetic
+When is the webinar recording going to be posted?,ok,0.97,synthetic
+The new onboarding checklist is a really nice touch.,ok,0.98,synthetic
+Is my data stored in the EU? Our company needs GDPR compliance.,ok,0.97,synthetic
+Meh. It's fine. Not sure it's worth the price increase though.,ok,0.96,synthetic
+Brilliant. The drag and drop finally feels native.,ok,0.98,synthetic
+Can I import my boards from Trello?,ok,0.97,synthetic
+This post convinced me to try the beta. Signed up!,ok,0.98,synthetic
+How do I cancel my subscription? Couldn't find it in settings.,ok,0.97,synthetic
+Off topic but does anyone know a good podcast about product design?,ok,0.97,synthetic
+Loving the calmer color palette in this release.,ok,0.98,synthetic
+"I think you should have announced the price change earlier, but I understand why.",ok,0.96,synthetic
+Does the tagging system work across projects now?,ok,0.97,synthetic
+"Kudos to whoever wrote the migration guide, it saved me hours.",ok,0.98,synthetic
+Is there a keyboard shortcut for switching workspaces?,ok,0.97,synthetic
+The mobile app is so much smoother now. Great job.,ok,0.98,synthetic
+Does anyone else use this with a screen reader? How's the accessibility?,ok,0.97,synthetic
+What's the maximum file size for attachments?,ok,0.97,synthetic
+The new templates are gorgeous.,ok,0.98,synthetic
+"I miss the sidebar from v2, any chance it'll come back as an option?",ok,0.96,synthetic
+Are you hiring remote engineers in Europe? The careers page only lists US roles.,ok,0.97,synthetic
+"Happy customer since 2019, keep it up.",ok,0.98,synthetic
+Could you write a post about how you handle backups?,ok,0.97,synthetic
+"The comparison table is really useful, but you forgot to mention the storage limits.",ok,0.97,synthetic
+"Wow, the search is instant now. What did you change?",ok,0.98,synthetic
+"Hi, is there a way to change the date format to DD/MM/YYYY?",ok,0.97,synthetic
+"Good article, very well explained.",ok,0.98,synthetic
+First!,ok,0.96,synthetic
+Anyone tried using this on a Chromebook?,ok,0.97,synthetic
+"This update fixed the bug I reported last month, thank you so much.",ok,0.98,synthetic
+Question: will the old API endpoints keep working after the v3 launch?,ok,0.97,synthetic
+Pretty disappointed that the calendar view is still Pro-only.,ok,0.96,synthetic
+Brought this to my team today and everyone loved the Kanban view.,ok,0.98,synthetic
+My cat walked across my keyboard and created 40 tasks. Is there a bulk delete?,ok,0.97,synthetic
+"Very cool, the recurring tasks are exactly what I wanted.",ok,0.98,synthetic
+Does the desktop app auto-update or do I need to download it again?,ok,0.97,synthetic
+Do you have an ETA for the Windows ARM build?,ok,0.97,synthetic
+The new logo is growing on me.,ok,0.98,synthetic
+"I'll be honest, I don't understand the new permission model at all.",ok,0.96,synthetic
+"Could you add a ""copy link to task"" button?",ok,0.97,synthetic
+Stellar release notes as always.,ok,0.98,synthetic
+How secure is the two-factor authentication? SMS or authenticator app?,ok,0.97,synthetic
+This blog is one of the few I actually read to the end.,ok,0.98,synthetic
+Great article! One suggestion: include a short video next time.,ok,0.97,synthetic
+Just wanted to say the support team was incredibly patient with me last week.,ok,0.97,synthetic
+The font in the new editor is a bit small on my laptop.,ok,0.96,synthetic
+Thanks for keeping the free tier generous.,ok,0.98,synthetic
+Is there a limit to how many guests I can invite?,ok,0.97,synthetic
+Anyone from the Berlin meetup here? That was a fun evening.,ok,0.97,synthetic
+Love it. Simple as that.,ok,0.98,synthetic
+How does this compare to the old reporting module?,ok,0.97,synthetic
+Why did you remove the weekly summary email? I relied on it.,ok,0.96,synthetic
+Can I self-host this?,ok,0.97,synthetic
+The new dashboard widgets are a game changer for our standups.,ok,0.98,synthetic
+Minor thing: the dark mode toggle doesn't remember my choice after restart.,ok,0.97,synthetic
+Really thoughtful post about burnout in startups. Thank you for sharing.,ok,0.98,synthetic
+Does the Zapier integration support the new custom fields?,ok,0.97,synthetic
+Which timezone is used for due dates when team members are in different countries?,ok,0.97,synthetic
+Beautiful work on the illustrations in this article.,ok,0.98,synthetic
+"The price is steep for a solo user, but the quality is there.",ok,0.96,synthetic
+"I got an error ""workspace not found"" after logging in today.",ok,0.97,synthetic
+The keyboard-first design is what sold me.,ok,0.98,synthetic
+Any tips for migrating 500+ tasks from spreadsheets?,ok,0.97,synthetic
+"Thanks, this cleared up my confusion about the billing cycle.",ok,0.98,synthetic
+Is the roadmap public somewhere?,ok,0.97,synthetic
+I wish you'd spend less time on AI features and more on basics like search filters.,ok,0.96,synthetic
+"Great, but when will you fix the PDF export margins?",ok,0.97,synthetic
+My grandma uses this app to track her garden planting. She loves it.,ok,0.98,synthetic
+Can I set different notification settings per project?,ok,0.97,synthetic
+Superb documentation.,ok,0.98,synthetic
+"We're a nonprofit, do you offer any discounts?",ok,0.97,synthetic
+"Not a fan of the auto-archive, it hid tasks I still needed.",ok,0.96,synthetic
+Is there a CLI tool?,ok,0.97,synthetic
+"Such a nice, quiet release. No drama, just fixes.",ok,0.98,synthetic
+I'd pay extra for a proper time tracking add-on.,ok,0.97,synthetic
+Hello from Brazil! Any plans to translate the app into Portuguese?,ok,0.97,synthetic
+This is the most useful feature you've shipped this year.,ok,0.98,synthetic
+"The new onboarding is too long, I just want to skip to the app.",ok,0.96,synthetic
+Why is the Mac app 400 MB? Seems large.,ok,0.97,synthetic
+Keep these engineering deep dives coming.,ok,0.98,synthetic
+Does archiving a project also archive its attachments?,ok,0.97,synthetic
+The table in the post is cut off on mobile.,ok,0.97,synthetic
+"Fantastic, the Gantt chart finally supports dependencies.",ok,0.98,synthetic
+Could you share what database you use? Curious about the architecture.,ok,0.97,synthetic
+I'm on the fence about renewing. The last few updates felt small.,ok,0.96,synthetic
+"Thank you for the accessibility improvements, as a colorblind user I really notice them.",ok,0.98,synthetic
+Is there an affiliate or referral program for existing customers?,ok,0.97,synthetic
+how do i add a second admin,ok,0.97,synthetic
+This makes me want to redesign our whole workflow.,ok,0.98,synthetic
+Good point about async communication. We moved our standups to written updates too.,ok,0.97,synthetic
+Honestly this feels like a feature nobody asked for.,ok,0.96,synthetic
+Does the new AI summary send our data to a third party?,ok,0.97,synthetic
+"Downloaded, installed, loving it.",ok,0.98,synthetic
+Can guests comment without creating an account?,ok,0.97,synthetic
+Nice post. Where did you get the data for the productivity chart?,ok,0.97,synthetic
+The team behind this product clearly cares. It shows.,ok,0.98,synthetic
+"After updating, the app asks me to log in every single time.",ok,0.97,synthetic
+Ok but where's the Firefox extension you promised last year?,ok,0.96,synthetic
+Your changelog format should be the industry standard.,ok,0.98,synthetic
+Can I use custom domains for shared boards?,ok,0.97,synthetic
+Anyone else getting double notifications on desktop?,ok,0.97,synthetic
+Such a clean interface.,ok,0.98,synthetic
+Would be nice if subtasks could have their own assignees.,ok,0.97,synthetic
+"The article is a bit long-winded, the key info could fit in half the space.",ok,0.96,synthetic
+Is SSO included in the business tier?,ok,0.97,synthetic
+Big fan of the new weekly review template.,ok,0.98,synthetic
+"Posting from the hospital waiting room, this app keeps my freelance work sane. Thanks.",ok,0.97,synthetic
+What happens to my data if I downgrade to free?,ok,0.97,synthetic
+"Such a satisfying checkbox animation, not gonna lie.",ok,0.98,synthetic
+Please bring back the compact list view!,ok,0.97,synthetic
+This post feels more like marketing than an actual update.,ok,0.96,synthetic
+How often do you release updates? Is there a schedule?,ok,0.97,synthetic
+Thank you for not forcing an account for the trial.,ok,0.98,synthetic
+"Just a heads up, the RSS feed for this blog is broken.",ok,0.97,synthetic
+Has anyone connected this to Home Assistant?,ok,0.97,synthetic
+Finally a to-do app that doesn't try to do everything.,ok,0.98,synthetic
+"What's the difference between ""archive"" and ""close"" for a project?",ok,0.97,synthetic
+Too many emails lately. Please let us opt out of the marketing ones.,ok,0.96,synthetic
+Can we get a public status page?,ok,0.97,synthetic
+That migration was painless. Good job everyone.,ok,0.98,synthetic
+"Is there a dark theme for the web version too, or just desktop?",ok,0.97,synthetic
+Do you support Markdown in comments?,ok,0.97,synthetic
+Cheers from Melbourne! Love the product.,ok,0.98,synthetic
+What's the best way to report a security issue?,ok,0.97,synthetic
+"I tried it for a week and went back to paper. Not for me, but I see the appeal.",ok,0.96,synthetic
+Does the API support webhooks for task completion?,ok,0.97,synthetic
+The new mobile widgets are adorable and useful.,ok,0.98,synthetic
+Could you open-source the design system? It's really nice.,ok,0.97,synthetic
+Any plans for an Apple Watch app?,ok,0.97,synthetic
+I learned more from this post than from a whole course on project management.,ok,0.98,synthetic
+"Changing the default view to ""board"" was a questionable choice imo.",ok,0.96,synthetic
+"My team is in China, is the service accessible there?",ok,0.97,synthetic
+You folks are killing it lately.,ok,0.98,synthetic
+Is there a way to see who completed a task and when?,ok,0.97,synthetic
+Loved the part about saying no to feature requests.,ok,0.97,synthetic
+Signed up for the newsletter after reading this.,ok,0.98,synthetic
+When I paste an image into a task it gets rotated sideways. iPhone photos.,ok,0.97,synthetic
+The redesign is fine but why is everything so grey now?,ok,0.96,synthetic
+Does the free plan have an ad or watermark on exports?,ok,0.97,synthetic
+Such a thoughtful approach to notifications.,ok,0.98,synthetic
+"Can you explain how the new ""smart due dates"" work?",ok,0.97,synthetic
+"Hey, I think your cookie banner doesn't close on Safari.",ok,0.97,synthetic
+The attention to detail in this release is impressive.,ok,0.98,synthetic
+Can I export everything as JSON for backup?,ok,0.97,synthetic
+It's good but it's not magic. People in these comments are overhyping it.,ok,0.96,synthetic
+How do I transfer ownership of a workspace?,ok,0.97,synthetic
+"Reading this with my morning coffee, great start to the day.",ok,0.98,synthetic
+Is there a limit on API calls for the free tier?,ok,0.97,synthetic
+"The article mentions a ""coming soon"" page but the link 404s.",ok,0.97,synthetic
+Genuinely one of the best apps on my phone.,ok,0.98,synthetic
+Would love a Kanban swimlane option.,ok,0.97,synthetic
+Six months later and the sync issue still isn't fixed. Frustrating.,ok,0.96,synthetic
+Do you have a Discord or community forum?,ok,0.97,synthetic
+Hats off to the design team.,ok,0.98,synthetic
+Can I schedule a task to appear only on weekdays?,ok,0.97,synthetic
+Is there an education plan for teachers?,ok,0.97,synthetic
+Wonderful update. My whole class uses it for group projects now.,ok,0.98,synthetic
+I'm getting a blank screen on launch after the latest update (Windows 11).,ok,0.97,synthetic
+Why does every app need AI now? Just make the basics faster.,ok,0.96,synthetic
+Any reason the Android widget doesn't support dark mode?,ok,0.97,synthetic
+"I appreciate that you explain the ""why"" behind changes.",ok,0.98,synthetic
+How do I stop the app from launching at startup?,ok,0.97,synthetic
+What's your stance on data retention after account deletion?,ok,0.97,synthetic
+"Solid release, no complaints from me.",ok,0.98,synthetic
+"I've been a paying customer for about two years now and I wanted to share some thoughts. The core app is great, but the last three releases focused on integrations I'll never use. Could we get a release focused purely on performance? Loading a project with 2k tasks still takes several seconds.",ok,0.97,synthetic
+omg the new calendar sync 😍😍 finally,ok,0.98,synthetic
+lol the easter egg in the settings page made my day,ok,0.97,synthetic
+Tried the beta on my old MacBook Air (2017) and it runs surprisingly well. Fans stay quiet too.,ok,0.97,synthetic
+THIS IS AWESOME. THANK YOU.,ok,0.98,synthetic
+ngl i was skeptical but the ai summaries are actually decent,ok,0.97,synthetic
+"We rolled this out to 40 people at our agency last month. Adoption was slow at first, mostly because people were used to email threads, but after we set up the templates it clicked. The comments feature replaced about half of our internal emails.",ok,0.97,synthetic
+good stuff 👍,ok,0.97,synthetic
+Quick question for the community: how do you all organize personal vs work tasks? Separate workspaces or tags?,ok,0.97,synthetic
+"Came for the feature announcement, stayed for the dog photo at the end 🐶",ok,0.98,synthetic
+is there any way to make the font bigger?? my eyes arent what they used to be,ok,0.97,synthetic
+"Minor nitpick: the gif in the post loops too fast, hard to follow what's happening.",ok,0.97,synthetic
+"This is off topic but the coffee shop in your office photo looks amazing, where is it?",ok,0.97,synthetic
+i literally screamed when i saw offline mode was coming. thank u,ok,0.98,synthetic
+"I disagree with the premise of the article. Deadlines aren't inherently bad, it depends on how they're set and communicated. But I appreciate the discussion.",ok,0.97,synthetic
+"Update: after reinstalling, the sync issue I mentioned above is gone. Thanks support!",ok,0.97,synthetic
+"Kinda wish you'd stop moving buttons around every release, muscle memory is a thing",ok,0.96,synthetic
+Hola! Is the Spanish translation complete now? Some menus were still in English last time I checked.,ok,0.97,synthetic
+Reading this on my phone and the code blocks overflow the screen. Otherwise great post.,ok,0.97,synthetic
+we switched from asana and havent looked back,ok,0.98,synthetic
+Does anyone know if the family plan lets each person have private lists? My kids don't need to see my work stuff.,ok,0.97,synthetic
+The keyboard shortcut cheat sheet should be printable. I'd hang it next to my monitor.,ok,0.97,synthetic
+"Genius idea to add a ""snooze until Monday"" option. Weekend me thanks you.",ok,0.98,synthetic
+"hmm the new sidebar hides my favorite projects, had to hunt for them",ok,0.97,synthetic
+"Thanks for the post. I shared it with our CTO, we're evaluating tools this quarter.",ok,0.97,synthetic
+"First time commenter, long time reader. Your posts on remote work culture have genuinely changed how I run my team.",ok,0.97,synthetic
+"FYI to anyone reading: the discount mentioned in the post only applies to new annual plans, I asked support.",ok,0.97,synthetic
+"Idk, the new colors look kinda childish to me. Functionality is good though.",ok,0.96,synthetic
+Is it just me or is the web app slower today?,ok,0.97,synthetic
+"Absolutely love the attention to keyboard navigation. As someone with RSI, mouse-free workflows matter a lot.",ok,0.98,synthetic
+"Weird bug: when I drag a task to another column on iPad, it sometimes duplicates. Anyone else?",ok,0.97,synthetic
+My 8 year old uses this to track her chores and gets super excited about checking things off lol,ok,0.97,synthetic
+I work in healthcare. Is there a HIPAA-compliant plan?,ok,0.97,synthetic
+Such a well-written post. The analogy with kitchen workflows was perfect.,ok,0.98,synthetic
+"lmao ""we broke production so you don't have to"" best subheading ever",ok,0.97,synthetic
+Does anyone have a good template for a content calendar? Would love to see what others use.,ok,0.97,synthetic
+"The pricing page says ""unlimited"" but then there's a footnote with limits. Kind of misleading tbh.",ok,0.96,synthetic
+Looking forward to the API v3 docs. Please include more examples in Python!,ok,0.97,synthetic
+Just want to say: the product team answering questions in these comments is really appreciated.,ok,0.98,synthetic
+Would it be possible to get an export to iCal format?,ok,0.97,synthetic
+"Hey, I noticed the ""Share"" button on this blog doesn't work for LinkedIn.",ok,0.97,synthetic
+"As a freelancer juggling 6 clients, the client portal feature would be a dream. Any update on that?",ok,0.97,synthetic
+Woke up to this update and it made my Monday. Cheers!,ok,0.98,synthetic
+I reported the timezone bug in March. Still there in this version.,ok,0.97,synthetic
+Serious question: what's your business model long-term? I don't want to invest time in a tool that disappears.,ok,0.97,synthetic
+The new filters are useful but I'd love to save them as presets.,ok,0.97,synthetic
+"Beautiful product, beautiful blog, beautiful team 🙌",ok,0.98,synthetic
+"My company blocks third-party cookies, and the embedded video in this post doesn't play. Any alternative link?",ok,0.97,synthetic
+A tip for others: you can hold Shift while dragging to copy a task instead of moving it.,ok,0.97,synthetic
+"Meh, the ""new"" template gallery is just the old one with different thumbnails.",ok,0.96,synthetic
+Can we get an option for Monday as the first day of the week? Most of Europe uses it.,ok,0.97,synthetic
+"I appreciate the honesty about the outage. Out of curiosity, was it DNS? It's always DNS.",ok,0.97,synthetic
+Five years of using this and it still sparks joy.,ok,0.98,synthetic
+How are you handling the new EU accessibility requirements coming next year?,ok,0.97,synthetic
+Is there a way to get a read-only link for clients?,ok,0.97,synthetic
+"This is a bit unrelated, but what font is this blog using? It's really readable.",ok,0.97,synthetic
+Great post. I'd add one more point: meetings should always have a written agenda.,ok,0.97,synthetic
+honestly i liked it better before the redesign. just my opinion,ok,0.96,synthetic
+If anyone from the team reads this: the Android app crashes when I rotate the phone while editing a note.,ok,0.97,synthetic
+Congratulations on 1 million users! Remember when it was just a small side project?,ok,0.97,synthetic
+thx for the fast fix!!!,ok,0.98,synthetic
+Where are the release notes for the desktop app? This post only covers web.,ok,0.97,synthetic
+I'd love a feature to estimate time for tasks and see a daily total.,ok,0.97,synthetic
+"I tried the free plan for a month, now upgraded. The reminders alone are worth it.",ok,0.97,synthetic
+"We're a school district, any bulk licensing options for 300+ teachers?",ok,0.97,synthetic
+"Bit of a random question, but is the team fully remote? The blog photos suggest an office.",ok,0.97,synthetic
+"The new onboarding emails are a bit much, I got 4 in two days.",ok,0.96,synthetic
+Is there an undo for deleting a whole project? Asking for a friend (me).,ok,0.97,synthetic
+Everything just works. That's the highest compliment I can give software.,ok,0.98,synthetic
+hey where did the print option go,ok,0.97,synthetic
+Our IT department wants to know if you have a SOC 2 report.,ok,0.97,synthetic
+Would love to see a post about how you prioritize the roadmap.,ok,0.97,synthetic
+"Fantastic customer service, they refunded me within a day when I was double-charged.",ok,0.98,synthetic
+Question about the new API tokens: do old tokens expire automatically?,ok,0.97,synthetic
+"This isn't a revolutionary update, but the small fixes add up.",ok,0.96,synthetic
+That chart comparing load times is impressive. Did you test on low-end Android devices too?,ok,0.97,synthetic
+"I've noticed battery drain on iOS since the last update, around 10% per hour in the background.",ok,0.97,synthetic
+Anyone using this for wedding planning? Looking for template ideas 💍,ok,0.97,synthetic
+Really thoughtful piece. Bookmarked.,ok,0.98,synthetic
+"The tooltip on the new button says ""Undefined"" in Firefox.",ok,0.97,synthetic
+"I'd love to be able to color-code projects, would help a lot visually.",ok,0.97,synthetic
+A bit off topic: are you going to be at the Web Summit this year?,ok,0.97,synthetic
+"Kudos on the dark mode, my eyes are thanking you at 2am.",ok,0.98,synthetic
+does it work offline on desktop or only mobile,ok,0.97,synthetic
+I use it daily for my PhD research notes. Would love LaTeX support in notes.,ok,0.97,synthetic
+Wish the free trial was 30 days instead of 14. Two weeks isn't enough to evaluate with a team.,ok,0.96,synthetic
+"Great update! Could the ""today"" view include overdue tasks by default?",ok,0.97,synthetic
+Just discovered the command palette. How did I live without it?,ok,0.97,synthetic
+"Interesting read. I'm not fully convinced by the four-day week argument, but the data is compelling.",ok,0.97,synthetic
+How do shared projects work when a member leaves the company?,ok,0.97,synthetic
+Thank you for not putting everything behind a subscription. The one-time desktop license is appreciated.,ok,0.98,synthetic
+is the android app getting the new design too or only ios,ok,0.97,synthetic
+"Quick heads up: your newsletter signup form says ""invalid email"" for addresses with a plus sign.",ok,0.97,synthetic
+I use this with my therapist to track homework assignments between sessions. Very helpful.,ok,0.97,synthetic
+Hands down the best onboarding experience I've had with any SaaS.,ok,0.98,synthetic
+What's the recommended way to handle recurring tasks that depend on the previous one being done?,ok,0.97,synthetic
+Please don't turn this into another bloated all-in-one tool.,ok,0.96,synthetic
+"Thanks for the credit to the open-source libraries you use, that's classy.",ok,0.97,synthetic
+Minor bug: the progress bar shows 101% on one of my projects 😅,ok,0.97,synthetic
+Anyone know if there's a way to bulk-edit due dates?,ok,0.97,synthetic
+Brilliant! This will save our team at least an hour a week.,ok,0.98,synthetic
+"I'm a designer, would you consider a Figma plugin?",ok,0.97,synthetic
+My only complaint is that the iPad app doesn't support split view properly.,ok,0.97,synthetic
+"The article says the feature is ""rolling out gradually"". How do I know if I have it?",ok,0.97,synthetic
+"I'd love to hear more about how the support team is organized, you guys are always fast.",ok,0.97,synthetic
+This blog post could've been a tweet.,ok,0.96,synthetic
+Do subtasks count towards the free plan task limit?,ok,0.97,synthetic
+Just want to say I appreciate the lack of dark patterns when cancelling. Came back because of that.,ok,0.98,synthetic
+"The keyboard shortcut for ""new task"" conflicts with my password manager on Windows.",ok,0.97,synthetic
+"How about a yearly ""wrapped"" summary like Spotify? Would be fun.",ok,0.97,synthetic
+Is it possible to hide completed tasks by default?,ok,0.97,synthetic
+Our team in Japan reports that dates are shown in US format even with Japanese locale.,ok,0.97,synthetic
+"Keep being awesome, from a very happy customer in Nairobi.",ok,0.98,synthetic
+Any integration with Obsidian planned?,ok,0.97,synthetic
+Interesting that you chose Rust for the sync engine. Would love a technical post on that.,ok,0.97,synthetic
+Honestly the price increase feels like a bait and switch for early adopters. Still using it though.,ok,0.96,synthetic
+"Please add a confirmation before deleting a list, I lost one by accident yesterday.",ok,0.97,synthetic
+How do I get the old notification sound back? The new one is too loud.,ok,0.97,synthetic
+Tried the new AI planning assistant. Surprisingly helpful for breaking down big projects.,ok,0.98,synthetic
+Would you consider a lifetime deal? Some of us hate subscriptions.,ok,0.97,synthetic
+On the subject of the post: we tried OKRs and abandoned them after two quarters. Curious how others make them work.,ok,0.97,synthetic
+Is there a way to prevent guests from seeing other guests?,ok,0.97,synthetic
+"Hi team, the email digest arrives at 3am my time. Can I pick the delivery hour?",ok,0.97,synthetic
+"That was a fun read, thanks for keeping the blog human.",ok,0.98,synthetic
+"Great article on estimating tasks. The ""double it and add a day"" rule is painfully true.",ok,0.97,synthetic
+just updated and the app wont open on my pixel 6,ok,0.97,synthetic
+"It would be awesome to have a ""focus timer"" built in, like Pomodoro.",ok,0.97,synthetic
+"Not impressed with the new mobile nav, too many taps to get to my inbox.",ok,0.96,synthetic
+What happens to the tasks assigned to me in a workspace I get removed from?,ok,0.97,synthetic
+"Hey, is the student plan still available? The link on the pricing page leads nowhere.",ok,0.97,synthetic
+Genuinely excited about the roadmap. Bring on the automations!,ok,0.98,synthetic
+How long do you keep deleted items in the trash?,ok,0.97,synthetic
+Feature request: let me pin a comment to the top of a task.,ok,0.97,synthetic
+My whole family is on this now. The shared grocery list is our most used list 😂,ok,0.97,synthetic
+"The new search operators are great, is there a full reference somewhere?",ok,0.97,synthetic
+The article skips over the downsides of this approach. Would be nice to see a balanced take.,ok,0.96,synthetic
+"Our company is moving to Microsoft Teams, any integration there?",ok,0.97,synthetic
+I love that the app works without an internet connection on flights.,ok,0.97,synthetic
+This is why I pay for software. Great job.,ok,0.98,synthetic
+Can I use the app with a YubiKey for 2FA?,ok,0.97,synthetic
+After the update the widget on my home screen shows yesterday's tasks.,ok,0.97,synthetic
+Fun fact: I first heard about you from a comment on this very blog years ago.,ok,0.97,synthetic
+Would love to see some stats on how people actually use the app. Anonymized of course.,ok,0.97,synthetic
+Does deleting my account also delete the shared projects I created?,ok,0.97,synthetic
+"Every release post says ""faster"" but I honestly can't tell the difference.",ok,0.96,synthetic
+"Love the humor in these posts, never change.",ok,0.97,synthetic
+"There's a missing word in the third bullet point: ""you can now to set"".",ok,0.97,synthetic
+Is there a way to get notified only when someone mentions me?,ok,0.97,synthetic
+Finally! Recurring subtasks!,ok,0.98,synthetic
+"I'm visually impaired and the high contrast mode is a huge improvement, thank you.",ok,0.97,synthetic
+Does this work with the Stream Deck? Would love one-button task creation.,ok,0.97,synthetic
+"My feedback: great product, confusing pricing page.",ok,0.97,synthetic
+I hope you keep the desktop app native and don't switch to Electron.,ok,0.97,synthetic
+Can the team please comment on the rumors of an acquisition?,ok,0.97,synthetic
+"Wow, what a glow-up for the mobile app.",ok,0.98,synthetic
+Why can't I attach files larger than 25MB on the free plan? Seems low.,ok,0.97,synthetic
+"Great post, but what about teams that work in shifts? None of this applies to us.",ok,0.97,synthetic
+"Hey all, what's your favorite underrated feature?",ok,0.97,synthetic
+I'm a UX researcher and I'd be happy to participate in user interviews if you run them.,ok,0.97,synthetic
+Honestly the AI feature gave me a pretty useless summary of my week. Needs work.,ok,0.96,synthetic
+"Heads up: typo in the headline, ""seperate"" → ""separate"".",ok,0.97,synthetic
+It keeps logging me out on Safari. Private relay issue maybe?,ok,0.97,synthetic
+"The best productivity tool I've ever used, and I've tried them all.",ok,0.98,synthetic
+"Wait, you can now assign tasks to multiple people? Since when?",ok,0.97,synthetic
+Is there going to be a mobile version of the reporting dashboard?,ok,0.97,synthetic
+Loving the updates lately. One request: a darker dark mode (true black) for OLED screens.,ok,0.97,synthetic
+Any chance of shared templates between workspaces?,ok,0.97,synthetic
+"My team keeps asking for a ""blocked"" status. Please consider it!",ok,0.97,synthetic
+The level of polish is unreal.,ok,0.98,synthetic
+Could you clarify how many projects are included in the Starter plan? The page says 5 but my account shows 3.,ok,0.97,synthetic
+"What's the difference between the ""team"" and ""business"" tiers besides SSO?",ok,0.97,synthetic
+I built a small script with your API to sync tasks with my calendar. The API is a joy to use.,ok,0.97,synthetic
+"This update is absolute garbage. Sync is broken, search is slower, and nobody tested it on Android.",ok,0.78,synthetic
+What the hell happened to the sidebar? This is a disaster.,ok,0.75,synthetic
+"This feature is killer, seriously. I'd murder for this in my old job.",ok,0.8,synthetic
+"Wow, another redesign nobody asked for. Truly visionary. 🙄",ok,0.72,synthetic
+Your pricing is a joke. $15/month for a to-do list? Get real.,ok,0.74,synthetic
+"I wrote a guide on migrating from Trello to your app, might help others: it's on my blog under ""tools"".",ok,0.82,synthetic
+Nice post. Very informative.,ok,0.7,synthetic
+"Great article, thanks for sharing.",ok,0.68,synthetic
+This is the worst release you've ever shipped. I'm seriously considering switching.,ok,0.76,synthetic
+"Damn, this is good. Didn't expect it.",ok,0.8,synthetic
+"f*** yes, dark mode!!!",ok,0.77,synthetic
+The person who designed this new nav should be fired. It's unusable.,ok,0.72,synthetic
+Sorry but this is just bad engineering. How did this pass QA?,ok,0.79,synthetic
+The new update is sick 🔥,ok,0.81,synthetic
+I've never seen a company ignore its users this hard. Three years of the same feature request.,ok,0.74,synthetic
+"Your support told me ""it's a known issue"" for the fifth time. Useless.",ok,0.78,synthetic
+"For anyone who needs the CSV workaround, I posted a script on GitHub, just search for ""tasks-csv-export"".",ok,0.82,synthetic
+Are you guys even reading these comments? Pathetic response time on bugs.,ok,0.73,synthetic
+This app went from great to mediocre in one update. Sad.,ok,0.77,synthetic
+Blew my mind. Absolutely crushed it with this release.,ok,0.83,synthetic
+"This article is nonsense. Remote work doesn't ""boost productivity"" for everyone, stop pretending.",ok,0.76,synthetic
+The dev who fixed the sync bug deserves a raise. Or a beer. Or both.,ok,0.8,synthetic
+"Stupid question maybe, but why is the export button hidden in three menus?",ok,0.71,synthetic
+"This UX is idiotic. Why would ""archive"" be next to ""delete"" with no confirmation?",ok,0.74,synthetic
+"Honest review: 3/10. Pretty UI, terrible reliability.",ok,0.79,synthetic
+I'm going to lose my mind if the calendar sync breaks one more time.,ok,0.78,synthetic
+We use your tool and we also built an open-source plugin for time tracking. Happy to share if the team is interested.,ok,0.82,synthetic
+Nice. Visit my profile for more productivity tips.,spam,0.62,synthetic
+"The CEO's post about ""listening to users"" is laughable given the last six months.",ok,0.76,synthetic
+Killed it! Our whole team is obsessed.,ok,0.8,synthetic
+What a load of corporate buzzwords. Just tell us what changed.,ok,0.74,synthetic
+I hate the new icons. Hate them.,ok,0.77,synthetic
+"Honestly, whoever thought removing offline mode was a good idea clearly doesn't travel.",ok,0.78,synthetic
+"This is insanely good, I'm dead 💀",ok,0.81,synthetic
+"Wow, so you finally fixed a bug from 2021. Want a medal?",ok,0.73,synthetic
+Completely unacceptable that my data was unavailable for 6 hours. I pay for this.,ok,0.75,synthetic
+"I'm a consultant and I recommend your app to clients. If anyone needs setup help, feel free to reach out via my site.",ok,0.8,synthetic
+"Very good post, keep it up.",ok,0.69,synthetic
+This piece is poorly researched. The productivity stats are from 2009.,ok,0.77,synthetic
+"Holy crap, the performance improvements are real. My 5k-task project loads instantly.",ok,0.79,synthetic
+This company only cares about money now. The early vibe is gone.,ok,0.72,synthetic
+"Shoot me now, the timezone bug is back.",ok,0.8,synthetic
+"Why are you guys so incompetent at mobile? The desktop app is great, the phone app is a mess.",ok,0.74,synthetic
+"The new AI summary is dumb as rocks. It summarized my grocery list as ""strategic initiatives.""",ok,0.78,synthetic
+Anyone who says this app is bad hasn't tried the alternatives lol,ok,0.82,synthetic
+Good info. Thanks.,ok,0.71,synthetic
+"Stop shoving AI into everything, it's annoying and nobody wants it.",ok,0.76,synthetic
+Beat me to it! I was about to build this exact feature myself as a plugin.,ok,0.8,synthetic
+This is a cash grab and you know it.,ok,0.73,synthetic
+The support bot is terrible. Took 20 minutes to reach a human.,ok,0.77,synthetic
+"My team lead is going to kill me when she sees I moved all our boards, but it's worth it.",ok,0.8,synthetic
+I'm so done with the constant UI changes. Pick a layout and stick with it.,ok,0.75,synthetic
+"Hey, I'm the author of a popular productivity newsletter and I featured this update this week. Great stuff!",ok,0.79,synthetic
+Totally useless feature for 99% of users.,ok,0.72,synthetic
+"Oh great, another ""we're excited to announce"" post. What's broken this time?",ok,0.78,synthetic
+"Crazy good update, you guys are beasts.",ok,0.81,synthetic
+Is anybody at this company actually using the product? Because it doesn't feel like it.,ok,0.74,synthetic
+"Frankly, the documentation is a mess. Half the examples are outdated.",ok,0.77,synthetic
+The launch video was cringe but the feature itself is great.,ok,0.79,synthetic
+"Nice article. I also write about productivity, you might like my stuff.",spam,0.55,synthetic
+I've submitted 12 bug reports this year and none were fixed. Why do I bother?,ok,0.76,synthetic
+"Freaking finally. Took you long enough, but thank you.",ok,0.8,synthetic
+Bad update. Reverted. Bye.,ok,0.74,synthetic
+"Your competitor did this two years ago, just saying.",ok,0.78,synthetic
+"LMAO the bug where tasks flew off the screen was the funniest thing, please keep it as an easter egg",ok,0.82,synthetic
+Lame. Where's the Linux version you promised?,ok,0.72,synthetic
+Anyone else feel like this blog has turned into a sales pitch?,ok,0.77,synthetic
+I'd kill for a proper API rate limit dashboard.,ok,0.8,synthetic
+The redesign looks like it was done by an intern over a weekend.,ok,0.75,synthetic
+Unpopular opinion: the old logo was better and the new one looks cheap.,ok,0.79,synthetic
+"As someone who works at a competitor, I have to admit this is really well done.",ok,0.83,synthetic
+Thank you for the post. Nice blog.,ok,0.71,synthetic
+Your 'unlimited' plan has limits. That's literally false advertising.,ok,0.76,synthetic
+This app has become bloated trash. I miss the simple version.,ok,0.78,synthetic
+"Bloody brilliant, mate.",ok,0.8,synthetic
+"Don't bother upgrading, the new version is buggier than ever.",ok,0.74,synthetic
+"These comments are full of fanboys. The product is decent, not revolutionary.",ok,0.77,synthetic
+The integration with GitHub is a beast. Saves me so much time.,ok,0.81,synthetic
+lol who approved this font,ok,0.73,synthetic
+I hate this so much. Why would you change the default sort order?,ok,0.76,synthetic
+I was ready to rage-quit but the new filters won me back.,ok,0.79,synthetic
+"Pretty sure this ""feature"" is just a bug with a press release.",ok,0.72,synthetic
+My brain exploded when I saw natural language dates work in Polish. Nice.,ok,0.8,synthetic
+The article reads like it was written by ChatGPT. Generic and empty.,ok,0.75,synthetic
+"Seriously, what is wrong with your QA team?",ok,0.78,synthetic
+Link to the unofficial community wiki for those asking about shortcuts: it's pinned in the forum.,ok,0.82,synthetic
+This is a step backwards. Period.,ok,0.74,synthetic
+I'm not paying more for fewer features. Cancelling at renewal.,ok,0.77,synthetic
+Damn near perfect release. Just fix the widget and it's 10/10.,ok,0.8,synthetic
+The new layout gives me a headache. Literally.,ok,0.73,synthetic
+Feels like you're ignoring small customers to chase enterprise money.,ok,0.76,synthetic
+Hot take: the old UI was ugly but way more efficient.,ok,0.79,synthetic
+Great content as always!,ok,0.71,synthetic
+Who thought hiding the settings behind a hamburger menu on desktop was smart?,ok,0.77,synthetic
+Crushed it. Love you guys. ❤️,ok,0.8,synthetic
+Your uptime is a joke this month.,ok,0.74,synthetic
+"This post is pure spin. The outage was your fault, own it.",ok,0.78,synthetic
+I made a YouTube tutorial about the new automation feature for anyone who learns better from video.,ok,0.82,synthetic
+Meh. Boring update.,ok,0.72,synthetic
+I've used this for 4 years and I've never been this disappointed.,ok,0.76,synthetic
+"Hell yeah, keyboard shortcuts for everything!",ok,0.79,synthetic
+This app is getting worse with every update. Seriously.,ok,0.73,synthetic
+The mobile app is so slow it's embarrassing.,ok,0.77,synthetic
+"I'm stealing this template idea for my team, hope that's ok 😂",ok,0.8,synthetic
+"That ""fix"" didn't fix anything, the bug is still there.",ok,0.74,synthetic
+Rubbish decision to remove the free API tier.,ok,0.78,synthetic
+Your dev team is insane (in a good way).,ok,0.81,synthetic
+"Useful info, bookmarked your site.",ok,0.72,synthetic
+"Great, now my workflow is completely destroyed. Thanks for nothing.",ok,0.76,synthetic
+"The PM who pushed for this feature knew exactly what they were doing, it's excellent.",ok,0.79,synthetic
+Just another app trying to be Notion.,ok,0.73,synthetic
+I'll say it: the design team has lost the plot.,ok,0.77,synthetic
+I screamed so loud my neighbor knocked on the wall. Recurring subtasks!!!,ok,0.8,synthetic
+Cheap move to raise prices right after the outage.,ok,0.74,synthetic
+"Bugs, bugs, and more bugs. When does it end?",ok,0.78,synthetic
+"If you're a researcher, I compiled a list of templates for academic projects, happy to share in the forum.",ok,0.82,synthetic
+Informative article. Regards.,ok,0.71,synthetic
+"This company is a mess. Good product, awful management.",ok,0.76,synthetic
+"I nearly threw my laptop out the window when the sync failed, but the recovery tool saved me.",ok,0.79,synthetic
+Tell your marketing team to chill with the emojis.,ok,0.73,synthetic
+Absolutely hate the new notification system.,ok,0.77,synthetic
+"Freaking love this, great job team!",ok,0.8,synthetic
+You broke my integrations AGAIN.,ok,0.74,synthetic
+Honestly just embarrassing. How do you ship a release that deletes user settings?,ok,0.78,synthetic
+Insanely well-crafted. The animation timing is chef's kiss.,ok,0.81,synthetic
+Fine. Whatever.,ok,0.72,synthetic
+"Stop calling bug fixes ""features"" in the changelog.",ok,0.76,synthetic
+"Grr, why is the export limited to 1000 rows? Makes me want to scream.",ok,0.79,synthetic
+Thanks for posting. Check out my channel for more tech content.,spam,0.6,synthetic
+"The new onboarding is condescending. I know how to make a task, thanks.",ok,0.77,synthetic
+This slaps.,ok,0.8,synthetic
+This is the worst support experience I've ever had.,ok,0.74,synthetic
+The article is wrong about Kanban. Read an actual book on lean before writing this.,ok,0.78,synthetic
+Shameless plug but relevant: I built a free browser extension that adds word count to your notes.,ok,0.82,synthetic
+Nice work. Good job.,ok,0.71,synthetic
+Honestly whoever wrote this post doesn't understand how teams actually work.,ok,0.76,synthetic
+That demo was fire. Can't wait to try it.,ok,0.79,synthetic
+Is this a blog or an ad?,ok,0.73,synthetic
+Sick of paying for features that are in beta forever.,ok,0.77,synthetic
+My jaw dropped. The search is ridiculously fast.,ok,0.8,synthetic
+Nobody asked for this. Nobody.,ok,0.74,synthetic
+The dark mode looks like mud. Hire a real designer.,ok,0.78,synthetic
+Absolutely demolished my backlog with the new bulk actions.,ok,0.81,synthetic
+Thanks. Very useful. Great site.,ok,0.72,synthetic
+"This isn't an improvement, it's a downgrade with a new coat of paint.",ok,0.76,synthetic
+"Damn, you guys actually listened. Respect.",ok,0.79,synthetic
+Honestly who even uses this anymore?,ok,0.73,synthetic
+Imagine charging enterprise prices for this quality.,ok,0.77,synthetic
+"Love the hustle, you guys ship fast.",ok,0.8,synthetic
+"Changelog says ""improved stability"". My app crashed twice today.",ok,0.74,synthetic
+Maybe spend less on marketing videos and more on fixing the Android app.,ok,0.78,synthetic
+"I host a small meetup for productivity nerds, we'll be demoing this feature next week. Everyone welcome.",ok,0.82,synthetic
+Is the 20% discount from the newsletter still valid for annual plans?,ok,0.9,synthetic
+Do you accept crypto payments? Our company pays some vendors in USDC.,ok,0.88,synthetic
+"There's a spam comment a few posts up selling followers, might want to delete it.",ok,0.86,synthetic
+Someone in the community forum called me an idiot for asking a basic question. Please moderate that place better.,ok,0.87,synthetic
+"The docs at docs.yourapp.com/api/webhooks explain this, section 3.",ok,0.9,synthetic
+How do you handle hate speech in shared public boards? Is there a report button?,ok,0.85,synthetic
+I got a phishing email pretending to be from you asking for my password. Heads up everyone.,ok,0.88,synthetic
+"Can we get a ""click to copy"" button on code blocks in the docs?",ok,0.86,synthetic
+Where can I buy a gift subscription for a friend?,ok,0.9,synthetic
+Is there a promo code for Black Friday this year?,ok,0.87,synthetic
+"Free trial expired before I could test the team features, can it be extended?",ok,0.84,synthetic
+"The ""cheap"" plan is fine for me, I only need basic lists.",ok,0.9,synthetic
+"I made $2k extra this year freelancing thanks to being more organized with this app. Not an ad, just grateful.",ok,0.88,synthetic
+"Buy the annual plan, it's way cheaper than monthly in the long run. Learned that the hard way.",ok,0.83,synthetic
+"The word ""killer feature"" gets thrown around a lot but offline sync really is one.",ok,0.87,synthetic
+My boss is a nightmare but at least this app keeps me sane 😂,ok,0.86,synthetic
+Any plans for a referral program? I've brought like 10 people to this app.,ok,0.9,synthetic
+"Why does the app say ""suspicious login"" every time I use my VPN?",ok,0.85,synthetic
+Here's the official link to the status page for those asking: status.yourapp.com,ok,0.88,synthetic
+"That scam site copying your logo is still up, reported it to Google.",ok,0.87,synthetic
+How do I stop spam signups on my public form? We get tons of bot submissions.,ok,0.9,synthetic
+I teach a class on productivity and use this app as an example. Students love it.,ok,0.86,synthetic
+This is stupid simple to set up. Even I managed it.,ok,0.84,synthetic
+My kids fight over whose turn it is to check off the dishes task lol,ok,0.88,synthetic
+Is it true you're shutting down the free plan? Saw it on Reddit.,ok,0.87,synthetic
+"lol at the guy above calling this app trash, it's literally free",ok,0.85,synthetic
+Great tip on using tags. I also use emoji prefixes for quick scanning.,ok,0.9,synthetic
+"Dumb question: how do I add a due time, not just a date?",ok,0.86,synthetic
+The comments section here is so wholesome compared to other tech blogs.,ok,0.88,synthetic
+"""Hate"" is a strong word but I really dislike the new gray theme.",ok,0.83,synthetic
+"Please add a way to block users in public boards, we had a troll yesterday.",ok,0.87,synthetic
+Where can I download the old installer? The new version doesn't support macOS 11.,ok,0.9,synthetic
+You should have a bug bounty program. Happy to report things responsibly.,ok,0.85,synthetic
+"I work in marketing and even I think the launch email was too salesy, haha.",ok,0.88,synthetic
+Whoever is running your Twitter account is hilarious.,ok,0.86,synthetic
+Is the desktop app code-signed? Windows Defender flags it.,ok,0.9,synthetic
+"The winner of the template contest deserved it, that design is gorgeous.",ok,0.87,synthetic
+"I wrote about my setup here on the blog's community showcase page, thanks for featuring it!",ok,0.84,synthetic
+Can I get an invoice with my company's VAT number?,ok,0.88,synthetic
+We had a heated debate in our team about whether to use tags or folders. Tags won.,ok,0.86,synthetic
+How do I report a user who's sending abusive messages through shared tasks?,ok,0.9,synthetic
+"Man, the people complaining in these comments would complain about a free ice cream.",ok,0.85,synthetic
+"I'm not a fan of the AI stuff, but I respect that it's optional.",ok,0.87,synthetic
+"Loved your post on dealing with difficult clients. The ""document everything"" tip saved me.",ok,0.88,synthetic
+What's the cheapest plan that includes guest access?,ok,0.9,synthetic
+"Fire whoever designed the tax invoice PDF, it's missing our address field. (Kidding, but please fix.)",ok,0.83,synthetic
+Is it safe to paste API keys into task descriptions? Asking because a coworker did it.,ok,0.86,synthetic
+This post made me realize how much time I waste in meetings. Ouch.,ok,0.88,synthetic
+Sign me up for the beta please! How do I join?,ok,0.9,synthetic
+Where's the best place to send feature requests? Here or the forum?,ok,0.87,synthetic
+I'm dying 😂 the illustration of the overloaded to-do list is too real.,ok,0.84,synthetic
+Congrats on the funding round! Hope it doesn't change the product for the worse.,ok,0.88,synthetic
+Does anyone know how to fight procrastination when your task list is 200 items long?,ok,0.86,synthetic
+What's the refund policy for annual plans if I cancel after a month?,ok,0.9,synthetic
+"For those saying the app is slow: clear your cache, it fixed it for me.",ok,0.85,synthetic
+The spam filter on your contact form rejected my legit message twice.,ok,0.87,synthetic
+"Just a PSA: the fake ""support"" accounts on Twitter are not the real team. Don't DM them your login.",ok,0.88,synthetic
+Would love a feature to automatically archive tasks older than 90 days.,ok,0.9,synthetic
+"Honestly people who don't use keyboard shortcuts are missing out, it's like a different app.",ok,0.83,synthetic
+"I use it to manage my D&D campaign. The party has 47 open quests and none completed, very realistic.",ok,0.86,synthetic
+"Is there a ""win"" celebration when you finish all tasks? My old app had confetti.",ok,0.88,synthetic
+How are you protecting against account takeover? My friend's account got hacked on another app.,ok,0.87,synthetic
+My company's security team wants to know where the servers are located.,ok,0.9,synthetic
+"Great, now I have no excuse not to do my taxes. Thanks a lot. 😒",ok,0.84,synthetic
+Is there a limit to how many people I can share a list with for free?,ok,0.88,synthetic
+"That guy's comment about ""boycotting"" the app over a font change is wild lol",ok,0.86,synthetic
+Can you recommend any books on personal productivity?,ok,0.9,synthetic
+I kind of hate how much I love this app.,ok,0.85,synthetic
+"Do you offer consulting for enterprise setup, or is there a partner network?",ok,0.87,synthetic
+"Hi, I'm the admin of a 200-person workspace. Where can I see audit logs?",ok,0.88,synthetic
+The link in the email took me to a 404 page.,ok,0.9,synthetic
+"Warning: once you start using the natural language input, you can't go back. It's addictive.",ok,0.83,synthetic
+I tested the new version against the old one with a stopwatch. 30% faster startup on my machine.,ok,0.86,synthetic
+"Why do I keep getting ""free premium"" emails? Are those from you or a scam?",ok,0.88,synthetic
+"In my experience, most ""productivity hacks"" are just procrastination with extra steps.",ok,0.87,synthetic
+Can I transfer my license to a new computer?,ok,0.9,synthetic
+Absolutely love this. Hate that I didn't find it sooner.,ok,0.84,synthetic
+Fyi the promo banner covers the close button on mobile.,ok,0.88,synthetic
+"Just wanted to defend the team here, they're a small company and they're doing their best.",ok,0.86,synthetic
+Are there any keyboard shortcuts for moving tasks between lists?,ok,0.9,synthetic
+"The competitor's app is cheaper, but you get what you pay for.",ok,0.85,synthetic
+Your cancellation survey is refreshingly short. Still cancelled but I'll be back.,ok,0.87,synthetic
+"I appreciate the post, but the title is a bit clickbaity.",ok,0.88,synthetic
+Could you enable comments on the changelog page too?,ok,0.9,synthetic
+"Stop apologizing for the outage and just give us a credit, lol. Seriously though, thanks for the transparency.",ok,0.83,synthetic
+"How do I get rid of the ""upgrade now"" banner? I already upgraded.",ok,0.86,synthetic
+"My team uses this in Slack all day, the slash commands are great.",ok,0.88,synthetic
+Question for power users: is there a way to make a task repeat every last Friday of the month?,ok,0.87,synthetic
+Please add two-factor via passkeys.,ok,0.9,synthetic
+"Honestly the comment above is right, the free plan is more generous than most paid apps.",ok,0.84,synthetic
+I appreciate that you replied to criticism politely. That's rare.,ok,0.88,synthetic
+"Would love to join a user research session, where do I sign up?",ok,0.86,synthetic
+Is the mobile app available in the Huawei store?,ok,0.9,synthetic
+The pricing is fair. People complaining here have never run a business.,ok,0.85,synthetic
+Could you please remove my old comment from 2021? It has my personal email in it.,ok,0.87,synthetic
+"Did anyone else get the survey email? I filled it out, took 3 minutes.",ok,0.88,synthetic
+How do I link tasks to GitHub issues?,ok,0.9,synthetic
+"Love the product, can't stand the marketing emails. Please add a proper unsubscribe.",ok,0.83,synthetic
+I was a hater at first but the new version won me over.,ok,0.86,synthetic
+Pro tip: pin your most important project to the top by starring it.,ok,0.88,synthetic
+Can you add Mastodon to the share buttons?,ok,0.87,synthetic
+Where can I find the terms of service changes you mentioned?,ok,0.9,synthetic
+This is basically crack for list-makers.,ok,0.84,synthetic
+"Our nonprofit got the discount, thank you so much, it matters for small orgs.",ok,0.88,synthetic
+"The new ""win of the week"" feature is corny but I kind of like it.",ok,0.86,synthetic
+How long does it take for the deleted account data to be purged?,ok,0.9,synthetic
+Lots of angry comments here but I think the change is fine once you get used to it.,ok,0.85,synthetic
+"There's a guy on YouTube with a great tutorial on your automations. Search for ""automations deep dive"".",ok,0.87,synthetic
+Is it possible to set a default assignee per project?,ok,0.88,synthetic
+Could you post the webinar slides as a PDF?,ok,0.9,synthetic
+I'm going to be that person: the old version was better.,ok,0.83,synthetic
+Anyone know how to export only completed tasks for a timesheet?,ok,0.86,synthetic
+Just donated to the open-source project you mentioned in the post. Thanks for highlighting it.,ok,0.88,synthetic
+The post about the office dog is the best thing on this blog.,ok,0.87,synthetic
+Is there an option for email-to-task?,ok,0.9,synthetic
+My therapist recommended this app for ADHD. It actually helps.,ok,0.84,synthetic
+Glad to see you're hiring. The posted salary ranges are a nice touch.,ok,0.88,synthetic
+"I'd pay double for this, don't tell the pricing team.",ok,0.86,synthetic
+Where do I report a bug in the Windows installer?,ok,0.9,synthetic
+"Some people in this thread need to calm down, it's just a to-do app.",ok,0.85,synthetic
+"Your competitor's CEO commented on Twitter about this launch, lol, drama.",ok,0.87,synthetic
+Why does the app need location permission on Android?,ok,0.88,synthetic
+Loving the new widgets. Can we get a larger size?,ok,0.9,synthetic
+"I've been burned by apps shutting down before, so I export my data weekly. Paranoid but safe.",ok,0.83,synthetic
+How do I get the invoice for last year's payment? Need it for taxes.,ok,0.86,synthetic
+I'm a moderator on a big subreddit and we use this to coordinate. Works great for async teams.,ok,0.88,synthetic
+Do you plan to support right-to-left languages like Arabic and Hebrew?,ok,0.87,synthetic
+Please add an option to show week numbers in the calendar.,ok,0.9,synthetic
+Everyone saying it's too expensive: it's cheaper than one coffee a week.,ok,0.84,synthetic
+"Quick q: if I cancel, do my shared lists stay visible to others?",ok,0.88,synthetic
+"The ""scam"" comments about auto-renewal are unfair, they email a reminder a week before.",ok,0.86,synthetic
+Could you add a changelog RSS feed?,ok,0.9,synthetic
+"The critics have a point about the Android app, but the desktop app is flawless.",ok,0.85,synthetic
+I just want a button to clear all completed tasks at once. Is that too much to ask?,ok,0.87,synthetic
+Can I white-label the client portal with my agency's logo?,ok,0.88,synthetic
+Why did my trial convert to paid without an email? Please refund.,ok,0.9,synthetic
+"Not gonna lie, I cried a little when the offline sync saved my notes after my laptop died.",ok,0.83,synthetic
+What's the difference between this and your competitor's free version?,ok,0.86,synthetic
+"Hey moderators, the comment about ""easy money from home"" above looks like spam.",ok,0.88,synthetic
+"Honestly the best customer support I've dealt with, and I've dealt with a lot.",ok,0.87,synthetic
+Is the new automation builder available on the Starter plan?,ok,0.9,synthetic
+"Somebody please make a video game about completing tasks, I'd be unstoppable.",ok,0.84,synthetic
+The keyboard shortcuts page is missing the new ones from this release.,ok,0.88,synthetic
+"I'm biased since I know some of the team, but this release is really good.",ok,0.86,synthetic
+How do I change the email address on my account?,ok,0.9,synthetic
+"I get why people are upset about the price, but the free tier still exists.",ok,0.85,synthetic
+My favorite part of this app is that it doesn't nag me with streaks.,ok,0.87,synthetic
+Is there a way to lock a task so nobody else can edit it?,ok,0.88,synthetic
+How do you handle leap years in yearly recurring tasks? Asking for Feb 29 birthdays.,ok,0.9,synthetic
+"Honestly, I'm tired of productivity apps, but this one sticks.",ok,0.83,synthetic
+Anyone else using the API with Python? Got a nice script for weekly reports.,ok,0.86,synthetic
+Congrats on the award! Well deserved.,ok,0.88,synthetic
+Could you allow emoji reactions on comments?,ok,0.87,synthetic
+Are there plans for a public API for the calendar?,ok,0.9,synthetic
+"Buy 10,000 real Instagram followers for just $9.99! Visit www.fastfollowz.example now!",spam,0.99,synthetic
+Make $5000 a week working from home!!! No experience needed. Click here: http://easy-cash-now.example,spam,0.99,synthetic
+"Cheap Viagra and Cialis online, no prescription needed. Fast shipping worldwide: pharma-direct.example",spam,0.99,synthetic
+"I was scammed until I met Mr. Robert, the best crypto recovery expert. Contact him on WhatsApp +1 555 0199 now!",spam,0.99,synthetic
+Best online casino 2024 🎰 500% welcome bonus + 200 free spins → lucky-spin-casino.example,spam,0.99,synthetic
+Need a loan fast? Bad credit OK! Get approved in 5 minutes at quickloans4u.example,spam,0.98,synthetic
+"Earn passive income with Bitcoin trading bot, 300% returns guaranteed!!! DM me for details",spam,0.99,synthetic
+Great post! Check out my website for the best SEO services: rank-top-seo.example,spam,0.98,synthetic
+Hot singles in your area are waiting to meet you ❤️ sign up free at meetnow-dating.example,spam,0.99,synthetic
+Get YouTube subscribers and views cheap!! Real & active. Order at tubeboost.example,spam,0.99,synthetic
+"Essay writing service, 100% plagiarism free, from $8/page. Visit bestessayhelp.example",spam,0.98,synthetic
+CONGRATULATIONS! You've been selected to win an iPhone 15. Claim your prize: prize-winner.example/claim,spam,0.99,synthetic
+Replica Rolex watches at 90% off. Swiss quality. Shop at luxury-replicas.example,spam,0.98,synthetic
+"I invested $500 with Mrs. Linda and got $12,000 in 7 days!!! Contact her on Telegram @LindaTradesFX",spam,0.99,synthetic
+"Looking for cheap web hosting? Try superhost-cheap.example, 99% uptime, only $1/month!",spam,0.98,synthetic
+Lose 20 pounds in 2 weeks with this one weird trick doctors hate! Watch now: slim-secret.example,spam,0.99,synthetic
+Buy verified PayPal accounts and aged Gmail accounts in bulk. Contact via Telegram @acc_shop,spam,0.98,synthetic
+FREE V-BUCKS GENERATOR 2024 NO HUMAN VERIFICATION → vbucks-free.example,spam,0.99,synthetic
+Best CBD gummies for anxiety and sleep. Use code BLOG20 for 20% off at calm-cbd.example,spam,0.98,synthetic
+"Need a hacker? I can recover Facebook, Instagram, WhatsApp accounts. Email hackpro@mail.example",spam,0.99,synthetic
+"Get your driver's license, passport, or ID card without exams. 100% registered. WhatsApp +44 7700 900123",spam,0.98,synthetic
+Earn $300 daily by just liking posts on Instagram!! Join now: like-and-earn.example,spam,0.99,synthetic
+"Cheap Ray-Ban sunglasses outlet, $19.99 only today!!! www.rayban-outlet-sale.example",spam,0.98,synthetic
+Forex signals with 95% accuracy. Join our VIP group today and start making money: fxvip.example,spam,0.99,synthetic
+"Nice article! I also have a blog about casino games, check it out: casinoblog-reviews.example",spam,0.98,synthetic
+"Download cracked software for free: Photoshop, Office, Windows 11 activator at crackzone.example",spam,0.99,synthetic
+"Best SEO backlinks package, 5000 DA 90+ backlinks for $49. Rank #1 on Google guaranteed!",spam,0.98,synthetic
+URGENT: Your account will be suspended. Verify your details here: account-verify-secure.example,spam,0.99,synthetic
+I buy and sell gift cards at the best rates. Contact me on WhatsApp for fast payment.,spam,0.98,synthetic
+"Want a bigger… you know what 😉 Natural pills, 100% results. Order discreetly: maleboost.example",spam,0.99,synthetic
+"Cheap flights and hotel deals up to 80% off, book now at travel-deals-cheap.example",spam,0.98,synthetic
+"Join the Illuminati today and receive $1,000,000 wealth and fame. Call +1 555 0142 now.",spam,0.99,synthetic
+Top quality fake reviews for your Amazon store. 5 stars guaranteed. DM for prices.,spam,0.98,synthetic
+Make money online fast!!! $$$ Click the link in my bio $$$,spam,0.99,synthetic
+"Get a free $1000 Walmart gift card, limited offer, just complete the survey: survey-rewards.example",spam,0.98,synthetic
+My uncle earns $85/hour on his laptop from home. See how: work-home-uncle.example,spam,0.99,synthetic
+"Buy Google reviews cheap, real accounts, no drops. Visit reviewboost.example",spam,0.98,synthetic
+💰💰 CRYPTO GIVEAWAY 💰💰 Send 0.1 BTC and receive 1 BTC back! Official event: btc-double.example,spam,0.99,synthetic
+"Top rated plumber in Dallas, 24/7 emergency service, call (214) 555-0199 today!",spam,0.98,synthetic
+"Buy real TikTok likes and followers, instant delivery, cheapest price! tikfame.example",spam,0.99,synthetic
+Visit my online store for the best phone cases and accessories: case-heaven.example,spam,0.98,synthetic
+"Want to get rich? I made $50,000 last month with this simple system. Message me.",spam,0.99,synthetic
+"Kitchen remodeling in Phoenix, free estimates, 20% off this month! phx-remodel.example",spam,0.98,synthetic
+Spell caster Dr. Okoro brought my ex back in 48 hours!!! Email him: drokorospells@mail.example,spam,0.99,synthetic
+"Premium Netflix accounts for $2/month, lifetime warranty. Telegram @cheapstreams",spam,0.98,synthetic
+"Online pharmacy – Xanax, Tramadol, Oxycodone without prescription. Discreet delivery.",spam,0.99,synthetic
+"Buy essays, dissertations, and homework help from experts. Cheap and fast. writemyessay.example",spam,0.98,synthetic
+CLICK HERE TO CLAIM YOUR FREE GIFT >>> freegift-now.example <<<,spam,0.99,synthetic
+"Best SEO agency in London, increase your traffic by 500%. Call now for free audit.",spam,0.98,synthetic
+Earn crypto by playing games! Download now and get 100 free tokens: playtoearn.example,spam,0.99,synthetic
+"Nice post! By the way, I sell high quality leather bags, have a look: leather-bags-store.example",spam,0.98,synthetic
+Invest in our new token $MOON before it goes 1000x! Presale ends tonight: moontoken.example,spam,0.99,synthetic
+Need followers? We deliver real Twitter followers within 24h. Visit xfollowers.example,spam,0.98,synthetic
+"Brother, if you need money urgently, I'm giving loans at 2% interest, contact me on WhatsApp.",spam,0.99,synthetic
+Car accident? Get the compensation you deserve. Call our lawyers now at 1-800-555-0123.,spam,0.98,synthetic
+"Free iPhone giveaway! Just share this post and comment ""done"" 📱",spam,0.99,synthetic
+"Wholesale Chinese electronics, drop shipping supplier, contact sales@cheapelec.example",spam,0.98,synthetic
+Get paid $25 for every survey you complete! Sign up now at paidsurveys-now.example,spam,0.99,synthetic
+"Best dentist in Miami, teeth whitening special $99. Book online at smile-miami.example",spam,0.98,synthetic
+"Hack any WiFi password with this app, download free: wifi-hack.example",spam,0.99,synthetic
+"I sell cheap Adobe licenses, genuine keys, 90% off. Email me for details.",spam,0.98,synthetic
+THE SECRET BANKS DON'T WANT YOU TO KNOW!!! Watch before it's deleted: bank-secret.example,spam,0.99,synthetic
+"Moving company in Toronto, cheap and reliable, call 416-555-0143 for a quote!",spam,0.98,synthetic
+Double your money in 24 hours guaranteed. Minimum deposit $100. invest-double.example,spam,0.99,synthetic
+Instagram growth service – 1k followers/week organically. DM us @growthninja,spam,0.98,synthetic
+Recovering lost crypto is possible! I got my funds back with help from CyberRecoveryPro. Email them now.,spam,0.99,synthetic
+"Discount designer clothes – Gucci, Prada, Louis Vuitton up to 85% off at designer-outlet.example",spam,0.98,synthetic
+"Earn $1000/day with Amazon affiliate autopilot system, no work required! amz-autopilot.example",spam,0.99,synthetic
+"Wedding photography in Bali, packages from $499, visit baliweddingphoto.example",spam,0.98,synthetic
+Only 3 spots left!!! Join my exclusive trading masterclass and quit your 9-5 today.,spam,0.99,synthetic
+"Get cheap SSL certificates and domains at domain-cheapest.example, from $0.99!",spam,0.98,synthetic
+"Free money!!! Cash App flip, send $50 get $500 back. $CashFlipKing",spam,0.99,synthetic
+"SEO tip: buy backlinks from my site to boost your ranking fast, contact me on Skype.",spam,0.98,synthetic
+🔥 Hot deal 🔥 AirPods Pro for $29!!! Limited stock!!! airpods-deal.example,spam,0.99,synthetic
+"Best VPN for streaming, 90% off lifetime deal today only: vpn-lifetime.example",spam,0.98,synthetic
+"Contact Hacker Mike for credit score repair, school grades change, phone spying. Fast and secure.",spam,0.99,synthetic
+I'm selling a weight loss e-book that helped me lose 50 lbs. Link in my profile.,spam,0.98,synthetic
+"Payday loans with no credit check, cash in your account today! paydayfast.example",spam,0.99,synthetic
+Looking for a reliable roofer in Atlanta? We offer free inspections! atlroofpros.example,spam,0.98,synthetic
+"Become a millionaire with binary options, message me for my strategy.",spam,0.99,synthetic
+"Handmade jewelry, 30% off for readers of this blog. Shop at silver-dreams.example",spam,0.98,synthetic
+Pay someone to take your online exam. Guaranteed A grade. WhatsApp +1 555 0177,spam,0.99,synthetic
+"Cheap custom t-shirts printing, no minimum order: tee-print-cheap.example",spam,0.98,synthetic
+WOW this changed my life: I earn $7k/month from my phone. Details here: phone-income.example,spam,0.99,synthetic
+"Best mattress deals online, free delivery, use coupon SLEEP50: mattress-deals.example",spam,0.98,synthetic
+"Buy Instagram accounts with 10k+ followers, niche pages available, cheap prices.",spam,0.99,synthetic
+"Top quality human hair wigs, wholesale prices, worldwide shipping. hairqueen.example",spam,0.98,synthetic
+Your computer is infected! Call Microsoft support now at 1-888-555-0110.,spam,0.99,synthetic
+"Plumbing, electrical, HVAC services in Houston. Same day service. Call 713-555-0198!",spam,0.98,synthetic
+"Get free Robux instantly, no survey!!! robux4free.example",spam,0.99,synthetic
+"Nice blog! I run a digital marketing agency, can we collaborate? Email me at growth@agency.example",spam,0.98,synthetic
+"Make passive income from home with our proven dropshipping course, 90% off today only!",spam,0.99,synthetic
+"Luxury real estate in Dubai, guaranteed 12% rental yield. Contact our agents now.",spam,0.98,synthetic
+"Send me your email and I'll show you how I made $10,000 in 30 days.",spam,0.99,synthetic
+"Affordable SEO content writing services, 1000 words for $10. Order at contentmill.example",spam,0.98,synthetic
+Keto diet pills - burn fat without exercise!!! Order now with 70% discount!!!,spam,0.99,synthetic
+"We buy houses for cash in any condition, call 555-0166 for an offer within 24 hours.",spam,0.98,synthetic
+"Get unlimited free spins on Coin Master, working generator: coinspins.example",spam,0.99,synthetic
+Visit our shop for cheap electronic cigarettes and vape liquids: vape-cheap.example,spam,0.98,synthetic
+"Amazing opportunity!!! Earn from home by joining our team, message me ""INFO"" now.",spam,0.99,synthetic
+"Top 10 best VPNs of 2024 reviewed on my blog, check it out → vpnreviewz.example",spam,0.98,synthetic
+"Buy research chemicals online, fast and discreet shipping worldwide.",spam,0.99,synthetic
+"Private jet charters at unbeatable prices, contact our 24/7 concierge today.",spam,0.98,synthetic
+FREE CRYPTO AIRDROP!!! Connect your wallet to claim 5000 tokens: airdrop-claim.example,spam,0.99,synthetic
+"Buy cheap Windows 11 Pro keys, $5 each, instant email delivery. keysplanet.example",spam,0.98,synthetic
+"I was broke until I discovered this app, now I make $400/day. Download: money-app.example",spam,0.99,synthetic
+"Get your logo designed for just $5, professional quality, fast delivery! logo5.example",spam,0.98,synthetic
+Want to see my private photos? 😘 Click my profile link.,spam,0.99,synthetic
+"Solar panel installation, zero upfront cost, save 90% on your electricity bills! Call today.",spam,0.98,synthetic
+"Unlock any iPhone iCloud lock, 100% working method, contact us now.",spam,0.99,synthetic
+"High DA guest posting on tech blogs, $30 per post, dofollow links. Email me.",spam,0.98,synthetic
+"My aunt made $78,000 from home last year using this simple method. Find out how: aunt-method.example",spam,0.99,synthetic
+"Order fresh flowers online, same-day delivery in NYC, 15% off with code BLOOM.",spam,0.98,synthetic
+Get a Tesla for FREE! Elon's giveaway is live: tesla-giveaway.example,spam,0.99,synthetic
+"Buy YouTube watch hours for monetization, 4000 hours fast! ytmonetize.example",spam,0.98,synthetic
+"BEST ESCORT SERVICE IN THE CITY, 24/7 available, discreet. Visit my profile.",spam,0.99,synthetic
+"Carpet cleaning special: 3 rooms for $79! Call now, limited time.",spam,0.98,synthetic
+Become rich with our AI trading robot. 98% win rate. Register free: aitrader-pro.example,spam,0.99,synthetic
+Visit our online store for cheap phone chargers and cables: cable-kingdom.example,spam,0.98,synthetic
+"Congratulations!!! You are our 1,000,000th visitor. Claim your reward: visitor-reward.example",spam,0.99,synthetic
+Need cheap likes for your Facebook page? We have packages from $3! fbboost.example,spam,0.98,synthetic
+"Contact Dr. Wale for herbal cure for herpes, HIV, diabetes. 100% cure guaranteed.",spam,0.99,synthetic
+"Web development agency, websites from $199, contact us today at webcheap.example",spam,0.98,synthetic
+I'll show you how to earn $500 per day with no investment. Message me on Telegram.,spam,0.99,synthetic
+"Online courses for sale, 1000+ premium courses for $19, lifetime access. coursebundle.example",spam,0.98,synthetic
+Get free gift cards by watching videos! Join now and get $5 bonus: watchandearn.example,spam,0.99,synthetic
+"Cheap Jordans and Yeezys, top quality replicas, worldwide shipping! sneaker-rep.example",spam,0.98,synthetic
+"Investment opportunity: 40% monthly return, fully insured. Reply for the whitepaper.",spam,0.99,synthetic
+"Best tattoo shop in LA, book your appointment today, walk-ins welcome!",spam,0.98,synthetic
+Your package could not be delivered. Update your address here: parcel-redelivery.example,spam,0.99,synthetic
+"Get cheap car insurance quotes in 2 minutes, save up to $600! carinsure-cheap.example",spam,0.98,synthetic
+WORK FROM HOME AND EARN $$$ ⬇️⬇️⬇️ link in bio ⬇️⬇️⬇️,spam,0.99,synthetic
+"Selling aged Twitter accounts, verified email, bulk discounts available.",spam,0.98,synthetic
+Get a free psychic reading now! Find out your future: psychic-free.example,spam,0.99,synthetic
+Order custom mobile apps from our offshore team at $15/hour. Contact us.,spam,0.98,synthetic
+"The government is giving away $6,400 to citizens. Check if you qualify: grant-check.example",spam,0.99,synthetic
+Nice info! Also check my article on 10 best gaming laptops under $1000: gamingtop10.example,spam,0.98,synthetic
+B U Y  F O L L O W E R S  cheap at fastfollowz dot com,spam,0.97,synthetic
+"m4ke m0ney fr0m h0me, 5k/w33k, dm me",spam,0.97,synthetic
+"fr33 v1agra s4mples, no rx needed, pharma-direct [dot] example",spam,0.96,synthetic
+c.l.i.c.k h.e.r.e for free crypto 👉 airdrop-claim(.)example,spam,0.97,synthetic
+Earn $$$ fr0m y0ur ph0ne!!! L1nk in b10,spam,0.96,synthetic
+C a s i n o  b o n u s  500%  → luckyspin . example,spam,0.97,synthetic
+"Great app! For anyone who needs professional help with tasks, contact our support team at +1 (888) 555-0147, available 24/7.",spam,0.96,synthetic
+"If you're having login issues, call the customer care helpline 1-800-555-0172, they fixed mine in minutes!",spam,0.95,synthetic
+"Nice post. I use this app together with my SEO tool at rank-top-seo.example, highly recommend both.",spam,0.96,synthetic
+"This app helped me organize my crypto trading, which now earns me $3000/week. Ask me how!",spam,0.95,synthetic
+"Loved this update. Btw my company offers cheap app development services, DM me.",spam,0.96,synthetic
+Very informative post. Thanks for sharing! [url=http://cheap-pills.example]cheap pills[/url],spam,0.95,synthetic
+"<a href=""http://casino-bonus.example"">best casino</a> nice article",spam,0.96,synthetic
+Thanks for the tips!!! Visit my site: www.bestloans-today.example,spam,0.95,synthetic
+I agree with the author. For more productivity tips visit productivityhacks-blog.example,spam,0.96,synthetic
+Good read. We sell ergonomic office chairs at 50% off: chairdeals.example,spam,0.95,synthetic
+wow nice. u can earn 100$ a day with my referral link: earnapp.example/ref=abc,spam,0.96,synthetic
+"Nice post, dropping my link for anyone who wants cheap Premium accounts for this app: premium-cracked.example",spam,0.95,synthetic
+"Anyone want the Pro plan for free? I have a working method, message me on Telegram @proaccess",spam,0.96,synthetic
+"Get the Pro version cracked here, no subscription needed: prokeygen.example",spam,0.97,synthetic
+"Recommended! Also check out TaskMasterX, better and cheaper: taskmasterx-app.example/promo",spam,0.95,synthetic
+"Great features! Also try our app FlowPlan, 3 months free with code BLOG: flowplan.example",spam,0.94,synthetic
+Best alternative to this app → cheaper-alternative.example (50% off lifetime),spam,0.96,synthetic
+"Who needs to buy reviews for their app on the App Store? I can help, DM me.",spam,0.95,synthetic
+Thanks for this!! I just made $500 today using the method on my profile page.,spam,0.96,synthetic
+"Nice. I do the same thing but earn money with it, check my blog to learn how 💸",spam,0.95,synthetic
+"Hello friends, I am Rahul from India, I provide cheap website designing service, contact me at rahulweb@mail.example",spam,0.96,synthetic
+"Hey guys, I found a legit way to earn crypto daily. Google ""earnbtc daily pro"" 🔥",spam,0.97,synthetic
+"Amazing post! If anyone needs a good accountant for their small business, check out numbers-pro.example.",spam,0.95,synthetic
+"Useful article!! We provide assignment help for students across the world, visit assignmenthero.example",spam,0.96,synthetic
+"Great work! Also, Happy to share: we're giving away 50 free Pro licenses of our competitor app at freeprolicense.example",spam,0.95,synthetic
+"S-E-X-Y singles near you, no sign up required ✅ meetnow-dating(dot)example",spam,0.97,synthetic
+"G3t r1ch qu1ck w1th 0ur b0t, 300% r0i",spam,0.96,synthetic
+Thanks for the update. Anyone interested in joining my affiliate team? Earn 40% commission on every sale. DM me.,spam,0.95,synthetic
+📈 FOREX 📈 signals 📈 daily 📈 profit 📈 join @fxsignalsvip,spam,0.97,synthetic
+buy cheap followers likes views here -> t.me/cheapboost,spam,0.96,synthetic
+"₿itcoin doubler, 100% legit, send and receive 2x: btc2x.example",spam,0.96,synthetic
+"Productivity is key! That's why I recommend the Ultimate Productivity Bundle, 97% off today only at bundledeals.example",spam,0.95,synthetic
+Your post is so good I shared it on my website about home insurance: homeinsure-tips.example,spam,0.96,synthetic
+"Thanks! By the way, cheapest domains in town at namesdirt.example 😉",spam,0.95,synthetic
+"I don't usually comment, but I have to tell everyone about Dr. Ayo who helped me win the lottery!!!",spam,0.96,synthetic
+Watch free movies online HD without registration: freemovies-hd.example,spam,0.97,synthetic
+"Good job team. Also I have a question, does anyone want to buy my Instagram account with 50k followers?",spam,0.95,synthetic
+Thanks for sharing. We are a leading provider of SAP training in Hyderabad. Contact us for demo.,spam,0.96,synthetic
+Such a helpful post! Get the best deals on laptops at laptopdealz.example,spam,0.95,synthetic
+"This is great! Btw, I'm giving away free Amazon gift cards to the first 100 people who DM me.",spam,0.96,synthetic
+FREE FOLLOWERS FREE LIKES FREE VIEWS NO PASSWORD NEEDED,spam,0.97,synthetic
+Wonderful blog! I've bookmarked it. Please visit my site too: garden-furniture-sale.example,spam,0.95,synthetic
+Thank u admin for this great article. Visit our site for Satta Matka results.,spam,0.96,synthetic
+"Such an amazing post. I've been looking for this. Here's my site about SEO in Dubai, check it.",spam,0.95,synthetic
+Very nice information. Our company provides packers and movers services in Bangalore.,spam,0.96,synthetic
+👍 Thanks for sharing. Also check out cheapest iPhone repair near you at fixmyphone.example,spam,0.95,synthetic
+Excellent post! I will definitely share it. Also here is a site with free AI tools: freeaitools-list.example,spam,0.96,synthetic
+Stop wasting time with to-do lists and start earning $10k/month. Here's the course: freedom-course.example,spam,0.97,synthetic
+"Hey, what's the best way to contact you? I have a business proposal about backlinks exchange.",spam,0.95,synthetic
+I appreciate the effort. Do visit my Etsy shop for handmade planners 🙂 etsy-planners.example,spam,0.96,synthetic
+"Thank you for sharing this informative post. I'm an SEO expert, if you need help ranking this blog, contact me.",spam,0.95,synthetic
+Great article! Get 50% off your first order of meal kits at freshbox-deal.example,spam,0.96,synthetic
+"Your blog is so nice. I want to guest post here, what is your price? Email me.",spam,0.96,synthetic
+Very helpful!!! Try this brand-new productivity AI for free: superai-planner.example/free,spam,0.95,synthetic
+FrEe gIfT cArDs HeRe →→→ giftcardz.example,spam,0.97,synthetic
+1000% legit recovery agent 👉 recovery-agent.example 👈 got back my stolen 3 BTC,spam,0.96,synthetic
+"Nice feature. We build similar custom software for enterprises, get a free quote at devshop.example",spam,0.95,synthetic
+"Does anyone need a cheap VPS? $2/month, Telegram @vps_seller",spam,0.96,synthetic
+Get laid tonight 🔥🔥 no strings attached 🔥🔥 hookupnow.example,spam,0.97,synthetic
+"Good information. Try our product management consulting services, first session free: pmconsult.example",spam,0.95,synthetic
+"Thank you, I have been searching for this info. Now I use this app to track my orders from my online shop cheap-sneakers.example",spam,0.96,synthetic
+Informative blog. Also looking for Python training in Chennai? Visit our institute page.,spam,0.95,synthetic
+"Great article! My brother made $6,742 last month from his home computer, visit this site to find out how.",spam,0.96,synthetic
+Earn Bitcoin free every hour!!! Faucet link: btcfaucet.example,spam,0.97,synthetic
+Keep it up! I also recommend this life coach who changed my life: coach-transform.example,spam,0.95,synthetic
+"Guys I'm selling lifetime access to this app's Pro plan for only $10, DM me quick before it's patched.",spam,0.96,synthetic
+thanx 4 share. visit www.cheaptickets-now.example for flights,spam,0.95,synthetic
+"This is exactly what I needed. I also use BookkeepPro for my business, sign up with my link for a free month.",spam,0.96,synthetic
+👇👇 FREE $500 CASH APP 👇👇 just comment your cashtag,spam,0.97,synthetic
+"Nice post. Kindly check out my new startup's app on the Play Store, search ""DailyDo"", would love reviews ⭐⭐⭐⭐⭐",spam,0.95,synthetic
+"i sell used laptops very cheap, whatsapp me 0300-5550123",spam,0.96,synthetic
+Good job. For custom embroidery and patches visit patchworld.example,spam,0.95,synthetic
+"Thank you! We are hiring work-from-home typists, $40/hour, no experience needed. Apply: typistjobs.example",spam,0.96,synthetic
+Rich people don't want you to know this. Watch the video before it's banned: truth-money.example,spam,0.97,synthetic
+"Such a cool update. I'm organizing a paid webinar on productivity hacks, register at my site, only $199!",spam,0.95,synthetic
+Wonderful. Please also check out my YouTube channel for gaming videos and subscribe!!!,spam,0.96,synthetic
+"Hello, I'm a professional ghostwriter for blogs like this one. Reasonable rates. Email ghostpen@mail.example",spam,0.95,synthetic
+"I'm so grateful to Mr. James, the investment manager who turned my $1,000 into $15,000. Contact him on Instagram @james_invests",spam,0.96,synthetic
+"BUY WEED ONLINE, DISCREET SHIPPING, ALL STATES",spam,0.97,synthetic
+"Nice! Our company offers the best ERP software in Pakistan, call now for a demo.",spam,0.95,synthetic
+Good content. Please visit our site for the latest government job notifications.,spam,0.96,synthetic
+"Thanks for the article!! I've written a similar one on my blog with more tips, link in my name.",spam,0.95,synthetic
+Superb blog post! Need cheap assignment writing? Visit us today.,spam,0.96,synthetic
+Earn 500 USDT daily with our AI arbitrage bot!!! Join t.me/arbbotvip,spam,0.97,synthetic
+"Very interesting. By the way, anyone looking for a good real estate agent in Toronto, message me.",spam,0.95,synthetic
+"Nice blog, I also sell productivity planners on Amazon, search ""Dream Planner 2024"" and buy one!",spam,0.96,synthetic
+"Hey admin, would you be interested in selling ad space on this blog? We pay well.",spam,0.95,synthetic
+Thanks for sharing!!!! 😍😍😍 follow me on insta @fitnessqueen_real for workout tips and discount codes,spam,0.96,synthetic
+"Get prescription meds without a doctor. Adderall, Ritalin, Modafinil, fast delivery.",spam,0.97,synthetic
+"Awesome. For quality custom boxes and packaging, visit boxmaker.example",spam,0.95,synthetic
+Love this app! Use my referral code SAVE2024 on the competitor app to get 3 months free.,spam,0.96,synthetic
+Lovely post. Visit my blog about home decor: cozyhome-ideas.example,spam,0.95,synthetic
+"thanks for info. i am selling Instagram verification badge, contact me",spam,0.96,synthetic
+FREE NETFLIX FOR LIFE 👉 netflix-free.example,spam,0.97,synthetic
+"Such useful tips, I've also written a review of this app on my affiliate site, please check it out!",spam,0.95,synthetic
+"Anybody need a job? I make $95/hr online, you can too, check my profile.",spam,0.96,synthetic
+"Excellent share! If you want quality bamboo toothbrushes, visit bambooeco.example.",spam,0.95,synthetic
+"Hi, I'm a crypto investment adviser, anyone want to make money in 2024? Contact me.",spam,0.96,synthetic
+L0W PR1CE PH4RMACY - n0 pr3scr1pt10n n33ded,spam,0.97,synthetic
+"Informative article, visit our website for the best interior designers in Delhi.",spam,0.95,synthetic
+"The app is great, I found an even better deal: Pro for $1 at shady-reseller.example",spam,0.96,synthetic
+"Thanks! You might also like our SaaS tool for invoicing, 30-day free trial: invoiceit.example",spam,0.95,synthetic
+"Do you want to lose weight? I lost 30kg with this tea, DM me for the link.",spam,0.96,synthetic
+"Win big at sports betting, 100% sure odds, join VIP now: surebets.example",spam,0.97,synthetic
+Great insights! Visit our digital agency for app marketing services.,spam,0.95,synthetic
+"Hey! Check out my new song on Spotify, would mean a lot 🎵 search ""LilProductivity""",spam,0.96,synthetic
+Kindly visit my website for the best Umrah packages.,spam,0.95,synthetic
+"I can get you verified on any social media platform, fast and cheap, DM.",spam,0.96,synthetic
+"1nvest 1n g0ld n0w, pr1ces g01ng up, c0ntact 0ur ag3nt",spam,0.97,synthetic
+Really good read. Our team provides mobile app testing services at low rates.,spam,0.95,synthetic
+"Nice article! I wrote a much more detailed version on my blog, you should check it out.",spam,0.78,synthetic
+Great post. Follow me for more productivity content!,spam,0.72,synthetic
+"Hey, I run a newsletter with 50k subscribers, would love to feature your app. DM me for sponsorship rates.",spam,0.75,synthetic
+"Honestly, TaskFlow does all this and it's cheaper. Just saying. taskflow.example",spam,0.7,synthetic
+"I'm a freelance developer, if anyone needs help building integrations with this API, contact me via my website.",spam,0.8,synthetic
+"Good post. Anyone interested in a productivity coaching session, I have a few slots open this month.",spam,0.68,synthetic
+"Loved it. I just launched my own to-do app on Product Hunt today, would appreciate an upvote!",spam,0.74,synthetic
+"Thanks for sharing. We're hiring senior React engineers, remote, great pay, apply at our careers page.",spam,0.77,synthetic
+"Great read! Here's my template pack for this app, only $9: templates-shop.example",spam,0.66,synthetic
+"Interesting. I'm collecting responses for my master's thesis on productivity tools, fill out my survey: survey-link.example",spam,0.8,synthetic
+"Nice! I made a course teaching how to master this app, 50% off for this blog's readers.",spam,0.73,synthetic
+"Awesome update. Btw we're giving a free webinar on remote team management tomorrow, register on our site!",spam,0.71,synthetic
+"Great article, I'd love to write a guest post for your blog, what are your requirements?",spam,0.76,synthetic
+"Cool feature. We built a Chrome extension that does it better, link in my profile.",spam,0.69,synthetic
+"Nice post, check my profile for similar content.",spam,0.79,synthetic
+"I agree! That's why our company built WorkHive, a more affordable alternative. Try it free.",spam,0.74,synthetic
+I sell printable planners that pair perfectly with this app. Link in my name if you're interested.,spam,0.67,synthetic
+"Thanks! Anyone looking for a virtual assistant to manage their tasks? I'm available, DM me.",spam,0.78,synthetic
+"Solid tips. For those in Austin, our coworking space has a special offer this month.",spam,0.72,synthetic
+"Hey everyone, join our Discord server for productivity nerds, 5000+ members, link in bio!",spam,0.8,synthetic
+Good. Also interested in partnering with your company for a joint promotion. Please reach out.,spam,0.7,synthetic
+"Loved this. If you want a done-for-you Notion and task app setup, I offer it as a service.",spam,0.75,synthetic
+"Great post! I review productivity apps on YouTube, just made a video comparing yours to five others. Go watch it!",spam,0.68,synthetic
+"Interesting. We are a Ukraine-based dev team, open for outsourcing projects. Contact us.",spam,0.77,synthetic
+"Very useful! I teach time management workshops for companies, email me for rates.",spam,0.73,synthetic
+"Nice. Please check my new ebook ""Get More Done in Less Time"" on Amazon, only $2.99.",spam,0.71,synthetic
+"Thanks for sharing, I'd like to buy a link on this article. How much?",spam,0.79,synthetic
+"I've been using your app for my startup, speaking of which, we're raising a seed round, investors DM me.",spam,0.66,synthetic
+"If anyone wants 3 months of Pro free, use my referral link: yourapp.example/r/jake123",spam,0.74,synthetic
+"Nice post. I have a similar blog about productivity, maybe we can exchange links?",spam,0.7,synthetic
+Great update! Our agency specializes in onboarding teams onto tools like this. Book a free consultation.,spam,0.76,synthetic
+"Awesome. I'm selling my lifetime Pro license since I'm switching jobs, anyone interested?",spam,0.69,synthetic
+Superb article!! You can find more articles like this on my site.,spam,0.8,synthetic
+"Good info. I've just started a podcast on productivity, episode 1 is out, give it a listen!",spam,0.72,synthetic
+"Hi, I represent a SaaS review site. We'd like to feature your product, sponsored listings start at $299.",spam,0.75,synthetic
+"My team built a better calendar integration for this app. It's in beta, sign up on our landing page.",spam,0.67,synthetic
+Very helpful post! Also check my Pinterest board with 100+ productivity infographics.,spam,0.78,synthetic
+"Good read. By the way, we're launching a similar app next month with lifetime pricing. Join the waitlist!",spam,0.73,synthetic
+"Great insights. I'm a career coach, if this article resonated with you, book a free call with me.",spam,0.71,synthetic
+"Hey guys! Subscribe to my channel, I post daily productivity vlogs 🙏",spam,0.77,synthetic
+"Thanks! I compared 15 task apps on my blog, yours came 3rd. Link in profile if you want the full ranking.",spam,0.68,synthetic
+"Cool. We are looking for beta testers for our new app, $20 Amazon voucher for each tester, DM me.",spam,0.74,synthetic
+Nice article sir. Please visit my blog also and give feedback.,spam,0.8,synthetic
+"Great content, would love to collaborate. Check your inbox, I sent you an email.",spam,0.7,synthetic
+"Love the app! If anyone is interested in selling their unused annual license, I'm buying.",spam,0.76,synthetic
+"Good post. Anyone who wants a custom template built, I do it for $30, message me.",spam,0.69,synthetic
+"Thanks for the update. We host a monthly productivity challenge with prizes, join via my profile!",spam,0.72,synthetic
+"Awesome!! I'm new to blogging, please visit my blog and follow me back.",spam,0.78,synthetic
+Great stuff. My company provides translation services if you want the app in more languages.,spam,0.73,synthetic
+"Nice post! I also run a productivity-focused Etsy shop, happy to give readers a discount.",spam,0.67,synthetic
+"Useful article, thank you! Could you add a link to my tool in your resources list? It's very relevant.",spam,0.75,synthetic
+"Thanks. I'm an independent recruiter, if any of your engineers are looking for new roles, reach out.",spam,0.71,synthetic
+Excellent! Follow for follow? 😊,spam,0.79,synthetic
+"This is great. I built a GPT that plans your week automatically, link in my bio, free to try.",spam,0.7,synthetic
+"Nice. Our fintech startup is looking for early users, sign up for 6 months free.",spam,0.74,synthetic
+"Hey, we just released an alternative with better privacy. Not trying to spam, just thought people here might care: privtask.example",spam,0.68,synthetic
+"Nice read, reminds me of my article on the same subject: ""7 habits of productive developers"" on Medium.",spam,0.77,synthetic
+"If you're into productivity, you'll love my Instagram, I post daily tips! @daily.tips.guru",spam,0.72,synthetic
+Kindly consider our proposal for a paid partnership. We have 200k followers on TikTok.,spam,0.76,synthetic
+"Thanks for sharing. We're a Shopify agency, if any readers need a store, we're offering 20% off.",spam,0.69,synthetic
+Really good. Upvote my comment if you agree and check my profile 😉,spam,0.8,synthetic
+"Great, I'll try it. By the way, I'm looking for affiliates for my course on remote work, 50% commission.",spam,0.73,synthetic
+"Loved this post. I'm a UX designer open to freelance work, portfolio in my profile.",spam,0.66,synthetic
+"Neat update. We sell standing desks at a great discount for remote workers, check us out.",spam,0.75,synthetic
+"Just wanted to share that our open-source alternative just hit v1.0, feedback welcome at github.example/opentask",spam,0.71,synthetic
+"Nice post. Anyone interested in trading gift cards, contact me.",spam,0.78,synthetic
+"Cool update. My cousin's company does cheap app localization, message me for contact.",spam,0.7,synthetic
+"Thank you. If anyone needs a resume review for tech jobs, I offer it for $25.",spam,0.74,synthetic
+"Awesome! We made a template marketplace for this app, creators earn 70% per sale. Join us!",spam,0.68,synthetic
+"Please visit and subscribe my channel, I make videos about apps like this in Hindi.",spam,0.77,synthetic
+"Sharing a free tool I made that integrates with your API, no signup: freetool.example",spam,0.72,synthetic
+"I love productivity. Also love my new side hustle, which pays $2k/month. Ask me about it.",spam,0.76,synthetic
+"Cool! Anyone here in marketing? Our agency is hiring social media interns, apply via my profile.",spam,0.69,synthetic
+Great article! Visit my website for more such articles.,spam,0.8,synthetic
+"Thanks. I'm an Upwork freelancer specialized in automation, happy to help anyone here for a fee.",spam,0.73,synthetic
+"This app is decent, but for teams I'd recommend our product, TeamSync. Full disclosure, I work there.",spam,0.67,synthetic
+"If this blog ever needs sponsors, our VPN company would love to talk.",spam,0.75,synthetic
+"Nice post. Please add my app to your integrations page, here's the API docs link.",spam,0.71,synthetic
+Good read. DM me if you want to learn how I automated my entire business with this app and earn 6 figures.,spam,0.78,synthetic
+"Totally agree. I wrote a free guide on this topic, just enter your email on my site to get it.",spam,0.7,synthetic
+Awesome update! Does anyone want to join my mastermind group for entrepreneurs? $49/month.,spam,0.74,synthetic
+"I've published a Udemy course on this app, use coupon BLOG10 for a discount.",spam,0.68,synthetic
+"Great! We just opened a coworking space in Lisbon, first week free for readers.",spam,0.76,synthetic
+"Thanks for this. Hiring a Head of Growth at my startup, anyone interested, link in bio.",spam,0.72,synthetic
+Good job 👍 Visit my site 👉 in bio,spam,0.79,synthetic
+"Nice. If you like this, you'll love our AI meeting notes app. Free forever plan available.",spam,0.69,synthetic
+"Hey, I'm organizing a paid productivity summit next month, early bird tickets now available!",spam,0.73,synthetic
+Great article. Would you be open to adding a do-follow link to our resource page?,spam,0.77,synthetic
+"This is cool. I sell refurbished laptops perfect for remote workers, message me for a deal.",spam,0.7,synthetic
+"Beautiful post. I'm a wedding planner and I use this app, check out my services on my site!",spam,0.75,synthetic
+"I made an unofficial desktop widget for this app, available on my Gumroad for $5.",spam,0.66,synthetic
+"Interesting! Check out my blog post about the same topic: ""Why to-do lists fail"" (link in profile).",spam,0.78,synthetic
+"Great update. If anybody's company needs Salesforce consulting, reach out, we have experience.",spam,0.71,synthetic
+"Congrats on the release! Also, please consider listing your app on our directory, $99 for a featured spot.",spam,0.74,synthetic
+"Nice features. I'm building a competing product and I'm looking for co-founders, DM me.",spam,0.69,synthetic
+"Awesome post! 😍 I also shared some tips on my TikTok, go check it out and follow.",spam,0.76,synthetic
+"Hi everyone, I'm a real estate investor. If you're interested in passive income, let's connect.",spam,0.72,synthetic
+"very nice post, keep posting. visit our site also.",spam,0.8,synthetic
+Good read. Get my free productivity checklist by joining my newsletter (link in profile).,spam,0.73,synthetic
+"Hey, I'm offering a free trial of my accounting software to readers, reply to this comment!",spam,0.67,synthetic
+"Nice! We run a Telegram group sharing templates for this app, join via my profile.",spam,0.75,synthetic
+"Loved it. If anyone wants help with their LinkedIn profile, I'm a certified coach, DM.",spam,0.71,synthetic
+"Great post, sharing on my page. Please also like my page for more tech news!",spam,0.77,synthetic
+"Cool release. Our dev agency can build custom plugins for this app, starting at $500.",spam,0.7,synthetic
+"Nice. I'm running a giveaway on my channel for a free year of this app, subscribe to enter!",spam,0.74,synthetic
+"Useful. If you want a better way to journal, try my app Reflecta, it's free on iOS.",spam,0.68,synthetic
+Thanks for sharing! Looking for cheap hosting for your blog? I have a partner link with 70% off.,spam,0.76,synthetic
+"Great tips. I'm a certified PMP trainer, next batch starts Monday, enroll now.",spam,0.72,synthetic
+"Great post!!! Check my page, you won't regret it 😉",spam,0.79,synthetic
+"Interesting read. For better SEO for your blog posts, I'd recommend my services.",spam,0.7,synthetic
+"I'm reselling this app's team licenses at 40% off retail, legit keys, message for details.",spam,0.73,synthetic
+"Nice to see this. I'm conducting paid user interviews about task apps, $50 per hour. Apply via my site.",spam,0.67,synthetic
+"Hey, cool post. I have an app that tracks habits, would you like to review it on your blog?",spam,0.75,synthetic
+"I want to share my testimony. I lost $45,000 to a fake investment platform last year and I was devastated. Then a friend introduced me to Ethical Recovery Services and within two weeks they recovered every cent. If you've been scammed, don't give up, email them at ethicalrecovery@mail.example or WhatsApp +1 555 0101.",spam,0.98,synthetic
+"Hello everyone, my name is Sarah from Texas. I was struggling with bills until I found this online job where I make $350 a day from home. It's not a scam, I just got my third paycheck. Go to this site and click ""Start Now"": homejob-sarah.example",spam,0.98,synthetic
+"Download the Pro MOD APK with all features unlocked, no ads, latest version: apkmods-pro.example",spam,0.97,synthetic
+https://cheap-followers.example,spam,0.97,synthetic
+www.bestdeals-today.example,spam,0.97,synthetic
+👉 bit.ly/free-money-now 👈,spam,0.97,synthetic
+After 3 years of marriage my husband left me for another woman. I contacted Dr. Zuma the great spell caster and he returned to me in 3 days!!! Contact him: zumaspell@mail.example,spam,0.98,synthetic
+Visit: http://pills-online-shop.example/viagra?ref=blog,spam,0.97,synthetic
+"Hey I'm Anna 22 y.o. 💋 bored tonight, text me on my site",spam,0.97,synthetic
+ATTENTION!!! Your subscription payment failed. Update your billing info here to avoid losing your data: yourapp-billing-update.example,spam,0.98,synthetic
+"Official support: if your account is locked, call our toll free number 1 (844) 555-0190 and our agents will unlock it immediately.",spam,0.97,synthetic
+"Dear customer, you have won a free 1-year Pro upgrade! Claim it now before it expires: pro-upgrade-claim.example",spam,0.97,synthetic
+I am a Nigerian prince and I need your help to transfer $15 million. You will receive 30% for your assistance. Please reply with your bank details.,spam,0.98,synthetic
+Crypto is the future!!! 🚀🚀🚀 Buy $PEPE2 now before Binance listing!!! 🚀🚀🚀,spam,0.96,synthetic
+"Selling databases of 1 million verified emails, perfect for marketing, Telegram @leadsdb",spam,0.97,synthetic
+"Get your dream job in Canada, visa guaranteed, no IELTS required, contact our agency today!",spam,0.97,synthetic
+Cheap Instagram likes 👍 real users 👍 fast delivery 👍 igboost.example 👍,spam,0.96,synthetic
+"FREE PREMIUM ACCOUNTS: Spotify, Netflix, Disney+, Hulu, all for $0 → premium-freebies.example",spam,0.97,synthetic
+My name is Jennifer and I earn $200/hour working part-time on my laptop. I never believed it until I tried it. Check it out at jenny-earns.example. Thank you and good luck!,spam,0.98,synthetic
+"Get a 5-star rating for your app on Google Play, 100 reviews for $50, real devices.",spam,0.97,synthetic
+SEO SEO SEO!!! Rank your site on first page of Google in 7 days or money back!!!,spam,0.96,synthetic
+"Download free PDF books, textbooks, novels: freepdfbooks.example",spam,0.97,synthetic
+"Hey, I noticed your blog has great traffic. I can pay $50 per link placed on your older posts. Interested?",spam,0.97,synthetic
+This is to inform all users that the app is migrating servers. Please log in at yourapp-secure-login.example to keep your account active.,spam,0.98,synthetic
+"Buy authentic Moncler jackets at 70% off, clearance sale, limited sizes, shop now!!!",spam,0.96,synthetic
+🔞 Uncensored videos 🔞 click my name,spam,0.97,synthetic
+"I found a glitch that gives you free Pro forever, tutorial on my YouTube channel, link in bio!",spam,0.97,synthetic
+"Grab this deal: 5 years of cloud storage for $29, today only! cloudstorage-deal.example",spam,0.96,synthetic
+"Warning to all: the only way to recover hacked accounts is through HackRecoveryPro on Instagram, they helped me in 1 hour.",spam,0.98,synthetic
+"Earn money by testing apps!!! $20 per test, sign up here: apptester-pay.example",spam,0.97,synthetic
+Great place to buy cheap auto parts online: autoparts-discount.example,spam,0.96,synthetic
+[URL=http://cheap-viagra.example]viagra[/URL] [URL=http://cheap-cialis.example]cialis[/URL],spam,0.97,synthetic
+"Buy Google Voice numbers, USA verified, bulk discount available.",spam,0.97,synthetic
+"OnlyFans leaks free, all creators, updated daily: leaks-free.example",spam,0.96,synthetic
+"Hi dear, I'm Mrs. Helen, a widow with terminal cancer. I want to donate my $4.5 million to charity through you. Contact me urgently.",spam,0.98,synthetic
+"Get approved for a credit card with bad credit, guaranteed, apply here: creditcard-approve.example",spam,0.97,synthetic
+"Party supplies wholesale, balloons, decorations, free shipping over $50.",spam,0.96,synthetic
+"Double your Instagram engagement overnight with our AI tool, 7-day free trial: igai.example",spam,0.97,synthetic
+"Anyone needing fake bank statements or pay stubs for apartment applications, DM me.",spam,0.97,synthetic
+"Protein powder at wholesale prices, bodybuilders DM me!!!",spam,0.96,synthetic
+"I made $27,500 last month trading crypto with the help of expert trader Mr. Jason Wood. He is honest and reliable. Contact him on Telegram @JasonWoodFX to start earning today.",spam,0.98,synthetic
+Cheap Adderall online – no Rx – overnight delivery – bitcoin accepted,spam,0.97,synthetic
+GET PAID TO WALK 🚶‍♂️💰 download the app now: walk-earn.example,spam,0.96,synthetic
+"Free trial of the best spy app, monitor your partner's phone secretly: spyapp.example",spam,0.97,synthetic
+"We sell Twitch followers and viewers, boost your stream today!",spam,0.97,synthetic
+"Welcome to the best online shop for knockoff sneakers, prices from $39!!",spam,0.96,synthetic
+Stop paying for this app! Get the same features free with our modded version: moddedtask.example,spam,0.97,synthetic
+"Hello, I'm Agent Smith from the UN compensation department. You have been selected to receive $2.5M compensation. Send your full name and address.",spam,0.98,synthetic
+!!!Limited offer!!! Get 90% off everything at megasale-now.example !!!Today only!!!,spam,0.97,synthetic
+"Top quality CBD oil, 100% organic, lab tested, free shipping. cbd-organic.example",spam,0.96,synthetic
+"Hey admin, I can drive 10,000 visitors to your blog daily for just $29. Interested?",spam,0.97,synthetic
+"I will write 100 fake reviews for your business on Yelp, Google and Trustpilot. Cheap.",spam,0.97,synthetic
+Get 50 free spins no deposit!! 🎰🎰🎰 slots-free.example,spam,0.96,synthetic
+"Instant loans up to $5000, no credit check, no documents, money in 10 minutes. Apply now!!!",spam,0.98,synthetic
+"Stream all live sports free in HD, no registration: sports-live-free.example",spam,0.97,synthetic
+"Premium dog food at half price, subscribe and save 50%!",spam,0.96,synthetic
+Your IP has been flagged for illegal downloads. Pay the fine here to avoid prosecution: fine-pay.example,spam,0.97,synthetic
+"Get instant access to 10,000+ ChatGPT prompts for just $7 → promptpack.example",spam,0.97,synthetic
+"Best kratom vendor online, fast shipping, try our sampler pack!",spam,0.96,synthetic
+"EASY MONEY 💵 no job, no boss, just $$$. DM ""YES"" to start",spam,0.97,synthetic
+"Customer service notice: due to a security breach, all users must re-verify their credit card at verify-card-now.example within 24 hours.",spam,0.98,synthetic
+"Meet beautiful Ukrainian women for marriage, register free: brides-meet.example",spam,0.97,synthetic
+"Get 1000 email leads for your business for just $10, contact leadsgen@mail.example",spam,0.96,synthetic
+Tired of your job? I retired at 32 thanks to this passive income system → retire-early-system.example,spam,0.97,synthetic
+Win an all-expenses-paid trip to Maldives! Just fill in the form with your card details for verification.,spam,0.97,synthetic
+"Best smm panel for cheap followers, likes, views, all platforms: smmpanel.example",spam,0.96,synthetic
+"Hey, check out this video of you 😳 lol → video-of-you.example",spam,0.97,synthetic
+"Unlimited free calls to any country with our app, download now!!!",spam,0.97,synthetic
+"Wholesale face masks, gloves, sanitizer, cheapest prices, bulk only.",spam,0.96,synthetic
+Earn $600 per week just by wrapping your car with an ad! Sign up at carwrap-pay.example,spam,0.98,synthetic
+This article is 🔥 but have you tried making $100/day with our AI writing side hustle? Link below 👇,spam,0.97,synthetic
+"Quality Chinese tea, direct from farm, 40% off for new customers.",spam,0.96,synthetic
+Download the leaked internal roadmap of this company here: leaked-docs.example,spam,0.97,synthetic
+"Wanna chat? 😘 I'm online now, click my profile to see my photos",spam,0.97,synthetic
+"Cheap bulk USB drives with custom logo printing, MOQ 100 pieces.",spam,0.96,synthetic
+IMPORTANT: Elon Musk is giving away 5000 BTC to celebrate. Send any amount to the address on elon-btc.example to receive double back.,spam,0.98,synthetic
+Get your hands on the new PS5 for $99! Limited units!!! ps5-deal.example,spam,0.97,synthetic
+"Beauty products 60% off, Sephora quality, free samples with every order.",spam,0.96,synthetic
+"Earn 2% daily on your USDT deposit, withdraw anytime, join now: usdt-yield.example",spam,0.97,synthetic
+"Buy Facebook ad accounts with spending history, unrestricted, ready to use.",spam,0.97,synthetic
+"Book cheap hotels in Goa, best prices guaranteed, call now!",spam,0.96,synthetic
+Lose belly fat fast with our 7-day detox! 🍵 Only $19.99 🍵,spam,0.97,synthetic
+My name is Tom and I was homeless 2 years ago. Now I make $15k/month thanks to one simple online course. Don't miss this: tom-story.example,spam,0.98,synthetic
+"Fastest way to get rich: buy our signals, 500% monthly profit, no risk.",spam,0.97,synthetic
+"Discount car rentals at airports worldwide, compare prices now!",spam,0.96,synthetic
+"Get free Starbucks gift card worth $100, just enter your email! starbucks-free.example",spam,0.97,synthetic
+"Instagram account hacked? Contact @recovery_pro_expert, 100% guaranteed recovery.",spam,0.97,synthetic
+"Dropshipping store for sale, $10k/month revenue, fully automated, DM me.",spam,0.96,synthetic
+You're an idiot if you think this update is good.,toxic,0.98,synthetic
+The author of this post is a complete moron.,toxic,0.98,synthetic
+"Shut up, nobody cares about your opinion, loser.",toxic,0.97,synthetic
+Your devs are a bunch of brain-dead monkeys.,toxic,0.98,synthetic
+What a pathetic excuse for a human you are.,toxic,0.97,synthetic
+Only a total imbecile would write an article this stupid.,toxic,0.98,synthetic
+"Go cry somewhere else, you whiny little baby.",toxic,0.97,synthetic
+You are the dumbest person I've ever seen comment on this blog.,toxic,0.98,synthetic
+The CEO is a lying piece of garbage.,toxic,0.97,synthetic
+"Hey @Mark, maybe learn to read before commenting, you illiterate clown.",toxic,0.98,synthetic
+Your support team is full of useless idiots who can't even read a ticket.,toxic,0.97,synthetic
+Are you people mentally challenged or just this incompetent?,toxic,0.98,synthetic
+Imagine being this stupid. Couldn't be me.,toxic,0.97,synthetic
+"The guy who wrote this should be ashamed, what an absolute dumbass.",toxic,0.98,synthetic
+You're pathetic. Get a life.,toxic,0.97,synthetic
+"I hope whoever designed this UI loses their job and never works again, talentless hack.",toxic,0.98,synthetic
+"Shut your mouth, you don't know anything about software.",toxic,0.97,synthetic
+Every person who works at this company is a clown.,toxic,0.98,synthetic
+LOL look at this fanboy defending a company that doesn't even know he exists. Pathetic loser.,toxic,0.97,synthetic
+"Nobody asked, you ugly troll.",toxic,0.98,synthetic
+Your brain must be the size of a peanut.,toxic,0.97,synthetic
+"What a disgusting, worthless team. You should all be embarrassed to exist.",toxic,0.98,synthetic
+The product manager is clearly an incompetent fool.,toxic,0.97,synthetic
+"Go back to your mom's basement, you nerd.",toxic,0.98,synthetic
+People like you are why this comment section is trash. Idiot.,toxic,0.97,synthetic
+This blog author is a fraud and a moron.,toxic,0.98,synthetic
+"Hey Sarah from support, you're the most useless person I've ever talked to.",toxic,0.97,synthetic
+"Holy crap you're dumb. Like genuinely, how do you function?",toxic,0.98,synthetic
+You sound like a spoiled brat. Grow up.,toxic,0.97,synthetic
+Anyone who likes this update has an IQ below room temperature.,toxic,0.98,synthetic
+Take your stupid opinions and shove them.,toxic,0.97,synthetic
+"The people running this company are greedy, lying scumbags.",toxic,0.98,synthetic
+This guy in the comments is a total tool.,toxic,0.97,synthetic
+You're a waste of oxygen.,toxic,0.98,synthetic
+"Stop talking, you're embarrassing yourself, idiot.",toxic,0.97,synthetic
+What a bunch of clowns. Fire everyone and start over.,toxic,0.98,synthetic
+"Your mother should have taught you some manners, you rude little pig.",toxic,0.97,synthetic
+"Shut up, fanboy. Nobody wants to hear your dumb praise.",toxic,0.98,synthetic
+The author clearly has no brain cells left.,toxic,0.97,synthetic
+You're so stupid it hurts to read your comments.,toxic,0.98,synthetic
+Dear devs: you are all worthless. Every single one of you.,toxic,0.97,synthetic
+"Imagine being as ugly as the new UI. Oh wait, the designer is.",toxic,0.98,synthetic
+You absolute muppet.,toxic,0.97,synthetic
+What kind of braindead moron thought this was a good idea?,toxic,0.98,synthetic
+You clearly have the intelligence of a potato.,toxic,0.97,synthetic
+The support agent I talked to was a condescending jerk and a moron.,toxic,0.98,synthetic
+"Go away, troll. Nobody likes you.",toxic,0.97,synthetic
+This company is run by incompetent frauds who should be in jail.,toxic,0.98,synthetic
+"Hey John, your comment is the dumbest thing I've read today. Congrats, idiot.",toxic,0.97,synthetic
+You people are disgusting. I hope your company burns to the ground.,toxic,0.98,synthetic
+Stupid article by a stupid writer for stupid readers.,toxic,0.97,synthetic
+Only losers use this app.,toxic,0.98,synthetic
+"Are you dense? Read the post again, genius.",toxic,0.97,synthetic
+"Keep crying, snowflake.",toxic,0.98,synthetic
+"You're a joke, and so is your product.",toxic,0.97,synthetic
+What a garbage human being you must be to defend this.,toxic,0.98,synthetic
+Your lead developer is a clueless amateur who should be fired immediately.,toxic,0.97,synthetic
+I've seen smarter comments from a toddler. You're hopeless.,toxic,0.98,synthetic
+"Ugh, shut up already, attention seeker.",toxic,0.97,synthetic
+"You're a pathetic shill, how much are they paying you?",toxic,0.98,synthetic
+"The whole dev team should be ashamed of their pathetic work, bunch of losers.",toxic,0.97,synthetic
+"Nobody wants you here, go away.",toxic,0.98,synthetic
+Your face must look as bad as this redesign.,toxic,0.97,synthetic
+Only a complete idiot would pay for this.,toxic,0.98,synthetic
+"Hey, moron, it's ""their"" not ""there"".",toxic,0.97,synthetic
+You're a disgrace to your profession.,toxic,0.98,synthetic
+The CEO is a spineless coward.,toxic,0.97,synthetic
+This article was written by an absolute brainlet.,toxic,0.98,synthetic
+"Lmao you're so dumb, did you even finish high school?",toxic,0.97,synthetic
+"Everyone at this company is a lazy, entitled idiot.",toxic,0.98,synthetic
+"Stop commenting, nobody cares about you or your stupid cat.",toxic,0.97,synthetic
+You're the reason people hate tech bros. Insufferable jerk.,toxic,0.98,synthetic
+"What a clown show. Honestly, how are you all this stupid?",toxic,0.97,synthetic
+"I've never met anyone as useless as your ""customer success"" guy.",toxic,0.98,synthetic
+"You should be embarrassed. Actually, you should just quit.",toxic,0.97,synthetic
+"Anyone who disagrees with me is a moron, especially you, Dave.",toxic,0.98,synthetic
+Shut up and go back to your cave.,toxic,0.97,synthetic
+"You're a sad, lonely person who spends all day defending a to-do app. Pathetic.",toxic,0.98,synthetic
+The writer of this nonsense is a complete dimwit.,toxic,0.97,synthetic
+Your team is a circus of incompetence led by a clown.,toxic,0.98,synthetic
+Dumb take from a dumb person.,toxic,0.97,synthetic
+"Go touch grass, you basement-dwelling loser.",toxic,0.98,synthetic
+You obviously have zero talent. Stop pretending to be a designer.,toxic,0.97,synthetic
+The mods here are power-tripping idiots.,toxic,0.98,synthetic
+Imagine having a brain and choosing not to use it. That's you.,toxic,0.97,synthetic
+You're a parasite on the tech industry.,toxic,0.98,synthetic
+"Stop whining, you entitled little brat.",toxic,0.97,synthetic
+"Nobody asked for your stupid opinion, Karen.",toxic,0.98,synthetic
+Your developers are so dumb they probably can't tie their shoes.,toxic,0.97,synthetic
+What an idiotic comment from an idiotic person.,toxic,0.98,synthetic
+"You're not special, you're just annoying.",toxic,0.97,synthetic
+"The author is a fat, lazy slob who can't write.",toxic,0.98,synthetic
+Grow a brain before you comment next time.,toxic,0.97,synthetic
+This company deserves to go bankrupt and so do its useless employees.,toxic,0.98,synthetic
+Your comment history shows you're a miserable troll with no friends.,toxic,0.97,synthetic
+Only a moron like you would fall for this marketing.,toxic,0.98,synthetic
+"Shut it, clown.",toxic,0.97,synthetic
+Your whole team is a waste of space.,toxic,0.98,synthetic
+Why are you so dumb? Honest question.,toxic,0.97,synthetic
+"The support lady was a rude, stupid cow.",toxic,0.98,synthetic
+You're pathetic and your opinions are worthless.,toxic,0.97,synthetic
+"Hope you enjoy being unemployed, you incompetent fool.",toxic,0.98,synthetic
+Go cry to your mommy.,toxic,0.97,synthetic
+Every comment you write proves how brainless you are.,toxic,0.98,synthetic
+"What a smug, arrogant jerk the author is.",toxic,0.97,synthetic
+Stupid people like you shouldn't be allowed on the internet.,toxic,0.98,synthetic
+"Hey devs, you're all amateurs. Learn to code, clowns.",toxic,0.97,synthetic
+I hope you choke on your own bad decisions.,toxic,0.98,synthetic
+"Stop being such a crybaby, loser.",toxic,0.97,synthetic
+"Nobody likes you, Tom. Not here, not anywhere.",toxic,0.98,synthetic
+"This article is garbage, just like its author.",toxic,0.97,synthetic
+You're an embarrassment to humanity.,toxic,0.98,synthetic
+"Dude, you're so ignorant it's actually impressive.",toxic,0.97,synthetic
+Your product is trash and your team is trash.,toxic,0.98,synthetic
+Please stop breeding.,toxic,0.97,synthetic
+The engineering team is a bunch of clueless children.,toxic,0.98,synthetic
+"You're a snake, and everyone knows it.",toxic,0.97,synthetic
+Idiots like you ruin every discussion.,toxic,0.98,synthetic
+"I'd explain it to you, but I don't have crayons.",toxic,0.97,synthetic
+You're a worthless shill for a worthless company.,toxic,0.98,synthetic
+Your mom must be so disappointed in you.,toxic,0.97,synthetic
+What a pack of liars and cheats.,toxic,0.98,synthetic
+"Shut up, nerd.",toxic,0.97,synthetic
+This guy is such an idiot I can't even.,toxic,0.98,synthetic
+"Dumb, dumber, and the author of this post.",toxic,0.97,synthetic
+You clearly don't have two brain cells to rub together.,toxic,0.98,synthetic
+"Get lost, creep.",toxic,0.97,synthetic
+The founder is a narcissistic con artist.,toxic,0.98,synthetic
+You're a loser with a keyboard.,toxic,0.97,synthetic
+"I'm sick of reading your moronic comments, go away forever.",toxic,0.98,synthetic
+You're the human equivalent of a 404 error.,toxic,0.97,synthetic
+"This company is full of spineless, lying weasels.",toxic,0.98,synthetic
+"Honestly, people like you should just stay offline.",toxic,0.97,synthetic
+Only a braindead zombie would use this app.,toxic,0.98,synthetic
+Your writing is as pathetic as you are.,toxic,0.97,synthetic
+"Hey mods, ban this idiot already, he's a disgusting troll.",toxic,0.98,synthetic
+You're a fool and a hypocrite.,toxic,0.97,synthetic
+What an absolute waste of a human being.,toxic,0.98,synthetic
+"Stop sucking up to the devs, you pathetic bootlicker.",toxic,0.97,synthetic
+Your designers must be blind idiots.,toxic,0.98,synthetic
+You talk like a child. A dumb one.,toxic,0.97,synthetic
+Anyone who works in your support team deserves to be fired and humiliated.,toxic,0.98,synthetic
+"Go away, nobody wants your stupid feedback.",toxic,0.97,synthetic
+You are what's wrong with the internet. Absolute troll.,toxic,0.98,synthetic
+The author should stick to flipping burgers.,toxic,0.97,synthetic
+"Only an idiot would think this is an improvement, and you, sir, are an idiot.",toxic,0.98,synthetic
+I know where your office is. You'd better watch your back.,toxic,0.98,synthetic
+Someone should burn your headquarters down with all of you inside.,toxic,0.98,synthetic
+"If I ever see the CEO in person, I'll punch him in the face.",toxic,0.98,synthetic
+I hope you all get hit by a bus.,toxic,0.97,synthetic
+Keep ignoring my ticket and see what happens when I show up at your office.,toxic,0.98,synthetic
+"I found your home address, Mark. See you soon.",toxic,0.98,synthetic
+You deserve to be beaten for releasing this garbage.,toxic,0.97,synthetic
+"Kill yourself, seriously.",toxic,0.98,synthetic
+"Go jump off a bridge, nobody would miss you.",toxic,0.98,synthetic
+I hope your family finds out what a failure you are.,toxic,0.97,synthetic
+Watch yourself. I have friends who know where you live.,toxic,0.98,synthetic
+People like you deserve to suffer.,toxic,0.97,synthetic
+I'll make sure you never work in this industry again. I'll ruin your life.,toxic,0.98,synthetic
+Next time I'm in San Francisco I'm coming for your devs.,toxic,0.98,synthetic
+"I hope you get cancer, you greedy scumbag.",toxic,0.97,synthetic
+"Women shouldn't be allowed to lead engineering teams, this is proof.",toxic,0.98,synthetic
+"Of course the app is garbage, you hired foreigners who can't even speak English.",toxic,0.98,synthetic
+"Typical outsourced support, these people are all useless.",toxic,0.97,synthetic
+Old people like you shouldn't be allowed near computers. Just die already.,toxic,0.98,synthetic
+This is what happens when you hire women to write code.,toxic,0.98,synthetic
+"Gay people ruin everything they touch, including this app.",toxic,0.97,synthetic
+Immigrants are destroying the tech industry and this company is proof.,toxic,0.98,synthetic
+"Another company run by a certain religion, no wonder they're greedy.",toxic,0.98,synthetic
+"Of course the author is a woman, she clearly doesn't understand technology.",toxic,0.97,synthetic
+"People from that country are all scammers, I'd never trust their developers.",toxic,0.98,synthetic
+"Disabled people shouldn't be allowed to give feedback, they slow everything down.",toxic,0.98,synthetic
+Figures a guy with a name like that wrote this trash. Go back to your country.,toxic,0.97,synthetic
+The support guy had an accent so thick I wanted to scream. Hire real Americans.,toxic,0.98,synthetic
+Black people aren't smart enough to work in engineering anyway.,toxic,0.98,synthetic
+All these diversity hires are why the product sucks.,toxic,0.97,synthetic
+Muslims shouldn't be allowed to work at tech companies.,toxic,0.98,synthetic
+"Jews control every tech company, this is no exception.",toxic,0.98,synthetic
+Trans people are mentally ill and so is anyone who supports them. Unsubscribed.,toxic,0.97,synthetic
+"Asian developers just copy everything, no creativity at all.",toxic,0.98,synthetic
+Fat people like the author should stay off camera.,toxic,0.98,synthetic
+This is why you don't hire young girls to do a man's job.,toxic,0.97,synthetic
+Your team is full of foreigners who should be deported.,toxic,0.98,synthetic
+"Women in tech are a joke, just like this update.",toxic,0.98,synthetic
+"Of course the new UI is pink, you let the girls design it.",toxic,0.97,synthetic
+I'll find you and make you regret this update.,toxic,0.98,synthetic
+"I hope someone hacks your servers and leaks all your personal data, you deserve it.",toxic,0.98,synthetic
+If you delete my comment again I'll post your home address here.,toxic,0.97,synthetic
+Your developer deserves to be slapped until he fixes the bug.,toxic,0.98,synthetic
+"Someone needs to teach the CEO a lesson, with a baseball bat.",toxic,0.98,synthetic
+I'll dox every single one of your employees.,toxic,0.97,synthetic
+I'm going to call your office every day until someone quits. Then I'll keep going.,toxic,0.98,synthetic
+You and your family should be ashamed. I hope they suffer for your mistakes.,toxic,0.98,synthetic
+I'm going to spam every review site until your company is dead. Enjoy unemployment.,toxic,0.97,synthetic
+Die in a fire.,toxic,0.98,synthetic
+Die.,toxic,0.98,synthetic
+KYS,toxic,0.97,synthetic
+kys loser,toxic,0.98,synthetic
+I hope your kids are embarrassed of you forever.,toxic,0.98,synthetic
+"One day someone will give you exactly what you deserve, and it won't be pretty.",toxic,0.97,synthetic
+I'd love to see your office explode.,toxic,0.98,synthetic
+You should be put down like a sick dog.,toxic,0.98,synthetic
+I'll wait for you outside the conference next month. We'll talk then.,toxic,0.97,synthetic
+I'm tracking you on social media. Every post. You can't hide.,toxic,0.98,synthetic
+Let's see how funny you are when I show up at your house.,toxic,0.98,synthetic
+Old boomers like you should just retire and die already.,toxic,0.97,synthetic
+Only a Mexican would write code this lazy.,toxic,0.98,synthetic
+"Indian devs are the worst, no wonder this app is trash.",toxic,0.98,synthetic
+"Stop hiring feminists, they ruin every company.",toxic,0.97,synthetic
+This is what diversity quotas get you: an app built by idiots.,toxic,0.98,synthetic
+"Christians are brainwashed idiots, no wonder the founder is one.",toxic,0.98,synthetic
+"People with ADHD shouldn't be allowed to manage projects, they're useless.",toxic,0.97,synthetic
+Gypsies would steal your data faster than this app loses it.,toxic,0.98,synthetic
+"All Russians are criminals, I'd never trust a Russian-built app.",toxic,0.98,synthetic
+"Chinese people are spies, don't give them your data.",toxic,0.97,synthetic
+"Women should stick to the kitchen, not product management.",toxic,0.98,synthetic
+Only autistic weirdos would use this app.,toxic,0.98,synthetic
+"Refugees should not be hired, they take our jobs and do them badly.",toxic,0.97,synthetic
+Your gay marketing campaign is disgusting. Keep that stuff away from us.,toxic,0.98,synthetic
+"This company employs illegals, report them.",toxic,0.98,synthetic
+Poor people shouldn't even be using apps like this. Go get a job.,toxic,0.97,synthetic
+Ugly people like the author shouldn't post pictures of themselves.,toxic,0.98,synthetic
+"Burn in hell, all of you.",toxic,0.98,synthetic
+"I'm going to make your life a living hell, just wait.",toxic,0.97,synthetic
+Keep it up and I'll make sure your wife hears about this.,toxic,0.98,synthetic
+Someone should hurt you so you learn some respect.,toxic,0.98,synthetic
+"If I ever meet the designer, I'll break his fingers so he can't ruin another app.",toxic,0.97,synthetic
+I'll be at your company event in Berlin. Bring security.,toxic,0.98,synthetic
+I hope the next plane you board crashes.,toxic,0.98,synthetic
+You'd better sleep with one eye open.,toxic,0.97,synthetic
+I'll leak your personal photos if you don't restore my account.,toxic,0.98,synthetic
+I'll report your whole family to immigration.,toxic,0.98,synthetic
+You and your religion are a disease on this planet.,toxic,0.97,synthetic
+People like the author should be locked up for being this stupid.,toxic,0.98,synthetic
+"Get cancer and die, you parasite.",toxic,0.98,synthetic
+I hope you lose everything you love.,toxic,0.97,synthetic
+Nobody would care if you disappeared tomorrow. Do us all a favor.,toxic,0.98,synthetic
+Keep ignoring me and see what happens to your office windows.,toxic,0.98,synthetic
+Someone should poison the office coffee. Would improve the product.,toxic,0.97,synthetic
+Brown people shouldn't be doing tech support for Americans.,toxic,0.98,synthetic
+Old women like you don't belong in tech.,toxic,0.98,synthetic
+This app is for brain-damaged simpletons.,toxic,0.97,synthetic
+Your team of foreign rejects can't build anything.,toxic,0.98,synthetic
+"Men like the author are weak and pathetic, real men don't write blogs.",toxic,0.98,synthetic
+"Southerners are inbred morons, figures the founder is from Alabama.",toxic,0.97,synthetic
+People from the Middle East shouldn't be allowed to own tech companies.,toxic,0.98,synthetic
+Only communists would build an app like this. Should be deported.,toxic,0.98,synthetic
+Your black CEO is the reason this company is failing.,toxic,0.97,synthetic
+I'd love to see your whole dev team fired and homeless.,toxic,0.98,synthetic
+ur an 1d10t lol,toxic,0.96,synthetic
+f*ck you and your stupid app,toxic,0.96,synthetic
+"st*pid devs, st*pid company",toxic,0.96,synthetic
+y o u  a r e  a  m o r o n,toxic,0.95,synthetic
+🖕🖕🖕 to the whole team,toxic,0.96,synthetic
+"go f yourself, author",toxic,0.96,synthetic
+what a d u m b a s s,toxic,0.95,synthetic
+"sh*t for brains, all of you",toxic,0.96,synthetic
+u r such a l0s3r,toxic,0.96,synthetic
+@admin ur a clown 🤡🤡🤡,toxic,0.95,synthetic
+stfu nobody asked,toxic,0.96,synthetic
+gtfo with your dumb opinions,toxic,0.96,synthetic
+the CEO is a c0ck,toxic,0.95,synthetic
+you're a p.i.e.c.e o.f s.h.i.t,toxic,0.96,synthetic
+m0r0ns everywhere in this company,toxic,0.96,synthetic
+"eat sh1t, devs",toxic,0.95,synthetic
+"🤡 <- this is you, author",toxic,0.96,synthetic
+"a$$hole support guy hung up on me, what a scumbag",toxic,0.96,synthetic
+yo mama so dumb she'd love this update,toxic,0.95,synthetic
+F U C K  T H I S  T E A M,toxic,0.96,synthetic
+"b1tch please, your app sucks and so do you",toxic,0.96,synthetic
+"idi0t, it's not that hard",toxic,0.95,synthetic
+dumb b*tch in the comments above needs to shut up,toxic,0.96,synthetic
+you absolute tw@t,toxic,0.96,synthetic
+what a pr!ck,toxic,0.95,synthetic
+br41n-d3ad take from a brainless author,toxic,0.96,synthetic
+"i h8 u all, die",toxic,0.96,synthetic
+k.y.s,toxic,0.95,synthetic
+you're such a wanker mate,toxic,0.96,synthetic
+dickhead devs broke everything again,toxic,0.96,synthetic
+go eat a bag of d*cks,toxic,0.95,synthetic
+moron-in-chief strikes again with another stupid post,toxic,0.96,synthetic
+you f@cking clown,toxic,0.96,synthetic
+lmaooo imagine being this braindead 🧠❌,toxic,0.95,synthetic
+d-u-m-b,toxic,0.96,synthetic
+"sucks to be you, loser 🤣🖕",toxic,0.96,synthetic
+ur mom,toxic,0.95,synthetic
+"sit down, clown 🤡",toxic,0.96,synthetic
+your such a tool lmao,toxic,0.96,synthetic
+shut ur trap,toxic,0.95,synthetic
+Are you stupid or something? It's in the settings.,toxic,0.8,synthetic
+Did you even read the post before commenting? Clearly not.,toxic,0.75,synthetic
+"Wow, what a genius. Nobody could have thought of that. 🙄",toxic,0.72,synthetic
+Maybe try using your brain next time.,toxic,0.78,synthetic
+I'm sorry you're too slow to figure out a checkbox.,toxic,0.7,synthetic
+LOL imagine needing a tutorial for this.,toxic,0.76,synthetic
+That's the dumbest question I've seen all week.,toxic,0.8,synthetic
+"Calm down, crybaby, it's just a font.",toxic,0.74,synthetic
+"Bless your heart, you really think that's how APIs work.",toxic,0.77,synthetic
+Ok boomer.,toxic,0.73,synthetic
+"You're clearly clueless about software development, so maybe stay quiet.",toxic,0.79,synthetic
+Cute that you think your opinion matters here.,toxic,0.71,synthetic
+Stop being such a snowflake about a price increase.,toxic,0.8,synthetic
+Only a clown would complain about a free app.,toxic,0.75,synthetic
+"The author's ""insights"" are what a 12 year old would write.",toxic,0.78,synthetic
+"Ah yes, another expert from the comment section. Sit down.",toxic,0.72,synthetic
+"Honestly the designer should be ashamed, this is amateur hour.",toxic,0.77,synthetic
+"Nice try, genius. Next time read the docs.",toxic,0.74,synthetic
+Your comment is so dumb I lost brain cells reading it.,toxic,0.8,synthetic
+"Oh look, it's the resident complainer again. Yawn.",toxic,0.7,synthetic
+Maybe if you weren't so lazy you'd find the export button.,toxic,0.76,synthetic
+This is the kind of take I'd expect from someone who can't code.,toxic,0.79,synthetic
+"Are the devs asleep, or just incompetent?",toxic,0.73,synthetic
+"Get a clue, dude.",toxic,0.78,synthetic
+"Seriously, go touch some grass.",toxic,0.71,synthetic
+"Only an idiot would pay for Pro. Oh wait, you did.",toxic,0.75,synthetic
+"Hey Jake, maybe don't comment if you have nothing smart to say. Which is always.",toxic,0.8,synthetic
+Please tell me you're joking. Nobody can be that dense.,toxic,0.72,synthetic
+The support team is staffed by people who clearly failed at every other job.,toxic,0.77,synthetic
+"Lol at the fanboys, go worship your app somewhere else.",toxic,0.74,synthetic
+Shut up and let the adults talk.,toxic,0.79,synthetic
+Whoever wrote this has never worked a real job in their life.,toxic,0.7,synthetic
+You're wrong and honestly kind of embarrassing.,toxic,0.76,synthetic
+This article reads like it was written by a drunk intern. Fire them.,toxic,0.78,synthetic
+You must be new here. And slow.,toxic,0.73,synthetic
+Stop pretending you know anything about design.,toxic,0.8,synthetic
+"Oh please, spare us your sob story.",toxic,0.71,synthetic
+Are you even qualified to write about this? Doubt it.,toxic,0.75,synthetic
+"Dude, learn to type before insulting the devs.",toxic,0.77,synthetic
+"Keep crying about the redesign, lol.",toxic,0.72,synthetic
+How are you this bad at your job? Serious question to the PM.,toxic,0.79,synthetic
+Imagine being the guy who approved this. Couldn't be me.,toxic,0.74,synthetic
+Your reply is peak stupidity.,toxic,0.8,synthetic
+Look who's back to whine again.,toxic,0.7,synthetic
+"What are you, five?",toxic,0.76,synthetic
+Stop embarrassing yourself in every comment thread.,toxic,0.78,synthetic
+"Clueless take, as usual from you.",toxic,0.73,synthetic
+Not surprised a know-it-all like you missed the obvious.,toxic,0.8,synthetic
+"Hey, genius, it's literally on the first page.",toxic,0.71,synthetic
+Bro thinks he's a product designer 💀💀,toxic,0.75,synthetic
+"Nobody cares, Kevin.",toxic,0.77,synthetic
+"You're wrong, and you're annoying about it.",toxic,0.72,synthetic
+The dev who wrote this code should have their keyboard taken away.,toxic,0.79,synthetic
+This is what happens when you let clueless marketers run a tech company.,toxic,0.74,synthetic
+Is English your first language? Because your comment makes zero sense.,toxic,0.8,synthetic
+"Oh boo hoo, the button moved. Grow up.",toxic,0.7,synthetic
+Some people really shouldn't be allowed to have opinions.,toxic,0.76,synthetic
+Typical entitled user behavior. Pathetic.,toxic,0.78,synthetic
+"Your ""feedback"" is worthless.",toxic,0.73,synthetic
+Stop being a drama queen.,toxic,0.8,synthetic
+You're the reason warning labels exist.,toxic,0.71,synthetic
+Keep your garbage opinions to yourself.,toxic,0.75,synthetic
+LOL the guy above is so clueless it's painful.,toxic,0.77,synthetic
+The PM should stick to making coffee.,toxic,0.72,synthetic
+"You're not smart, you just type a lot.",toxic,0.79,synthetic
+Such a whiner. Nobody forced you to use it.,toxic,0.74,synthetic
+The sync is broken again. Your devs are worthless idiots who shouldn't be allowed near a keyboard.,toxic,0.93,synthetic
+"I've been a customer for 4 years and I'm done. The new pricing is insulting, the support team is a bunch of brain-dead drones, and the CEO is a greedy liar. Rot in hell.",toxic,0.92,synthetic
+"Great features, shame the people who built them are such arrogant pricks.",toxic,0.94,synthetic
+The export bug is still there. What are you morons even doing all day?,toxic,0.93,synthetic
+I actually liked the old version but the idiot who wrote this post clearly doesn't use the product.,toxic,0.92,synthetic
+Read the post. Hated it. The author is a smug little weasel.,toxic,0.94,synthetic
+"Dear support team: I've emailed you 6 times. You are the most incompetent, lazy, useless people I have ever dealt with. I hope you all get fired.",toxic,0.93,synthetic
+"The update is fine, but Jessica in the comments is a nasty, bitter hag who should log off forever.",toxic,0.94,synthetic
+"Why does the app crash on Android? Because your devs are clueless monkeys, that's why.",toxic,0.93,synthetic
+"I'm cancelling. Not because of the price, but because your CEO is a lying sack of garbage.",toxic,0.92,synthetic
+"Nice redesign, now go fire the moron who removed the sidebar.",toxic,0.94,synthetic
+"Love the app, hate the brain-dead fanboys in these comments. You're all pathetic.",toxic,0.93,synthetic
+"Hey Mike, since you love this app so much, why don't you marry it, you pathetic nerd.",toxic,0.94,synthetic
+@Priya your comment is so stupid I'm genuinely worried about you. Please stop posting.,toxic,0.93,synthetic
+"Everyone look at Steve, the guy who defends every update. Imagine having no life like him. Loser.",toxic,0.94,synthetic
+"Tim from the dev team, I saw your LinkedIn. No wonder the app sucks, you're a joke.",toxic,0.93,synthetic
+"Can someone ban the idiot who keeps posting links? Actually, ban everyone, you're all idiots.",toxic,0.92,synthetic
+"The author is hot, too bad she's as dumb as her article. 😏",toxic,0.94,synthetic
+"Nice photo of the design team. The blonde one can come to my place and ""design"" something 😉",toxic,0.93,synthetic
+"Hey Emma, send pics instead of writing blog posts, it'd be more useful.",toxic,0.94,synthetic
+"The woman in the video should smile more, and shut up more.",toxic,0.93,synthetic
+I'd rather look at the intern's legs than this ugly UI.,toxic,0.92,synthetic
+"The author's profile pic is the only good thing about this post, if you know what I mean.",toxic,0.94,synthetic
+"Women writing tech posts, lol. Stick to what you're good at, sweetie.",toxic,0.93,synthetic
+That support girl was useless but at least she had a nice voice. Bet she's easy.,toxic,0.94,synthetic
+I tried the new version. Crashed twice. Your QA team must be a group of drooling idiots.,toxic,0.92,synthetic
+Congrats on the funding. Now hire someone competent to replace the clowns you currently have.,toxic,0.93,synthetic
+"The blog is ok but the commenters are the dumbest people on the internet. Especially you, reading this.",toxic,0.94,synthetic
+Imagine working 5 years on a to-do app and still being this bad at it. Pathetic losers.,toxic,0.92,synthetic
+"I hope the guy who pushed this release has a terrible day, every day, forever.",toxic,0.93,synthetic
+Your engineers must have been dropped on their heads as babies.,toxic,0.94,synthetic
+"Fix the bug, you lazy, overpaid children.",toxic,0.93,synthetic
+The dark mode looks nice. The founder is still a creepy loser though.,toxic,0.92,synthetic
+Your community manager is a power-hungry witch who deletes every critical comment.,toxic,0.94,synthetic
+This entire comment section is a cult of brainwashed idiots.,toxic,0.93,synthetic
+"Hey @admin, I see you deleted my comment. Coward. You can't handle the truth, you spineless worm.",toxic,0.92,synthetic
+I hope your startup fails and you all end up begging on the street.,toxic,0.94,synthetic
+To the guy who said this update is great: you're either paid or mentally deficient.,toxic,0.93,synthetic
+Not a bad feature. But the product lead is a condescending snob who treats users like garbage.,toxic,0.92,synthetic
+Why do you hire such ugly people for your marketing videos?,toxic,0.94,synthetic
+"Seriously, whoever designed onboarding should be slapped.",toxic,0.93,synthetic
+"Useful post, but the writer's voice is so annoying I wanted to punch my screen and then him.",toxic,0.92,synthetic
+"LOL the support rep ""apologized for the inconvenience"". Shove your apology, you useless drone.",toxic,0.94,synthetic
+"I'll keep using the app, but I want everyone to know the founder is a disgusting pig.",toxic,0.93,synthetic
+"Finally dark mode, took you idiots long enough.",toxic,0.92,synthetic
+"Oh wow, a feature that works. Did you finally fire the incompetent hacks from last year?",toxic,0.94,synthetic
+After reading these comments I'm convinced your users are as stupid as your devs.,toxic,0.93,synthetic
+Nice update I guess. Still think your whole team is a bunch of talentless frauds.,toxic,0.92,synthetic
+Anyone who defends this company should be ashamed of themselves. Sheep.,toxic,0.94,synthetic
+I'm going to post this everywhere: the support team here are liars and idiots.,toxic,0.93,synthetic
+Your PR person must be the dumbest human alive to approve this post.,toxic,0.92,synthetic
+This is so bad I hope everyone involved gets fired and can never find work again.,toxic,0.94,synthetic
+"That ""engineering deep dive"" was written by someone who clearly failed CS 101. Idiot.",toxic,0.93,synthetic
+"Fine, I'll upgrade. But only because your competitor is run by even bigger morons.",toxic,0.92,synthetic
+"The redesign is okay, the designer's personality on Twitter is disgusting though. Vile woman.",toxic,0.94,synthetic
+I've reported this bug 3 times. Next time I'll come to your office and explain it with my fists.,toxic,0.93,synthetic
+"Hey devs, grow a pair and admit you screwed up, cowards.",toxic,0.92,synthetic
+The only thing worse than this update is the smug face of the guy announcing it.,toxic,0.94,synthetic
+"Keep deleting my comments, you fragile little snowflakes.",toxic,0.93,synthetic
+"You guys really hired the dumbest people you could find, huh.",toxic,0.92,synthetic
+Whoever wrote the changelog is a condescending jerk. Die mad.,toxic,0.94,synthetic
+"My 5 year old could build a better app, and she's smarter than your entire team.",toxic,0.93,synthetic
+"Great, another post from the useless marketing department. Get real jobs.",toxic,0.92,synthetic
+"I hope you step on a Lego every morning for the rest of your miserable life, CEO.",toxic,0.94,synthetic
+"Honestly, your forum mods are the worst kind of people. Petty, vindictive losers.",toxic,0.93,synthetic
+This update made me want to strangle someone. Preferably your product manager.,toxic,0.92,synthetic
+Can the author please stop writing? Every post is dumber than the last.,toxic,0.94,synthetic
+Your team is as incompetent as it is ugly.,toxic,0.93,synthetic
+The new pricing is theft and your sales team are a bunch of crooks and clowns.,toxic,0.92,synthetic
+"That demo guy looks like he hasn't showered in weeks. Gross, just like the app.",toxic,0.94,synthetic
+"Okay, the search is faster. Still, anyone who works here is a moron.",toxic,0.93,synthetic
+"This app is great for idiots, which explains why you love it, Carl.",toxic,0.92,synthetic
+"Delete your account, the world would be better without your comments.",toxic,0.94,synthetic
+The fact that you still have a job is proof that nepotism exists.,toxic,0.93,synthetic
+I'd pay extra for a feature that mutes the brainless people in these comments.,toxic,0.92,synthetic
+I swear if the sync fails again I'm going to find the dev responsible and make him pay.,toxic,0.94,synthetic
+"Go back to school, you illiterate author.",toxic,0.93,synthetic
+"You're all so fake. Fake smiles, fake features, fake people. Disgusting.",toxic,0.92,synthetic
+"The chick who does your videos is so annoying, get her off the screen.",toxic,0.94,synthetic
+New feature is decent. The people complaining about it are braindead though.,toxic,0.93,synthetic
+Your customer success team is a joke run by clowns for clowns.,toxic,0.92,synthetic
+"Keep up the terrible work, losers.",toxic,0.94,synthetic
+"This company hires rejects from every other startup, it shows.",toxic,0.93,synthetic
+"Sure, ""we're listening"". Liars, the lot of you.",toxic,0.92,synthetic
+"The PM behind this is clearly clueless, how did they even get hired?",toxic,0.68,synthetic
+Whoever wrote this post should stick to writing grocery lists.,toxic,0.72,synthetic
+"Lol, the ""engineers"" at this company couldn't build a sandcastle.",toxic,0.7,synthetic
+The guy in the launch video is so smug I want to throw my phone at the screen.,toxic,0.66,synthetic
+Honestly the support person I talked to was dumb as a brick.,toxic,0.74,synthetic
+Your designer has the taste of a colorblind toddler.,toxic,0.69,synthetic
+Nobody with half a brain would ship this.,toxic,0.71,synthetic
+"Mark, you post the same whiny comment on every article. Get a hobby.",toxic,0.67,synthetic
+These devs are amateurs pretending to be professionals.,toxic,0.73,synthetic
+The author sounds like a pretentious hipster who's never had a real deadline.,toxic,0.65,synthetic
+I've met houseplants with better judgment than your product team.,toxic,0.7,synthetic
+Imagine being paid to write this nonsense. Must be nice to be that useless.,toxic,0.72,synthetic
+The comments here are full of sheep who'd clap for anything.,toxic,0.68,synthetic
+Your community manager is a condescending know-it-all.,toxic,0.66,synthetic
+"That guy above is an absolute clown, ignore him.",toxic,0.74,synthetic
+How is the CEO not embarrassed to put his name on this?,toxic,0.69,synthetic
+The team clearly hired interns and paid them in pizza. It shows.,toxic,0.71,synthetic
+"You're so wrong it's almost impressive, dude.",toxic,0.67,synthetic
+Who let the idiots in marketing write the release notes again?,toxic,0.73,synthetic
+The author needs a reality check and maybe a brain transplant.,toxic,0.65,synthetic
+This is what you get when clueless MBAs run a software company.,toxic,0.7,synthetic
+"Shut up, Greg. Nobody asked.",toxic,0.72,synthetic
+The QA team must be sleeping on the job. Lazy bums.,toxic,0.68,synthetic
+The support rep was a patronizing snob. Worst interaction ever.,toxic,0.66,synthetic
+LOL whoever approved this deserves to be laughed out of the building.,toxic,0.74,synthetic
+Can't believe people pay these clowns.,toxic,0.69,synthetic
+"The designer has no clue what they're doing, total amateur hour.",toxic,0.71,synthetic
+"Gonna be honest, the person who wrote this seems like an insufferable jerk.",toxic,0.67,synthetic
+Your founder is a delusional egomaniac.,toxic,0.73,synthetic
+"This team couldn't organize a birthday party, let alone an app.",toxic,0.65,synthetic
+"The ""expert"" writing this knows less than my grandma, and she thinks email is a website.",toxic,0.7,synthetic
+"Stop defending them, you absolute simp.",toxic,0.72,synthetic
+The CTO should be ashamed. Genuinely incompetent leadership.,toxic,0.68,synthetic
+You people are hopeless.,toxic,0.66,synthetic
+Your support team is a bunch of script-reading parrots with no brains.,toxic,0.74,synthetic
+Lmao the PM probably thinks agile is a yoga pose. Clown.,toxic,0.69,synthetic
+The writer has the depth of a puddle.,toxic,0.71,synthetic
+These fanboys are embarrassing. Grow a spine.,toxic,0.67,synthetic
+"Keep your mouth shut if you don't know what you're talking about, Linda.",toxic,0.73,synthetic
+"The dev team clearly doesn't care about users, just their fat paychecks. Greedy leeches.",toxic,0.65,synthetic
+The dude in the demo video has the charisma of a wet sock and the brains to match.,toxic,0.7,synthetic
+This is peak idiocy from a company full of idiots.,toxic,0.72,synthetic
+The moderator deleting comments here is a spineless coward.,toxic,0.68,synthetic
+Whoever thinks this update is good is delusional.,toxic,0.66,synthetic
+"That support agent needs to be fired, she was rude and stupid.",toxic,0.74,synthetic
+Your team has the collective IQ of a houseplant.,toxic,0.69,synthetic
+"The author clearly has no friends, it shows in the writing.",toxic,0.71,synthetic
+"You're a sellout, Chris. Everyone can see it.",toxic,0.67,synthetic
+"Honestly, the PM is the worst kind of corporate parasite.",toxic,0.73,synthetic
+"Such a snobby, elitist post. Get off your high horse, author.",toxic,0.65,synthetic
+These comments are proof the average user is dumb as rocks.,toxic,0.7,synthetic
+"The CEO's ""apology"" was as fake as his hairline.",toxic,0.72,synthetic
+The designer must hate users. Or be really stupid. Maybe both.,toxic,0.68,synthetic
+"The guy who keeps posting ""first!"" is a certified clown.",toxic,0.66,synthetic
+"Only a complete tool would write ""we hear you"" after ignoring us for a year.",toxic,0.74,synthetic
+The support team are overpaid chatbots with attitude.,toxic,0.69,synthetic
+This company is run by children playing business.,toxic,0.71,synthetic
+"Nobody likes a suck-up, Jenny.",toxic,0.67,synthetic
+Whoever wrote the onboarding copy should be banned from writing.,toxic,0.73,synthetic
+The engineers here are clearly lazy and entitled.,toxic,0.65,synthetic
+Can the dev team stop being so arrogant? You're not that good.,toxic,0.7,synthetic
+The founder's tweets show he's a pompous idiot.,toxic,0.72,synthetic
+This post is condescending garbage written by a condescending person.,toxic,0.68,synthetic
+The pricing team are basically con artists.,toxic,0.66,synthetic
+"Hey Rick, go back to whatever hole you crawled out of.",toxic,0.74,synthetic
+"Stop talking down to users, you smug jerks.",toxic,0.69,synthetic
+You'd have to be an idiot to renew after this.,toxic,0.71,synthetic
+The author seems like the kind of person nobody invites to parties.,toxic,0.67,synthetic
+"Anyone who works in your billing department should be ashamed of themselves, thieves.",toxic,0.73,synthetic
+"The support guy was a clueless jerk, as expected.",toxic,0.65,synthetic
+"Honestly, you guys are clowns. Big red noses and all.",toxic,0.7,synthetic
+Pretty sure the whole design team is legally blind.,toxic,0.72,synthetic
+Your mods are petty tyrants.,toxic,0.68,synthetic
+The people in charge here are clearly out of their depth. Embarrassing.,toxic,0.66,synthetic
+"That commenter is a disgusting creep, look at his profile.",toxic,0.74,synthetic
+"Shut up already, you broken record.",toxic,0.69,synthetic
+The author is a walking LinkedIn cliché.,toxic,0.71,synthetic
+Whoever answers the Twitter account is a sarcastic little brat.,toxic,0.67,synthetic
+Your devs are as useful as a screen door on a submarine.,toxic,0.73,synthetic
+Your new hire in support clearly didn't pass the brain test.,toxic,0.65,synthetic

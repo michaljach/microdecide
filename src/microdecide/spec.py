@@ -79,6 +79,7 @@ class TeacherSpec(_Strict):
     kind: Literal["llm", "jev", "csv"]
     model: str | None = None
     path: Path | None = None  # labeled CSV for kind=csv
+    min_confidence: float = Field(0.0, ge=0, le=1)  # drop teacher labels below this
 
     @model_validator(mode="after")
     def _check_kind(self) -> TeacherSpec:
@@ -90,9 +91,11 @@ class TeacherSpec(_Strict):
 
 
 class DataSpec(_Strict):
-    seed_examples: Path | None = None
-    unlabeled: Path | None = None
+    seed_examples: Path | None = None  # CSV/JSONL: text[,label]
+    unlabeled: Path | None = None  # CSV/JSONL: text[,source]
+    gold: Path | None = None  # human-labeled CSV/JSONL: text,label — always the test set
     synthetic: int = Field(0, ge=0)
+    synth_model: str | None = None  # defaults to teacher.model
 
 
 class Targets(_Strict):
@@ -116,6 +119,7 @@ class TaskSpec(_Strict):
     data: DataSpec = DataSpec()
     targets: Targets = Targets()
     escalation: Escalation = Escalation()
+    seed: int = 42
 
     @property
     def labels(self) -> list[str]:
@@ -235,6 +239,7 @@ targets:
   max_latency_ms: 100
 escalation:
   target_precision: 0.97
+seed: 42
 """
 
 

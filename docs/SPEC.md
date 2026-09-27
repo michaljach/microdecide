@@ -45,10 +45,13 @@ teacher:
   kind: llm                         # llm | jev | csv
   model: claude-haiku-4-5-20251001  # configurable (llm, jev)
   path: null                        # labeled CSV (csv)
+  min_confidence: 0.0               # drop teacher labels below this
 data:
   seed_examples: examples/comment_moderation_seed.csv   # optional
   unlabeled: null                   # optional CSV/JSONL of real inputs
+  gold: null                        # optional human-labeled CSV/JSONL, always the test set
   synthetic: 2000                   # number of generated inputs
+  synth_model: null                 # generator model, defaults to teacher.model
 targets:
   min_macro_f1: 0.90
   deploy: browser                   # browser | node | python
@@ -56,6 +59,7 @@ targets:
   max_latency_ms: 100               # p95 in browser, WASM backend, short input
 escalation:
   target_precision: 0.97            # auto-pick threshold to hit this
+seed: 42                            # all randomness (split, synth plan, training)
 ```
 
 Label descriptions matter: they are used in teacher prompts and synthetic
@@ -100,11 +104,15 @@ embedding cosine > 0.95):
 ```python
 class Teacher(Protocol):
     name: str
-    def label(self, spec: TaskSpec, inputs: list[str]) -> list[Decision]: ...
+    def fingerprint(self, spec: TaskSpec) -> str: ...   # prompt/model/file hash; part of the cache key
+    def label(self, spec: TaskSpec, inputs: list[str]) -> list[Decision | None]: ...  # None = no answer
 ```
-Implementations: `LLMTeacher` (Anthropic / OpenAI-compatible, asks for JSON
-with label + probability), `JevTeacher` (M7), `CSVTeacher` (human labels),
-`FakeTeacher` (tests). All calls are cached on disk.
+Implementations: `LLMTeacher` (Anthropic, schema-constrained JSON with label +
+probability per label; OpenAI-compatible not yet), `JevTeacher` (M7),
+`CSVTeacher` (human or offline labels, looked up by normalized text),
+`FakeTeacher` (tests). All calls go through `CachedTeacher` (disk cache keyed
+by teacher + fingerprint + input, `.cache/microdecide/` or `$MICRODECIDE_CACHE_DIR`).
+Rows that already carry a label (gold, labeled seed) skip the teacher.
 Store teacher confidence; low-confidence teacher labels are down-weighted
 or dropped (configurable).
 

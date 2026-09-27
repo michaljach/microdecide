@@ -14,13 +14,16 @@ model:
   tier: auto              # static | encoder | decoder | auto
   base: null              # e.g. Qwen/Qwen3-0.6B to force the decoder tier
   quantization: q4
+# PoC: no API key yet. Inputs + labels in the CSV were written offline by Claude
+# (in a coding session) standing in for synth + teacher. To use the real teacher:
+#   teacher: {kind: llm, model: claude-haiku-4-5-20251001}  and  data.synthetic: 2000
 teacher:
-  kind: llm
-  model: claude-haiku-4-5-20251001
+  kind: csv
+  path: examples/comment_moderation_data.csv
 data:
   seed_examples: null
-  unlabeled: null
-  synthetic: 2000
+  unlabeled: examples/comment_moderation_data.csv   # labels ignored here; `source` column = synthetic
+  synthetic: 0
 targets:
   min_macro_f1: 0.90
   deploy: browser

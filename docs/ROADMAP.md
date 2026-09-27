@@ -11,7 +11,7 @@ End goal: a task-specific model that runs in the browser (WASM/WebGPU).
 **Done when:** example spec loads; invalid specs (no labels, duplicate
 labels, unknown output type/tier) fail with clear errors; tests pass.
 
-## [ ] M1 — Data + teacher labeling
+## [x] M1 — Data + teacher labeling
 - `data.py`: load CSV/JSONL, normalize, exact + near-dup dedup, stratified split
 - `synth.py`: LLM-based synthetic inputs per label incl. borderline cases
 - `teachers/`: base protocol, disk cache, `FakeTeacher`, `LLMTeacher`, `CSVTeacher`
