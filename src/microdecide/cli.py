@@ -126,11 +126,30 @@ def _summary(r: dict) -> None:
 
 
 @app.command()
+def export(
+    run_dir: Path,
+    out: Path = typer.Option(None, help="Output folder (default: <run_dir>/export)"),
+) -> None:
+    """Export a trained version for the browser (static JS + ONNX) with a parity check."""
+    from microdecide.export import ExportError
+    from microdecide.export import export as export_model
+
+    if not (run_dir / "model_card.json").is_file():
+        _fail(f"{run_dir} is not a run directory (no model_card.json)")
+    try:
+        export_model(run_dir, out)
+    except (ExportError, NotImplementedError) as e:
+        _fail(str(e))
+
+
+@app.command()
 def run(spec: Path, runs: Path = RUNS, tier: str = typer.Option(None, help="Override model.tier")) -> None:
-    """Full pipeline: collect → label → train → eval."""
+    """Full pipeline: collect → label → train → eval → export."""
     import time
 
     from microdecide.evaluate import evaluate
+    from microdecide.export import ExportError
+    from microdecide.export import export as export_model
     from microdecide.train import train as train_model
 
     s = _load(spec)
@@ -140,7 +159,8 @@ def run(spec: Path, runs: Path = RUNS, tier: str = typer.Option(None, help="Over
         _show("label", data.label(s, CachedTeacher(make_teacher(s)), runs, log=lambda _: None))
         out = train_model(s, runs, tier)
         report = evaluate(out)
-    except (OSError, ValueError, TeacherError, NotImplementedError) as e:
+        export_model(out)
+    except (OSError, ValueError, TeacherError, NotImplementedError, ExportError) as e:
         _fail(str(e))
     _summary(report)
     typer.echo(f"done in {time.perf_counter() - t0:.1f}s → {out / 'report.md'}")

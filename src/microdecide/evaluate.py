@@ -124,6 +124,9 @@ def evaluate(run_dir: str | Path, log=print) -> dict:
         "data": card["data"],
         "seed": card["seed"],
     }
+    bench = run_dir / "export" / "bench.json"
+    if bench.is_file():  # written by `npm run bench` in web/
+        report["browser"] = json.loads(bench.read_text())
     report["recommendations"] = _recommend(report)
 
     (run_dir / "report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False))
@@ -190,6 +193,25 @@ def render_markdown(r: dict) -> str:
     ]
     if r["recommendations"]:
         lines += ["## Recommendations", ""] + [f"- {x}" for x in r["recommendations"]] + [""]
+    if "browser" in r:
+        b = r["browser"]
+        lines += [
+            "## Browser (headless Chromium, from `npm run bench`)",
+            "",
+            f"{b.get('date', '')[:10]} · crossOriginIsolated={b.get('crossOriginIsolated')} · WebGPU={b.get('webgpu')}",
+            "",
+            "| backend | cold load | warm load | download | p50 | p95 | batch/input |",
+            "|---|---|---|---|---|---|---|",
+        ]
+        for x in b["results"]:
+            if "error" in x:
+                lines.append(f"| {x['name']} | {x['error']} | | | | | |")
+            else:
+                lines.append(
+                    f"| {x['name']} | {x['coldLoadMs']:.0f} ms | {x['warmLoadMs']:.0f} ms | {x['modelMB']:.1f} MB | "
+                    f"{x['p50Ms']:.2f} ms | {x['p95Ms']:.2f} ms | {x['batchMsPerInput']:.3f} ms |"
+                )
+        lines.append("")
     lines += ["## Per label", "", "| label | precision | recall | F1 | support |", "|---|---|---|---|---|"]
     for lab, m in t["per_label"].items():
         lines.append(f"| {lab} | {m['precision']:.3f} | {m['recall']:.3f} | {m['f1']:.3f} | {m['support']} |")

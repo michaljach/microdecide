@@ -28,7 +28,7 @@ zero teacher calls (cache); labels always within the label set.
 **Done when:** `microdecide run examples/comment_moderation.yaml` finishes
 on a laptop CPU in < 10 min with a readable report.
 
-## [ ] M3 — Browser runtime + export (first PoC in the browser)
+## [x] M3 — Browser runtime + export (first PoC in the browser)
 - export static tier (JSON/binary) and ONNX in transformers.js layout
 - `web/`: TS package, Web Worker, `MicroDecide.load/decide`, demo page,
   benchmark page (load time, p50/p95, WASM vs WebGPU)

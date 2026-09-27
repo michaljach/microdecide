@@ -32,7 +32,7 @@ def spec():
     return load_spec(EXAMPLE)
 
 
-def tiny_static_model(dim: int = 32):
+def tiny_static_model(dim: int = 32, int8: bool = True):
     """A real model2vec StaticModel over a small word vocab: no download, save/load works."""
     from model2vec import StaticModel
     from tokenizers import Tokenizer, models, pre_tokenizers
@@ -48,6 +48,8 @@ def tiny_static_model(dim: int = 32):
             vectors[i, 0] += 4
         if w in {"idiot", "moron", "loser", "stupid", "clown", "pathetic"}:
             vectors[i, 1] += 4
+    if int8:  # like real runs (train.EMBEDDING_DTYPE): global-scale symmetric int8
+        vectors = np.clip(np.rint(vectors / (np.abs(vectors).max() / 127)), -127, 127).astype(np.int8)
     return StaticModel(vectors=vectors, tokenizer=tok, normalize=True, config={"normalize": True})
 
 
@@ -61,3 +63,24 @@ TOY_TEXTS = _OK + _SPAM + _TOXIC
 TOY_ROWS = (
     [(t, "ok") for t in _OK] + [(t, "spam") for t in _SPAM] + [(t, "toxic") for t in _TOXIC]
 )
+
+
+@pytest.fixture
+def toy_run(tmp_path, spec, monkeypatch):
+    """A labeled dataset of the toy rows (4x, with suffixes) + the tiny encoder patched into training."""
+    from microdecide import data, train
+
+    rows, splits = [], ["train"] * 6 + ["val", "test"]
+    for rep in range(4):
+        for i, (text, label) in enumerate(TOY_ROWS):
+            split = splits[i % len(splits)] if rep else "train"
+            rows.append({"text": f"{text} {'!' * rep}".strip(), "source": "synthetic", "label": label,
+                         "confidence": 0.95, "teacher": "fake", "probabilities": {}, "split": split})
+    runs = tmp_path / "runs"
+    data.write_jsonl(data.data_dir(spec, runs) / "labeled.jsonl", rows)
+    model = tiny_static_model()
+    monkeypatch.setattr(train, "load_encoder", lambda base, quantize_to=None: model)
+    monkeypatch.setattr(train, "STATIC_CANDIDATES", ("tiny-a", "tiny-b"))
+    return runs
+
+

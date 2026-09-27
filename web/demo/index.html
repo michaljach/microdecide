@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>microdecide demo</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <main>
+    <h1>microdecide · comment moderation</h1>
+    <p class="sub">A tiny classifier running entirely in your browser. <a href="./bench.html">Benchmark</a> · <a href="./parity.html">Parity</a></p>
+    <div class="card">
+      <div class="row" style="justify-content: space-between; margin-bottom: 10px">
+        <label>Backend
+          <select id="backend">
+            <option value="static">static (plain JS)</option>
+            <option value="onnx:wasm">onnx · wasm</option>
+            <option value="onnx:webgpu">onnx · webgpu</option>
+          </select>
+        </label>
+        <span id="status" class="meta">loading…</span>
+      </div>
+      <textarea id="text" placeholder="Type a comment…">Finally dark mode! Been waiting for this forever.</textarea>
+      <div class="row chips" id="examples" style="margin-top: 8px"></div>
+    </div>
+    <div class="card" id="result" hidden>
+      <div class="row" style="justify-content: space-between">
+        <span class="label" id="label"></span>
+        <span class="badge" id="esc"></span>
+      </div>
+      <div id="bars" style="margin-top: 8px"></div>
+      <div class="meta" id="lat"></div>
+    </div>
+  </main>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>

@@ -169,30 +169,44 @@ confidence at which precision ≥ `target_precision`.
 - 20 worst errors listed for inspection
 
 ### 4.7 Export (browser-first)
-- All tiers → ONNX via `optimum`, in the folder layout transformers.js
-  expects (`onnx/model_quantized.onnx`, tokenizer, config)
-- Quantize: encoder q8; decoder q4 (fallback q8 if F1 drops > 1 point)
-- Static tier: also a tiny JSON/binary format (embedding table + head
-  weights) runnable in plain JS with no ONNX runtime
-- **Parity check**: exported quantized model vs PyTorch model on the test
-  set — report label agreement and F1 delta; fail export if F1 drops > 2 pts
-- `model_card.json`: spec, labels, threshold, prompt template, metrics,
-  teacher, data counts, seed, date, file sizes
+`microdecide export <run_dir>` → `<run_dir>/export/`, transformers.js folder layout:
+```
+microdecide.json          runtime config: labels, temperature, threshold, head weights,
+                          tokenizer rules (max_chars, max_tokens, dropped ids)
+tokenizer.json            HF tokenizer (+ tokenizer_config.json, config.json)
+static/embeddings.i8      static tier: int8 table [vocab, dim], plain JS, no ONNX runtime
+onnx/model_quantized.onnx input_ids + attention_mask → logits (onnxruntime-web)
+parity.jsonl              test-split predictions from Python (browser parity input)
+model_card.json           card + export parity + download sizes (+ bench.json from web/)
+```
+- Static tier: embeddings are already int8 from training, so export adds no
+  quantization loss. Encoder q8; decoder q4 (fallback q8 if F1 drops > 1 point).
+- **Parity check** at export: training-time model vs exported static format vs
+  exported ONNX on the test split — label agreement, max |Δp|, F1 delta; export
+  fails if F1 drops > 2 pts. `export.reference_probabilities` re-implements
+  inference from the exported files only and is the spec the JS runtime mirrors
+  (code-point truncation to `max_chars`, then `max_tokens × median_token_length`
+  chars; no special tokens; `[UNK]` dropped; masked mean → L2 norm → head).
 
 ### 4.8 Browser runtime (`web/`, npm package `microdecide-web`)
 ```ts
-const m = await MicroDecide.load("/models/comment_moderation/v3", {
-  device: "auto",                // webgpu if available, else wasm
-  escalateUrl: "/api/decide",    // optional, the user's own server
+const m = await MicroDecide.load("/models/comment_moderation/v1", {
+  backend: "static",             // static (plain JS, default) | onnx
+  device: "auto",                // onnx only: webgpu if available, else wasm
 });
 const d = await m.decide("Buy cheap followers at ...");   // Decision
+m.isConfident(d);                // false → escalate (escalateUrl lands in M6)
 ```
-- Model files cached in the browser (Cache API) after first load
+- Tokenization via `@huggingface/tokenizers` (transformers.js' tokenizer);
+  ONNX via `onnxruntime-web` (transformers.js' runtime), loaded lazily so the
+  static path never downloads it. transformers.js pipelines are used for tiers
+  with standard architectures (M4+); the static tier is a custom graph.
+- Model files cached in the browser (Cache API) after first load; the demo adds
+  an app-shell service worker so it reloads and classifies with the network off
 - Runs in a Web Worker so the UI never blocks; batching supported
-- Below threshold + `escalateUrl` set → POST to server, return teacher
-  decision with `source: "teacher"`
-- `web/demo`: paste text → decision + probabilities; **benchmark page**
-  reports load time, p50/p95 latency on WASM and WebGPU, memory
+- `web/demo`: paste text → decision + probabilities; **benchmark page** (load
+  time, p50/p95, WASM vs WebGPU); **parity page** (browser vs Python labels).
+  `npm run parity|bench|offline` drive them in headless Chromium.
 
 ### 4.9 Server: escalate + feedback
 `Runtime` wraps model + optional teacher:

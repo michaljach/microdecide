@@ -44,7 +44,15 @@ Add dependencies only when the milestone needs them.
 ```bash
 uv sync                          # install
 uv run pytest                    # tests
-uv run microdecide run examples/comment_moderation.yaml   # full pipeline
+uv run microdecide run examples/comment_moderation.yaml   # full pipeline (→ export)
+
+cd web && npm install
+npm run sync-model               # copy runs/<task>/<version>/export + ORT wasm into public/
+npm run dev                      # demo at /, /bench.html, /parity.html
+npm test && npm run typecheck    # vitest (incl. Node parity vs Python) + tsc
+npm run parity                   # headless Chromium: browser labels vs Python (≥ 99.5%)
+npm run bench                    # → export/bench.json; `microdecide eval` adds it to report.md
+npm run offline                  # network cut: page + model reload from caches, still classifies
 ```
 
 ## Rules

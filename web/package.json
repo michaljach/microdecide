@@ -1,0 +1,42 @@
+{
+  "name": "microdecide-web",
+  "version": "0.1.0",
+  "description": "Run microdecide task-specific classifiers in the browser (plain JS, WASM, WebGPU).",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "sync-model": "node scripts/sync-model.mjs",
+    "dev": "vite",
+    "build:demo": "vite build",
+    "build:lib": "tsc -p tsconfig.lib.json",
+    "typecheck": "tsc --noEmit -p .",
+    "test": "vitest run",
+    "parity": "node scripts/browser-check.mjs parity",
+    "bench": "node scripts/browser-check.mjs bench",
+    "offline": "node scripts/browser-check.mjs offline"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@huggingface/tokenizers": "^0.2.0",
+    "onnxruntime-web": "^1.30.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "playwright": "^1.63.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.1",
+    "vitest": "^5.0.2"
+  }
+}

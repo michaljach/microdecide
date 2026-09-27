@@ -10,23 +10,6 @@ from microdecide.evaluate import evaluate
 from microdecide.runtime import Runtime
 
 
-@pytest.fixture
-def toy_run(tmp_path, spec, monkeypatch):
-    """Write a labeled dataset for the toy rows (4x repeated with suffixes) and patch in the tiny encoder."""
-    rows, splits = [], ["train"] * 6 + ["val", "test"]
-    for rep in range(4):
-        for i, (text, label) in enumerate(TOY_ROWS):
-            split = splits[i % len(splits)] if rep else "train"
-            rows.append({"text": f"{text} {'!' * rep}".strip(), "source": "synthetic", "label": label,
-                         "confidence": 0.95, "teacher": "fake", "probabilities": {}, "split": split})
-    runs = tmp_path / "runs"
-    data.write_jsonl(data.data_dir(spec, runs) / "labeled.jsonl", rows)
-    model = tiny_static_model()
-    monkeypatch.setattr(train, "load_encoder", lambda base, quantize_to=None: model)
-    monkeypatch.setattr(train, "STATIC_CANDIDATES", ("tiny-a", "tiny-b"))
-    return runs
-
-
 # --- calibrate ---
 
 
