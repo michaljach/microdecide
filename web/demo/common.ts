@@ -64,6 +64,15 @@ export async function configsFor(model = MODEL_URL): Promise<Config[]> {
   return CONFIGS[cfg.tier].filter((c) => c.dtype !== "fp32" || (cfg.tier !== "static" && !!cfg.onnx.fp32_file));
 }
 
+/**
+ * The backend the demos use: the fastest one for single inputs, which is the first config per tier
+ * (static → plain JS, encoder → WASM q8). WebGPU is slower at this model size (see the benchmark);
+ * bench/parity still run every backend.
+ */
+export async function demoConfig(model = MODEL_URL): Promise<Config> {
+  return (await configsFor(model))[0];
+}
+
 /** Vendor/architecture of the WebGPU adapter (tells a real GPU from a software fallback). */
 export async function gpuAdapterInfo(): Promise<Record<string, string> | null> {
   const gpu = (navigator as Navigator & { gpu?: { requestAdapter(): Promise<{ info?: Record<string, string> } | null> } }).gpu;
