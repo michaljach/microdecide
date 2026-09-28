@@ -7,6 +7,9 @@ const NAV: [Page, string, string][] = [
   ["docs", "Docs", "./docs.html"],
 ];
 
+/** Nodding ball; the animation lives inside the SVG (and respects prefers-reduced-motion). */
+const LOGO = <img className="logo" src={`${import.meta.env.BASE_URL}logo.svg`} alt="" width={22} height={22} />;
+
 /** Checks that live in the footer; `model` carries ?model= over to them. */
 const FOOTER: [Page, string, string][] = [
   ["bench", "Benchmark", "./bench.html"],
@@ -28,7 +31,15 @@ export function Layout({ page, wide, model, children }: { page: Page; wide?: boo
   return (
     <div className={wide ? "app wide" : "app"}>
       <nav aria-label="Main">
-        {page === "home" ? <b aria-current="page">nodd</b> : <a href="./">nodd</a>}
+        {page === "home" ? (
+          <b className="brand" aria-current="page">
+            {LOGO}nodd
+          </b>
+        ) : (
+          <a className="brand" href="./">
+            {LOGO}nodd
+          </a>
+        )}
         {NAV.map(([p, label, href]) => (p === page ? <b key={p} aria-current="page">{label}</b> : <a key={p} href={href}>{label}</a>))}
         <a href="https://github.com/michaljach/nodd">GitHub</a>
       </nav>

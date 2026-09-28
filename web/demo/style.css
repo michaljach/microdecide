@@ -7,7 +7,9 @@ body {
 .app { margin: 0 auto; padding: 24px 16px 64px; max-width: 720px; }
 a, a:visited { color: #00e; text-decoration: none; }
 a:hover { text-decoration: underline; }
-nav { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 32px; }
+nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 32px; }
+.brand { display: inline-flex; align-items: center; gap: 6px; }
+.logo { display: block; }
 h1 { font-size: 28px; margin: 0 0 8px; }
 h2 { font-size: 20px; margin: 40px 0 8px; }
 h2 .muted { font-weight: normal; font-size: 14px; }
