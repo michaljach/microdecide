@@ -2,9 +2,9 @@ import { Layout } from "../ui/Layout";
 import { mount } from "../ui/mount";
 
 const QUICKSTART = `uv sync                                   # Python 3.11+, managed with uv
-uv run microdecide init my_task           # writes my_task.yaml
+uv run nodd init my_task           # writes my_task.yaml
 # edit the labels and descriptions, then:
-uv run microdecide run my_task.yaml       # collect → label → train → eval → export
+uv run nodd run my_task.yaml       # collect → label → train → eval → export
 
 cd web && npm install
 npm run sync-model                        # copy every export into public/models
@@ -41,9 +41,9 @@ escalation:
   target_precision: 0.97            # the confidence threshold is picked for this precision
 seed: 42`;
 
-const LOAD = `import { MicroDecide } from "microdecide-web";
+const LOAD = `import { Nodd } from "@nodd/browser";
 
-const m = await MicroDecide.load("/models/comment_moderation/v3", {
+const m = await Nodd.load("/models/comment_moderation/v3", {
   onProgress: ({ loaded, total }) => console.log(\`\${loaded} / \${total} bytes\`),
 });
 const d = await m.decide("Buy cheap followers at ...");
@@ -51,6 +51,11 @@ d.label;          // "spam": always one of the model's labels
 d.confidence;     // calibrated probability of that label
 m.isConfident(d); // confidence ≥ the model's calibrated threshold
 m.dispose();      // stops the worker`;
+
+const NODE = `import { Nodd } from "@nodd/node";
+
+const m = await Nodd.load("./models/comment_moderation/v3"); // the export folder
+const d = await m.decide("Buy cheap followers at ...");`;
 
 const DECISION = `{
   "label": "spam",
@@ -68,7 +73,7 @@ const TOC: [string, string][] = [
   ["cli", "Command line"],
   ["training", "Training and model selection"],
   ["export", "Exported model folder"],
-  ["library", "Browser library"],
+  ["library", "JavaScript packages"],
   ["serving", "Serving models"],
   ["checks", "Checks"],
 ];
@@ -78,8 +83,8 @@ function Docs() {
     <Layout page="docs">
       <h1>Docs</h1>
       <p>
-        microdecide turns a task spec (an input and a fixed set of labels) into a small classifier for exactly that task.
-        A larger model labels examples, microdecide trains and calibrates the smallest model that does the job well, and
+        nodd turns a task spec (an input and a fixed set of labels) into a small classifier for exactly that task.
+        A larger model labels examples, nodd trains and calibrates the smallest model that does the job well, and
         exports it as a folder the browser library loads. Every answer is one forward pass and always one of your labels.
       </p>
       <ul>
@@ -117,7 +122,7 @@ function Docs() {
       </table>
 
       <h2 id="cli">Command line</h2>
-      <p>Every command is <code>uv run microdecide &lt;command&gt;</code>.</p>
+      <p>Every command is <code>uv run nodd &lt;command&gt;</code>.</p>
       <table>
         <thead>
           <tr><th>command</th><th>does</th></tr>
@@ -136,7 +141,7 @@ function Docs() {
       </table>
       <p className="small">
         Labeling with <code>kind: llm</code> reads <code>ANTHROPIC_API_KEY</code> from the environment. Cached labels live
-        in <code>.cache/microdecide</code> (<code>MICRODECIDE_CACHE_DIR</code>), so re-running is free.
+        in <code>.cache/nodd</code> (<code>NODD_CACHE_DIR</code>), so re-running is free.
       </p>
 
       <h2 id="training">Training and model selection</h2>
@@ -157,7 +162,7 @@ function Docs() {
       <p>
         Every candidate that fits <code>max_download_mb</code> is trained and the best fit wins: the highest validation
         macro F1, or the smaller model when two are within 0.01. Each trains in tens of seconds on CPU
-        (<code>MICRODECIDE_DEVICE=mps</code> or <code>cuda</code> to speed up).
+        (<code>NODD_DEVICE=mps</code> or <code>cuda</code> to speed up).
       </p>
       <p>
         Calibration fits a temperature on the validation split, so the reported confidence matches how often the model is
@@ -171,7 +176,7 @@ function Docs() {
           <tr><th>file</th><th>contents</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>microdecide.json</code></td><td>labels, temperature, threshold, tokenizer rules, file sizes; validated on load</td></tr>
+          <tr><td><code>nodd.json</code></td><td>labels, temperature, threshold, tokenizer rules, file sizes; validated on load</td></tr>
           <tr><td><code>tokenizer.json</code>, <code>tokenizer_config.json</code>, <code>config.json</code></td><td>Hugging Face tokenizer and model config</td></tr>
           <tr><td><code>onnx/model_quantized.onnx</code></td><td>the model, int8 (what the browser loads)</td></tr>
           <tr><td><code>onnx/model.onnx</code></td><td>full precision, optional</td></tr>
@@ -179,9 +184,9 @@ function Docs() {
         </tbody>
       </table>
 
-      <h2 id="library">Browser library</h2>
+      <h2 id="library">JavaScript packages</h2>
       <p>
-        <code>microdecide-web</code> (in <code>web/</code>) runs an exported folder with transformers.js on WASM.
+        <code>@nodd/browser</code> runs an exported folder in the browser with transformers.js on WASM.
         Inference happens in a Web Worker, and model files are cached, so a
         model loads offline after the first visit.
       </p>
@@ -200,6 +205,11 @@ function Docs() {
       </table>
       <p>Every answer has the same shape; <code>decideBatch(texts)</code> returns one per input:</p>
       <pre><code>{DECISION}</code></pre>
+      <p>
+        On a server, <code>@nodd/node</code> has the same API and loads the folder from disk. It runs on
+        onnxruntime-node (native CPU), so it needs no worker, cache or <code>.wasm</code> files:
+      </p>
+      <pre><code>{NODE}</code></pre>
 
       <h2 id="serving">Serving models</h2>
       <ul>

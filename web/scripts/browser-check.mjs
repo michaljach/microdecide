@@ -2,7 +2,7 @@
 //   node scripts/browser-check.mjs parity    browser labels vs Python (exit 1 if < 99.5%)
 //   node scripts/browser-check.mjs bench     load time, p50/p95, WASM vs WebGPU → <export>/bench.json
 //   node scripts/browser-check.mjs offline   classify with the network cut (model from Cache API)
-// BASE=/microdecide/ builds + previews under a sub-path; SITE=https://… checks a deployed site instead.
+// BASE=/nodd/ builds + previews under a sub-path; SITE=https://… checks a deployed site instead.
 import { existsSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -44,7 +44,7 @@ try {
     if (mode === "parity" && !result.pass) exitCode = 1;
     if (mode === "bench") {
       // save next to the served model and, if it came from runs/, into that export too
-      // (`microdecide eval` then adds a Browser section to report.md)
+      // (`nodd eval` then adds a Browser section to report.md)
       const json = JSON.stringify({ ...result, date: new Date().toISOString() }, null, 2);
       const [task, version] = model.split("/").slice(-2);
       const served = join(web, "public", "models", task, version);

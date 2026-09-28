@@ -4,8 +4,8 @@ import pytest
 import yaml
 from typer.testing import CliRunner
 
-from microdecide.cli import app
-from microdecide.spec import Decision, SpecError, load_spec, parse_spec, render_template
+from nodd.cli import app
+from nodd.spec import Decision, SpecError, load_spec, parse_spec, render_template
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLE = ROOT / "examples" / "comment_moderation.yaml"

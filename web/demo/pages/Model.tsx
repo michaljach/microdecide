@@ -7,9 +7,9 @@ import { mount } from "../ui/mount";
 function Card({ m }: { m: CatalogEntry }) {
   const q = m.metrics;
   const per = q?.perLabel ?? {};
-  const usage = `import { MicroDecide } from "microdecide-web";
+  const usage = `import { Nodd } from "@nodd/browser";
 
-const m = await MicroDecide.load("${m.path}");
+const m = await Nodd.load("${m.path}");
 const d = await m.decide(${JSON.stringify(m.examples[0] ?? "…")});
 // d.label is one of: ${Object.keys(m.labels).join(", ")}`;
   const quality: [string, string][] = q
@@ -82,7 +82,7 @@ function Model() {
 
   return (
     <Layout page="model" wide model={MODEL_URL}>
-      <title>{m ? `microdecide · ${title(m.task)}` : "microdecide · Model"}</title>
+      <title>{m ? `nodd · ${title(m.task)}` : "nodd · Model"}</title>
       <p><a href="./repository.html">← Repository</a></p>
       {m ? (
         <>

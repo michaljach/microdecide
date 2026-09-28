@@ -45,7 +45,7 @@ function Repository() {
       <h1>Repository</h1>
       <p>
         Ready-made models for common decisions. Each one is a small fine-tuned encoder (about 24 MB) that runs in your
-        browser, trained with microdecide from a task spec in <code>examples/</code>. Open one to try it.
+        browser, trained with nodd from a task spec in <code>examples/</code>. Open one to try it.
       </p>
       <ul className="model-list">
         {!index && <li className="muted">loading…</li>}
@@ -56,7 +56,7 @@ function Repository() {
       </ul>
       <p className="muted small">
         The training data is synthetic and small, so expect lower accuracy on real inputs. To add your own, write a spec,
-        run <code>uv run microdecide run &lt;spec&gt;</code>, then <code>npm run sync-model</code> (see the{" "}
+        run <code>uv run nodd run &lt;spec&gt;</code>, then <code>npm run sync-model</code> (see the{" "}
         <a href="./docs.html">docs</a>).
       </p>
     </Layout>

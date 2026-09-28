@@ -5,8 +5,8 @@ import sys
 import pytest
 from pydantic import ValidationError
 
-from microdecide.artifacts import ModelCard
-from microdecide.runtime import Runtime
+from nodd.artifacts import ModelCard
+from nodd.runtime import Runtime
 
 
 def test_model_card_rejects_incompatible_versions_and_label_order(spec):
@@ -25,4 +25,4 @@ def test_runtime_validates_card_before_loading_weights(tmp_path):
 
 
 def test_runtime_does_not_import_training():
-    subprocess.run([sys.executable, "-c", "import sys; import microdecide.runtime; assert 'microdecide.train' not in sys.modules"], check=True)
+    subprocess.run([sys.executable, "-c", "import sys; import nodd.runtime; assert 'nodd.train' not in sys.modules"], check=True)

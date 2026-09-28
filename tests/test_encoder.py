@@ -5,12 +5,12 @@ import json
 import pytest
 from typer.testing import CliRunner
 
-from microdecide import encoder, train
-from microdecide.cli import app
-from microdecide.compare import compare
-from microdecide.evaluate import evaluate
-from microdecide.export import export
-from microdecide.runtime import Runtime
+from nodd import encoder, train
+from nodd.cli import app
+from nodd.compare import compare
+from nodd.evaluate import evaluate
+from nodd.export import export
+from nodd.runtime import Runtime
 
 
 @pytest.fixture
@@ -37,8 +37,8 @@ def test_encoder_train_runtime_eval(encoder_run, spec):
 def test_encoder_export(encoder_run):
     info = export(encoder_run, log=lambda _: None)
     out = encoder_run / "export"
-    cfg = json.loads((out / "microdecide.json").read_text())
-    assert cfg["format"] == "microdecide" and cfg["format_version"] == 2 and cfg["tier"] == "encoder"
+    cfg = json.loads((out / "nodd.json").read_text())
+    assert cfg["format"] == "nodd" and cfg["format_version"] == 2 and cfg["tier"] == "encoder"
     assert cfg["onnx"]["file"] == "onnx/model_quantized.onnx" and "input_ids" in cfg["onnx"]["inputs"]
     for f in ["onnx/model.onnx", "onnx/model_quantized.onnx", "tokenizer.json", "tokenizer_config.json", "config.json"]:
         assert (out / f).is_file(), f

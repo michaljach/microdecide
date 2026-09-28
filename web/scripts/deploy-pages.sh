@@ -24,7 +24,7 @@ npx vite build
 
 # lean site: the fp32 encoder (70 MB) is only an optional WebGPU variant
 find dist-demo/models -path '*/onnx/model.onnx' -delete
-for cfg in dist-demo/models/*/*/microdecide.json; do
+for cfg in dist-demo/models/*/*/nodd.json; do
   node -e 'const f=process.argv[1],fs=require("fs"),c=JSON.parse(fs.readFileSync(f));if(c.onnx)delete c.onnx.fp32_file;fs.writeFileSync(f,JSON.stringify(c))' "$cfg"
 done
 touch dist-demo/.nojekyll

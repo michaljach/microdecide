@@ -5,9 +5,9 @@ import pytest
 from conftest import TOY_ROWS, tiny_encoder_dir
 from typer.testing import CliRunner
 
-from microdecide import calibrate, data, encoder, train
-from microdecide.evaluate import evaluate
-from microdecide.runtime import Runtime
+from nodd import calibrate, data, encoder, train
+from nodd.evaluate import evaluate
+from nodd.runtime import Runtime
 
 
 # --- calibrate ---
@@ -92,7 +92,7 @@ def test_train_budget_and_tiers(toy_run, spec):
 
 
 def test_train_requires_labels(tmp_path, spec):
-    with pytest.raises(FileNotFoundError, match="microdecide label"):
+    with pytest.raises(FileNotFoundError, match="nodd label"):
         train.train(spec, tmp_path / "runs")
 
 
@@ -102,7 +102,7 @@ def test_cli_run_end_to_end(tmp_path, spec, monkeypatch):
 
     import yaml
 
-    from microdecide.cli import app
+    from nodd.cli import app
 
     csv_path = tmp_path / "data.csv"
     with csv_path.open("w", newline="") as f:

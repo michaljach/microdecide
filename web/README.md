@@ -1,25 +1,23 @@
-# microdecide-web
+# nodd web
 
-Run a [microdecide](../docs/SPEC.md) model in the browser with transformers.js (WASM by default,
-WebGPU opt-in). Inference runs in a Web Worker; model
-files are cached with the Cache API. Encoder models must be served from the page's origin.
+npm workspaces with the [nodd](../docs/SPEC.md) JavaScript packages and the demo site.
 
-```ts
-import { MicroDecide } from "microdecide-web";
+| package | runs on | what it adds |
+|---|---|---|
+| [`@nodd/browser`](packages/browser) | browser: onnxruntime-web, WASM (WebGPU opt-in) | Web Worker, Cache API (offline), download progress |
+| [`@nodd/node`](packages/node) | Node ≥ 20: onnxruntime-node, native CPU | loads the export folder from disk |
+| [`@nodd/core`](packages/core) | both | `nodd.json` validator, `Decision`, logits → decision |
 
-const m = await MicroDecide.load("/models/comment_moderation/v3"); // an `microdecide export` folder
-const d = await m.decide("Buy cheap followers at ...");
-// { label: "spam", probabilities: {...}, confidence: 0.99, source: "micro", ... }
-if (!m.isConfident(d)) { /* below the calibrated threshold: escalate */ }
+`@nodd/browser` and `@nodd/node` have the same API (`Nodd.load`, `decide`, `decideBatch`,
+`isConfident`), so the same export folder answers the same way on either side.
+
+```sh
+npm run build          # tsc → packages/*/dist (core first)
+npm publish -ws        # publish all three to the @nodd org (after npm test, npm run build)
 ```
 
-Options: `device: "auto" | "webgpu" | "wasm"` (auto = wasm, measured faster than WebGPU at this
-size), `dtype: "q8" | "fp32"`, `onProgress({ loaded, total })`,
-`worker`, `cache`, `ortWasmPaths` (default `/ort/`; serve `onnxruntime-web/dist/ort-wasm*`
-there — `scripts/sync-model.mjs` does this for the demo).
-
-The package ships as plain ESM that uses `new Worker(new URL("./worker.js", import.meta.url))`,
-so your bundler (Vite, webpack 5, …) compiles the worker and its dependencies.
+In development, Vite, Vitest and `tsc` resolve `@nodd/*` to `packages/*/src` through the
+`@nodd/source` export condition, so nothing needs building first.
 
 ## Demo site
 

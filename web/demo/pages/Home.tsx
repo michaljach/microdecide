@@ -26,9 +26,9 @@ output:
     toxic: Insults, harassment, threats or hate toward people or groups.
 targets:    {min_macro_f1: 0.90, deploy: browser, max_download_mb: 30}`;
 
-const USAGE = `import { MicroDecide } from "microdecide-web";
+const USAGE = `import { Nodd } from "@nodd/browser";
 
-const m = await MicroDecide.load("/models/comment_moderation/v3");
+const m = await Nodd.load("/models/comment_moderation/v3");
 const d = await m.decide("Buy cheap followers at ...");
 // d.label is "ok", "spam" or "toxic"`;
 
@@ -73,10 +73,10 @@ function Home() {
 
   return (
     <Layout page="home">
-      <h1>microdecide</h1>
+      <h1>nodd</h1>
       <p>
         Turn one decision into a tiny model that runs in your browser. You describe the <b>input</b> and a fixed set of typed{" "}
-        <b>labels</b>, a bigger model labels examples, and microdecide trains a small, calibrated classifier for exactly
+        <b>labels</b>, a bigger model labels examples, and nodd trains a small, calibrated classifier for exactly
         that task. Each answer is one forward pass with no text generation, so there's nothing to parse and it can't return a
         label outside your set.
       </p>
@@ -122,7 +122,7 @@ function Home() {
           One command collects inputs, has a larger model label them (every call is cached on disk), trains every model that fits
           your download budget, keeps the best one, calibrates it and exports it for the browser:
         </p>
-        <pre><code>uv run microdecide run examples/comment_moderation.yaml</code></pre>
+        <pre><code>uv run nodd run examples/comment_moderation.yaml</code></pre>
         <p>
           Calibration uses temperature scaling on a held-out split, so the confidence it reports matches how often
           it is right.
@@ -136,7 +136,7 @@ function Home() {
         <h2>Models</h2>
         <p>
           Every model is a small sentence encoder fine-tuned with a classification head, exported to ONNX (int8) and run
-          with transformers.js. microdecide trains every candidate that fits the download budget and keeps the best fit:
+          with transformers.js. nodd trains every candidate that fits the download budget and keeps the best fit:
           the highest validation F1, or the smaller model when two are practically tied.
         </p>
         <table>

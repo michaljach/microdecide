@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <title>microdecide</title>
+  <title>nodd</title>
   <style>
     * { transform-box: fill-box; }
     .ball { transform-origin: 50% 100%; animation: ball 10s ease-in-out infinite; }

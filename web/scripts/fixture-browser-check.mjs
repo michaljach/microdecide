@@ -27,7 +27,7 @@ try {
 
   await page.goto(`${base}model.html?model=${encodeURIComponent(new URL("fixture-model", base).pathname)}`);
   await page.waitForFunction(() => window.__last, null, { timeout: 60_000 });
-  assert.equal(await page.title(), "microdecide · Model");
+  assert.equal(await page.title(), "nodd · Model");
   // the browser (transformers.js, WASM) gives Python's answers: parity.jsonl = the exported q8 model's
   const expected = readFileSync(join(fixtures, "parity.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l)).filter((r) => r.text.trim());
   for (const row of expected.slice(0, 5)) {
@@ -39,7 +39,7 @@ try {
 
   await page.goto(`${base}docs.html`);
   await page.waitForSelector("h1");
-  assert.equal(await page.title(), "microdecide · Docs");
+  assert.equal(await page.title(), "nodd · Docs");
   assert.ok((await page.locator("h2").count()) >= 5, "docs sections");
 
   await page.goto(`${base}repository.html`);

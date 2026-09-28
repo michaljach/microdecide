@@ -579,47 +579,6 @@ wheels = [
 ]
 
 [[package]]
-name = "microdecide"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "anthropic" },
-    { name = "model2vec" },
-    { name = "onnx" },
-    { name = "onnxruntime" },
-    { name = "onnxscript" },
-    { name = "pydantic" },
-    { name = "pyyaml" },
-    { name = "scikit-learn" },
-    { name = "torch" },
-    { name = "transformers" },
-    { name = "typer" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pytest" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "anthropic", specifier = ">=1.8.0" },
-    { name = "model2vec", specifier = ">=0.9.0" },
-    { name = "onnx", specifier = ">=1.23.0" },
-    { name = "onnxruntime", specifier = ">=1.30.0" },
-    { name = "onnxscript", specifier = ">=0.7.2" },
-    { name = "pydantic", specifier = ">=2.13.5" },
-    { name = "pyyaml", specifier = ">=6.0.3" },
-    { name = "scikit-learn", specifier = ">=1.9.1" },
-    { name = "torch", specifier = ">=2.14.0" },
-    { name = "transformers", specifier = ">=5.17.0" },
-    { name = "typer", specifier = ">=0.27.2" },
-]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pytest", specifier = ">=9.1.1" }]
-
-[[package]]
 name = "ml-dtypes"
 version = "0.6.0"
 source = { registry = "https://pypi.org/simple" }
@@ -730,6 +689,47 @@ sdist = { url = "https://files.pythonhosted.org/packages/dc/76/3af777226b63a5e64
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7e/cd/fe58041e9011f307c490e3e17dd48cc516448f7c698a3f2d9d9d65d7e6a8/networkx-3.7-py3-none-any.whl", hash = "sha256:e3fd2c13a7814cee3746340d8d7f8598a67f16a58bf47fb7f8793fab6efca1b0", size = 2142205, upload-time = "2026-09-21T16:45:14.609Z" },
 ]
+
+[[package]]
+name = "nodd"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "anthropic" },
+    { name = "model2vec" },
+    { name = "onnx" },
+    { name = "onnxruntime" },
+    { name = "onnxscript" },
+    { name = "pydantic" },
+    { name = "pyyaml" },
+    { name = "scikit-learn" },
+    { name = "torch" },
+    { name = "transformers" },
+    { name = "typer" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "anthropic", specifier = ">=1.8.0" },
+    { name = "model2vec", specifier = ">=0.9.0" },
+    { name = "onnx", specifier = ">=1.23.0" },
+    { name = "onnxruntime", specifier = ">=1.30.0" },
+    { name = "onnxscript", specifier = ">=0.7.2" },
+    { name = "pydantic", specifier = ">=2.13.5" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
+    { name = "scikit-learn", specifier = ">=1.9.1" },
+    { name = "torch", specifier = ">=2.14.0" },
+    { name = "transformers", specifier = ">=5.17.0" },
+    { name = "typer", specifier = ">=0.27.2" },
+]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pytest", specifier = ">=9.1.1" }]
 
 [[package]]
 name = "numpy"

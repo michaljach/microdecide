@@ -1,7 +1,7 @@
-import { parseModelConfig } from "../src/artifacts";
-import type { Device, ModelConfig } from "../src";
+import { parseModelConfig } from "@nodd/core";
+import type { Device, ModelConfig } from "@nodd/browser";
 
-/** Site root ("/" locally, "/microdecide/" on GitHub Pages). Every asset URL goes through url(). */
+/** Site root ("/" locally, "/nodd/" on GitHub Pages). Every asset URL goes through url(). */
 export const BASE = import.meta.env.BASE_URL;
 export const url = (path: string) => BASE + path.replace(/^\/+/, "");
 export const ORT_WASM = url("ort/");
@@ -40,10 +40,10 @@ export const CONFIGS: Config[] = [
   { name: "transformers.js · webgpu · fp32", device: "webgpu", dtype: "fp32", parity: false },
 ];
 
-/** Reads microdecide.json via the library's model cache first (works offline once loaded). */
+/** Reads nodd.json via the library's model cache first (works offline once loaded). */
 export async function modelConfig(model = MODEL_URL): Promise<ModelConfig> {
-  const file = new URL(`${model.replace(/\/+$/, "")}/microdecide.json`, location.href).href;
-  const hit = typeof caches !== "undefined" ? await (await caches.open("microdecide-models-v1")).match(file) : undefined;
+  const file = new URL(`${model.replace(/\/+$/, "")}/nodd.json`, location.href).href;
+  const hit = typeof caches !== "undefined" ? await (await caches.open("nodd-models-v1")).match(file) : undefined;
   return parseModelConfig(await (hit ?? (await fetch(file))).json());
 }
 

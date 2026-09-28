@@ -1,12 +1,12 @@
-# microdecide — Roadmap
+# nodd — Roadmap
 
 Build in order. Each milestone ends with passing tests and a short summary.
 End goal: a task-specific model that runs in the browser (WASM/WebGPU).
 
 ## [x] M0 — Skeleton
-- `uv` project, `src/microdecide`, typer CLI entry point, pytest set up
+- `uv` project, `src/nodd`, typer CLI entry point, pytest set up
 - `spec.py`: `TaskSpec` and `Decision` pydantic models; load/validate YAML
-- `microdecide init <task>` writes a template spec
+- `nodd init <task>` writes a template spec
 
 **Done when:** example spec loads; invalid specs (no labels, duplicate
 labels, unknown output type/tier) fail with clear errors; tests pass.
@@ -25,12 +25,12 @@ zero teacher calls (cache); labels always within the label set.
 - `runtime.py`: `Runtime.load(...).decide(text) -> Decision`
 - CLI: `train`, `eval`, `run`
 
-**Done when:** `microdecide run examples/comment_moderation.yaml` finishes
+**Done when:** `nodd run examples/comment_moderation.yaml` finishes
 on a laptop CPU in < 10 min with a readable report.
 
 ## [x] M3 — Browser runtime + export (first PoC in the browser)
 - export static tier (JSON/binary) and ONNX in transformers.js layout
-- `web/`: TS package, Web Worker, `MicroDecide.load/decide`, demo page,
+- `web/`: TS package, Web Worker, `Nodd.load/decide`, demo page,
   benchmark page (load time, p50/p95, WASM vs WebGPU)
 - parity check Python vs browser
 
@@ -67,7 +67,7 @@ best fit never picked it, and it doubled the export path, browser runtime and
 parity checks. model2vec is still used for near-duplicate detection.
 ## [ ] M6 — Escalate, feedback, retrain
 - FastAPI `POST /decide` (teacher proxy); browser `escalateUrl`
-- `feedback.jsonl`; `microdecide retrain` with version comparison
+- `feedback.jsonl`; `nodd retrain` with version comparison
 
 **Done when:** low-confidence inputs in the browser get the teacher's answer
 via the server and are logged; retrain refuses to promote a worse model.

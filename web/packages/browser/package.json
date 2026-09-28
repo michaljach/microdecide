@@ -1,0 +1,39 @@
+{
+  "name": "@nodd/browser",
+  "version": "0.1.0",
+  "description": "Run nodd task-specific classifiers in the browser (transformers.js on onnxruntime-web, WASM or WebGPU).",
+  "type": "module",
+  "exports": {
+    ".": {
+      "@nodd/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "./dist/worker.js",
+    "./src/worker.ts"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaljach/nodd.git",
+    "directory": "web/packages/browser"
+  },
+  "homepage": "https://michaljach.github.io/nodd/",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@nodd/core": "^0.1.0",
+    "@huggingface/transformers": "^4.3.0",
+    "onnxruntime-web": "^1.31.0-dev.20260914-8d85527a0"
+  }
+}

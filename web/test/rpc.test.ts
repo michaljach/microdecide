@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { WorkerClient } from "../src/rpc";
-import type { InferenceProtocol } from "../src/protocol";
+import { WorkerClient } from "../packages/browser/src/rpc";
+import type { InferenceProtocol } from "../packages/browser/src/protocol";
 
 function setup() {
   const worker = { postMessage: vi.fn(), terminate: vi.fn(), onmessage: null as any, onerror: null as any, onmessageerror: null as any };

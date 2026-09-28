@@ -1,11 +1,11 @@
-# microdecide
+# nodd
 
 Turn one decision ("is this comment ok, spam or toxic?") into a **tiny, calibrated
 classifier that runs in the browser** — ~10–35 MB, offline, no per-call cost — and
 knows when it is unsure, so the hard cases can go to a bigger model.
 
-**Live demo:** https://michaljach.github.io/microdecide/ ·
-**Docs:** https://michaljach.github.io/microdecide/docs.html
+**Live demo:** https://michaljach.github.io/nodd/ ·
+**Docs:** https://michaljach.github.io/nodd/docs.html
 
 ## How it works
 
@@ -34,19 +34,26 @@ The test data is synthetic — expect lower numbers on real comments.
 
 ```bash
 uv sync
-uv run microdecide run examples/comment_moderation.yaml   # collect → label → train → eval → export
-uv run microdecide compare runs/comment_moderation/v2 runs/comment_moderation/v3
+uv run nodd run examples/comment_moderation.yaml   # collect → label → train → eval → export
+uv run nodd compare runs/comment_moderation/v2 runs/comment_moderation/v3
 
 cd web && npm install && npm run sync-model && npm run dev # demo, repository, docs, benchmark, parity
 ```
 
 ```ts
-import { MicroDecide } from "microdecide-web";
-const m = await MicroDecide.load("/models/comment_moderation/v2");
+import { Nodd } from "@nodd/browser";
+const m = await Nodd.load("/models/comment_moderation/v2");
 const d = await m.decide("Buy cheap followers at …");  // { label: "spam", confidence: 0.99, … }
 ```
 
+On a server, `@nodd/node` has the same API and runs the same export folder natively:
+
+```ts
+import { Nodd } from "@nodd/node";
+const m = await Nodd.load("./runs/comment_moderation/v3/export");
+```
+
 Design: [docs/SPEC.md](docs/SPEC.md) · Plan: [docs/ROADMAP.md](docs/ROADMAP.md) ·
-Web package: [web/README.md](web/README.md)
+npm packages: [web/README.md](web/README.md)
 
 Code layout and reproducible checks: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).

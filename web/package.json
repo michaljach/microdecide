@@ -1,26 +1,18 @@
 {
-  "name": "microdecide-web",
-  "version": "0.1.0",
-  "description": "Run microdecide task-specific classifiers in the browser (transformers.js, WASM or WebGPU).",
+  "name": "nodd-web",
+  "private": true,
+  "description": "nodd npm packages (@nodd/core, @nodd/browser, @nodd/node) and the demo site.",
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    }
-  },
-  "files": [
-    "dist"
+  "workspaces": [
+    "packages/core",
+    "packages/browser",
+    "packages/node"
   ],
-  "sideEffects": false,
   "scripts": {
     "sync-model": "node scripts/sync-model.mjs",
     "dev": "vite",
+    "build": "npm run build -w @nodd/core && npm run build -w @nodd/browser -w @nodd/node",
     "build:demo": "vite build",
-    "build:lib": "tsc -p tsconfig.lib.json",
     "typecheck": "tsc --noEmit -p .",
     "test": "vitest run",
     "parity": "node scripts/browser-check.mjs parity",
@@ -33,10 +25,6 @@
     "test:browser": "npm run fixtures && npm run build:demo && node scripts/fixture-browser-check.mjs"
   },
   "license": "MIT",
-  "dependencies": {
-    "@huggingface/transformers": "^4.3.0",
-    "onnxruntime-web": "^1.31.0-dev.20260914-8d85527a0"
-  },
   "devDependencies": {
     "@types/node": "^26.6.3",
     "@types/react": "^19.3.0",
