@@ -59,3 +59,27 @@ Design: [docs/SPEC.md](docs/SPEC.md) · Plan: [docs/ROADMAP.md](docs/ROADMAP.md)
 npm packages: [web/README.md](web/README.md)
 
 Code layout and reproducible checks: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## Larger offline synthetic training runs
+
+With the baseline runs present locally (`comment_moderation/v3`, `prompt_injection/v2`,
+`sentiment/v1`, and `support_triage/v1`):
+
+```bash
+uv run python scripts/train_synthetic.py --per-label 1000
+cd web && npm run sync-model
+```
+
+This adds 13,000 template-labeled examples across the four tasks, trains both MiniLM
+candidates within each task's 30 MB budget, and saves the selected model as a new version
+with evaluation, ONNX exports, and a baseline comparison. Existing validation and test
+rows are preserved; additions with embedding cosine similarity above 0.90 to either
+holdout are rejected. Use `--prepare-only` to generate data without training, or
+`--tasks sentiment` to run one task.
+
+Each run includes `synthetic_manifest.json` with the baseline fingerprint, seed, counts,
+and generation method. Template variants are correlated and labeled by construction,
+not by an independent teacher. Metrics use the original synthetic holdouts and do not
+establish real-world accuracy. Generated datasets and model weights stay under `runs/`.
+
+Results and validation: [larger synthetic training report](docs/SYNTHETIC_TRAINING.md).
