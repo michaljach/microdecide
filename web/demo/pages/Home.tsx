@@ -143,6 +143,7 @@ function Home() {
           with transformers.js. nodd trains every candidate that fits the download budget and keeps the best fit:
           the highest validation F1, or the smaller model when two are practically tied.
         </p>
+        <p>These small models can be trained on modest hardware using a CPU, without a dedicated GPU.</p>
         <table>
           <thead>
             <tr><th>base</th><th>download</th></tr>
