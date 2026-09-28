@@ -1,7 +1,7 @@
 /**
  * @nodd/node: run a nodd model in Node (transformers.js on onnxruntime-node, native CPU).
  *
- *   const m = await Nodd.load("./models/comment_moderation/v3");   // an exported folder on disk
+ *   const m = await nodd.load("./models/comment_moderation/v3");   // an exported folder on disk
  *   const d = await m.decide("Buy cheap followers at ...");         // Decision
  */
 import { readFile, stat } from "node:fs/promises";
@@ -18,13 +18,13 @@ export interface LoadOptions {
 // transformers.js resolves local models against a global env.localModelPath: load one at a time.
 let queue: Promise<unknown> = Promise.resolve();
 
-export class Nodd extends Decider {
+export class nodd extends Decider {
   /** Load an exported model folder (the output of `nodd export`) from disk. */
-  static async load(dir: string, options: LoadOptions = {}): Promise<Nodd> {
+  static async load(dir: string, options: LoadOptions = {}): Promise<nodd> {
     const load = queue.then(() => loadClassifier(resolve(dir), options.dtype ?? "q8"));
     queue = load.catch(() => {});
     const { classifier, info } = await load;
-    return new Nodd(info, (texts) => classifier.decideBatch(texts));
+    return new nodd(info, (texts) => classifier.decideBatch(texts));
   }
 }
 

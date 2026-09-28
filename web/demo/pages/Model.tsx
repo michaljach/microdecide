@@ -7,9 +7,9 @@ import { mount } from "../ui/mount";
 function Card({ m }: { m: CatalogEntry }) {
   const q = m.metrics;
   const per = q?.perLabel ?? {};
-  const usage = `import { Nodd } from "@nodd/browser";
+  const usage = `import { nodd } from "@nodd/browser";
 
-const m = await Nodd.load("${m.path}");
+const m = await nodd.load("${m.path}");
 const d = await m.decide(${JSON.stringify(m.examples[0] ?? "…")});
 // d.label is one of: ${Object.keys(m.labels).join(", ")}`;
   const quality: [string, string][] = q

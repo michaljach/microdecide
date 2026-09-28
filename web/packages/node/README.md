@@ -9,9 +9,9 @@ npm install @nodd/node
 ```
 
 ```ts
-import { Nodd } from "@nodd/node";
+import { nodd } from "@nodd/node";
 
-const m = await Nodd.load("./models/comment_moderation/v3"); // a `nodd export` folder
+const m = await nodd.load("./models/comment_moderation/v3"); // a `nodd export` folder
 const d = await m.decide("Buy cheap followers at ...");
 // { label: "spam", probabilities: {...}, confidence: 0.98, source: "micro", ... }
 if (!m.isConfident(d)) { /* below the calibrated threshold: escalate */ }

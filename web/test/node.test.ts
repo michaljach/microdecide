@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { Nodd } from "@nodd/node";
+import { nodd } from "@nodd/node";
 
 const dir = resolve(__dirname, "generated/model");
 const expected: { text: string; label: string; probabilities: Record<string, number> }[] = readFileSync(resolve(dir, "parity.jsonl"), "utf8")
@@ -11,7 +11,7 @@ const expected: { text: string; label: string; probabilities: Record<string, num
 
 describe("@nodd/node", () => {
   it("gives Python's answers on the exported fixture (onnxruntime-node)", async () => {
-    const m = await Nodd.load(dir);
+    const m = await nodd.load(dir);
     expect(m.info).toMatchObject({ model: "fixture@v1", labels: ["bad", "good"], device: "cpu", dtype: "q8" });
     const got = await m.decideBatch(expected.map((r) => r.text));
     got.forEach((d, i) => {

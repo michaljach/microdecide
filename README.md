@@ -43,16 +43,16 @@ cd web && npm install && npm run sync-model && npm run dev # demo, repository, d
 ```
 
 ```ts
-import { Nodd } from "@nodd/browser";
-const m = await Nodd.load("/models/comment_moderation/v2");
+import { nodd } from "@nodd/browser";
+const m = await nodd.load("/models/comment_moderation/v2");
 const d = await m.decide("Buy cheap followers at …");  // { label: "spam", confidence: 0.99, … }
 ```
 
 On a server, `@nodd/node` has the same API and runs the same export folder natively:
 
 ```ts
-import { Nodd } from "@nodd/node";
-const m = await Nodd.load("./runs/comment_moderation/v3/export");
+import { nodd } from "@nodd/node";
+const m = await nodd.load("./runs/comment_moderation/v3/export");
 ```
 
 Design: [docs/SPEC.md](docs/SPEC.md) · Plan: [docs/ROADMAP.md](docs/ROADMAP.md) ·
