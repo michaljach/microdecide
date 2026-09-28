@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 
-export type Page = "home" | "repository" | "docs" | "bench" | "parity" | "model";
+export type Page = "home" | "repository" | "docs" | "bench" | "parity" | "model" | "train";
 
 const NAV: [Page, string, string][] = [
+  ["train", "Train", "./train.html"],
   ["repository", "Community", "./repository.html"],
   ["docs", "Docs", "./docs.html"],
 ];

@@ -30,15 +30,19 @@ internal code. There is one tier (encoder); `tier` stays in the artifacts for fo
 provides the public API and chooses main-thread or worker execution. The engine
 interface remains in `engines.ts`.
 
-`train.ts` coordinates training and retains its previous exports. Its algorithms
-live in `training/split.ts`, `optimize.ts`, `metrics.ts`, and `calibrate.ts`.
+`@nodd/browser/training` is a separate entry point for full encoder fine-tuning. Its worker
+owns `training/session.ts`; `bert.ts` implements differentiable BERT and AdamW, `bundle.ts`
+handles portable safetensors checkpoints, and `data.ts` owns splits, metrics, and calibration.
+The UI calls a full training-step probe before enabling training. `src/nodd/browser_training.py`
+prepares base checkpoints and imports trained weights into the native eval/export pipeline.
+See [browser training](BROWSER_TRAINING.md) for capabilities and limits.
 
 `rpc.ts` owns request correlation, progress delivery, error handling, and disposal.
 `protocol.ts` defines inference messages; its progress payload is download bytes.
 Clients infer their return types from the request rather than choosing arbitrary
 result types. Worker replies use the same protocol types.
 
-All six HTML entries (index, repository, model, docs, bench, parity) contain only
+All seven HTML entries (index, repository, model, docs, bench, parity, train) contain only
 metadata, styles, and a React root; layout and page titles are owned by React
 components. The only explicit document lookup in the demo is the root mount. Service workers and ML
 utilities remain ordinary JavaScript/TypeScript because they do not render UI.

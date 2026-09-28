@@ -14,6 +14,29 @@ from nodd.teachers import CachedTeacher, TeacherError, make_teacher
 app = typer.Typer(no_args_is_help=True, add_completion=False)
 
 
+@app.command("prepare-browser-training")
+def prepare_browser_training(run_dir: Path = typer.Argument(None), out: Path = typer.Option(..., help="Training checkpoint ZIP"),
+                             base: str = typer.Option(None, help="Pretrained encoder instead of an existing run")) -> None:
+    """Package a saved encoder for full fine-tuning in the browser (no dataset included)."""
+    from nodd.browser_training import prepare, prepare_base
+    try:
+        if bool(run_dir) == bool(base):
+            raise ValueError("Provide a run directory or --base, but not both")
+        typer.echo(str(prepare_base(base, out) if base else prepare(run_dir, out)))
+    except (OSError, ValueError) as e:
+        _fail(str(e))
+
+
+@app.command("import-browser-training")
+def import_browser_training(checkpoint: Path, runs: Path = typer.Option(Path("runs"))) -> None:
+    """Import browser-trained weights as a run, ready for nodd eval and nodd export."""
+    from nodd.browser_training import import_checkpoint
+    try:
+        typer.echo(str(import_checkpoint(checkpoint, runs)))
+    except (OSError, ValueError, KeyError, RuntimeError) as e:
+        _fail(str(e))
+
+
 def _fail(msg: str) -> None:
     typer.secho(msg, fg=typer.colors.RED, err=True)
     raise typer.Exit(1)

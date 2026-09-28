@@ -47,7 +47,22 @@ Built (train a static-tier head in the browser, save or download it), then
 removed on request: browser training only covered the static tier, and a frozen
 encoder + trained head measured below it (comment moderation test F1 0.864–0.869
 vs 0.897 static, 0.948 fine-tuned MiniLM-L6). Training now happens in Python;
-the browser runs the exported models. The site has a Docs page instead.
+the browser runs the exported models. Superseded by the full encoder training feature below.
+
+## [x] M4.6 — Full browser encoder training
+- Full BERT/MiniLM forward/backward training with AdamW in a dedicated worker; WebGPU,
+  WebGL, and CPU backends. No frozen-head replacement for encoder fine-tuning.
+- Actual-model hardware probe at the selected batch/sequence size; approximate memory,
+  CPU/GPU reporting, backend fallback, invalidation on settings changes, and cancellation.
+- Local labeled data, preserved or stratified splits, validation checkpoint selection,
+  temperature calibration, untouched test metrics, and standard Decision outputs.
+- Portable FP32 checkpoints; native import checks prediction parity and supports eval/ONNX export.
+- Python forward/update parity tests, browser worker/UI acceptance, native round trip, and
+  actual 17M-parameter MiniLM-L3 WebGPU training checked at batch 2 / 64 tokens.
+
+**Done when:** those checks pass and users can train/download through `/train.html`.
+The runtime remains experimental; memory estimates and one passing step cannot guarantee
+all hardware or a long run. Setup and limits: [BROWSER_TRAINING.md](BROWSER_TRAINING.md).
 
 ## [–] M5 — Decoder tier (Qwen-class) — dropped
 Built and measured, then removed: the project targets tiny models (~30 MB).

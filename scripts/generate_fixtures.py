@@ -35,17 +35,30 @@ def exported_fixture(out: Path) -> None:
         run = Path(tmp)
         vocab = run / "vocab.txt"
         vocab.write_text("\n".join(["[PAD]", "[UNK]", "[CLS]", "[SEP]", "[MASK]", "good", "bad", "neutral"]) + "\n")
-        tokenizer = BertTokenizerFast(vocab_file=str(vocab), do_lower_case=True)
+        tokenizer = BertTokenizerFast(vocab=str(vocab), do_lower_case=True)
         torch.manual_seed(0)
         config = BertConfig(vocab_size=8, hidden_size=16, num_hidden_layers=1, num_attention_heads=2, intermediate_size=32,
                             max_position_embeddings=64, num_labels=2, id2label=dict(enumerate(labels)),
-                            label2id={label: i for i, label in enumerate(labels)})
-        EncoderClassifier(BertForSequenceClassification(config), tokenizer, labels, max_tokens=32).save(run)
+                            label2id={label: i for i, label in enumerate(labels)}, hidden_dropout_prob=0, attention_probs_dropout_prob=0)
+        EncoderClassifier(BertForSequenceClassification(config), tokenizer, labels, max_tokens=16).save(run)
         write_card(run / "model_card.json", {"model": "fixture@v1", "tier": "encoder", "labels": labels,
             "temperature": 1.25, "threshold": 0.7, "spec": spec.model_dump(mode="json"),
             "task": "fixture", "version": "v1", "base": "local-fixture"})
         write_jsonl(run / "labeled.jsonl", ({"text": text, "label": "bad" if "bad" in text else "good", "split": "test"} for text in texts))
         export(run, out / "model", log=lambda _: None)
+        from nodd.browser_training import prepare
+        prepare(run, out / "training.zip")
+        clf = EncoderClassifier.load(run)
+        enc = clf.encode(["good", "bad"])
+        model = clf.model
+        before = model(**enc).logits.detach().tolist()
+        optimizer = torch.optim.AdamW(model.parameters(), lr=0.001, eps=1e-8)
+        loss = torch.nn.functional.cross_entropy(model(**enc).logits, torch.tensor([1, 0]))
+        loss.backward()
+        optimizer.step()
+        reference = {"inputs": {k: v.tolist() for k, v in enc.items()}, "before": before,
+            "loss": loss.item(), "after": model(**enc).logits.detach().tolist()}
+        (out / "training_reference.json").write_text(json.dumps(reference))
 
 
 def contract_fixtures(out: Path) -> None:

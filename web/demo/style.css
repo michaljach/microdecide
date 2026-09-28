@@ -77,3 +77,11 @@ footer p { margin: 4px 0; }
 th.num, td.num { text-align: right; }
 td code { overflow-wrap: anywhere; } /* long identifiers wrap in narrow columns */
 [hidden] { display: none !important; }
+.training-fields { margin: 24px 0 12px; padding: 16px; border: 1px solid #ddd; min-width: 0; }
+.training-fields > label, .training-fields > input { display: block; margin: 8px 0; }
+.training-fields input { max-width: 100%; box-sizing: border-box; }
+.training-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 12px 0; }
+.training-grid input, .training-grid select { display: block; width: 100%; box-sizing: border-box; }
+.training-fields input:not([type=file]) { font: inherit; padding: 4px; border: 1px solid #999; }
+.training-help { margin-top: 32px; }
+progress { width: 100%; margin-top: 8px; }

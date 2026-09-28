@@ -47,7 +47,8 @@ export async function createClassifier(
     tfjs.AutoTokenizer.from_pretrained(id, { progress_callback }),
     tfjs.AutoModelForSequenceClassification.from_pretrained(id, { device, dtype: opts.dtype, progress_callback }),
   ]);
-  return { classifier: new Classifier(config, tokenizer as unknown as Tokenize, (inputs) => model(inputs) as ReturnType<Forward>), device };
+  return { classifier: new Classifier(config, tokenizer as unknown as Tokenize, (inputs) => model(inputs) as ReturnType<Forward>,
+    model.config.model_type === "bert" ? tokenizer.sep_token_id : undefined), device };
 }
 
 export async function hasWebGPU(): Promise<boolean> {

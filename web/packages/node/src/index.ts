@@ -45,7 +45,8 @@ async function loadClassifier(dir: string, dtype: "q8" | "fp32"): Promise<{ clas
   ]);
   const files = [config.tokenizer.file, "tokenizer_config.json", "config.json", onnxFile];
   const sizes = await Promise.all(files.map(async (f) => (await stat(join(dir, f))).size));
-  const classifier = new Classifier(config, tokenizer as unknown as Tokenize, (inputs) => model(inputs) as ReturnType<Forward>);
+  const classifier = new Classifier(config, tokenizer as unknown as Tokenize, (inputs) => model(inputs) as ReturnType<Forward>,
+    model.config.model_type === "bert" ? tokenizer.sep_token_id : undefined);
   const info: ModelInfo = {
     model: config.model,
     labels: config.labels,

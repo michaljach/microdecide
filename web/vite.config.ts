@@ -48,6 +48,7 @@ export default defineConfig({
         docs: resolve(import.meta.dirname, "demo/docs.html"),
         repository: resolve(import.meta.dirname, "demo/repository.html"),
         model: resolve(import.meta.dirname, "demo/model.html"),
+        train: resolve(import.meta.dirname, "demo/train.html"),
       },
     },
   },

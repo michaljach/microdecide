@@ -72,6 +72,7 @@ const TOC: [string, string][] = [
   ["spec", "Task spec"],
   ["cli", "Command line"],
   ["training", "Training and model selection"],
+  ["browser-training", "Browser training"],
   ["export", "Exported model folder"],
   ["library", "JavaScript packages"],
   ["serving", "Serving models"],
@@ -169,6 +170,18 @@ function Docs() {
         right, then picks the lowest threshold that reaches <code>escalation.target_precision</code>. Label confidence is
         the sample weight throughout.
       </p>
+
+      <h2 id="browser-training">Browser training</h2>
+      <p>The <a href="./train.html">Train page</a> fine-tunes every layer of a BERT/MiniLM encoder on your local
+        examples. A real forward/backward training step checks the selected model and settings before training
+        is enabled. Automatic mode tries WebGPU, WebGL, then CPU. Reported memory is approximate; a successful
+        check cannot guarantee that a long run will fit.</p>
+      <p>Upload JSON or JSONL examples with <code>text</code> and <code>label</code>, with at least five examples per
+        label. Validation chooses the best epoch and calibrates confidence; the untouched test split measures
+        quality. Download the trained checkpoint before closing the page. Your examples stay on your device.</p>
+      <pre>{`# Site setup: install the default pretrained encoder\ncd web && npm run prepare:training\n\n# After downloading a finished checkpoint (from the repository root):\nuv run nodd import-browser-training browser_model.nodd.zip\n# Use the version path printed by import:\nuv run nodd eval runs/browser_model/v1\nuv run nodd export runs/browser_model/v1`}</pre>
+      <p>This experimental feature trains in the browser; ONNX conversion and quantization use the existing Python
+        exporter. A downloaded checkpoint can also start another browser training run, with a fresh optimizer.</p>
 
       <h2 id="export">Exported model folder</h2>
       <table>

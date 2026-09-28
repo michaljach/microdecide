@@ -33,3 +33,31 @@ The package ships as plain ESM that uses `new Worker(new URL("./worker.js", impo
 so your bundler (Vite, webpack 5, …) compiles the worker and its dependencies.
 
 On a server, use [`@nodd/node`](https://www.npmjs.com/package/@nodd/node): same API, native CPU.
+
+## Full encoder training (experimental)
+
+Training is isolated behind `@nodd/browser/training`, so inference does not import the training runtime.
+
+```ts
+import { TrainingClient, defaults } from "@nodd/browser/training";
+
+const trainer = new TrainingClient();
+const hardware = await trainer.check({
+  bundle: await checkpointFile.arrayBuffer(), // prepared FP32 encoder ZIP; transferred to worker
+  data: await datasetFile.text(),              // JSON array or JSONL: text, label, optional split/confidence
+  options: { ...defaults, task: "my_classifier" },
+  backend: "auto",                             // WebGPU → WebGL → CPU, tested by a full training step
+}, console.log);
+const result = await trainer.train(console.log);
+const decision = await trainer.predict("An example input");
+const checkpoint = await trainer.download(); // Uint8Array ZIP, includes your labeled data
+trainer.dispose();                           // also cancels an active run
+```
+
+Only BERT/MiniLM-style GELU encoders are supported. All encoder parameters are trained.
+Check success measures compatibility at the requested batch/sequence size, not guaranteed
+free memory. Keep the worker alive until you have saved its checkpoint. A continued
+checkpoint starts a new optimizer. Import downloaded weights with `nodd import-browser-training`
+before using the normal native evaluation and ONNX export commands.
+
+See [the training guide](../../../docs/BROWSER_TRAINING.md) for setup and limitations.

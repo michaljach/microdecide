@@ -13,3 +13,4 @@ web/dist-demo/
 web/dist/
 web/test-results/
 web/test/generated/
+web/public/training/

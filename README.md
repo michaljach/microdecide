@@ -64,6 +64,23 @@ npm packages: [web/README.md](web/README.md)
 
 Code layout and reproducible checks: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
+## Full browser training
+
+The **Train** page fine-tunes every layer of a small encoder on local labeled examples.
+It tests a real training step on the user's hardware before enabling training, with
+WebGPU, WebGL, and CPU backends. Validation, calibration, test metrics, cancellation,
+and trained checkpoint downloads are included. This feature is experimental.
+
+```sh
+cd web
+npm run prepare:training   # install the pretrained MiniLM-L3 starter (~70 MB FP32)
+npm run dev               # open /train.html
+```
+
+Downloaded checkpoints can be imported with `nodd import-browser-training` and exported
+through the existing ONNX pipeline. Setup, dataset format, hardware limits, and checks:
+[browser training guide](docs/BROWSER_TRAINING.md).
+
 ## Larger offline synthetic training runs
 
 With the baseline runs present locally (`comment_moderation/v3`, `prompt_injection/v2`,

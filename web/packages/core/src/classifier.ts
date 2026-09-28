@@ -11,11 +11,24 @@ export class Classifier {
     readonly config: ModelConfig,
     private readonly tokenize: Tokenize,
     private readonly forward: Forward,
+    private readonly bertSeparator?: number,
   ) {}
 
   async logits(texts: string[]): Promise<Float64Array[]> {
     const clipped = texts.map((t) => sliceCodePoints(t, this.config.max_chars));
     const inputs = this.tokenize(clipped, { padding: true, truncation: true, max_length: this.config.tokenizer.max_tokens });
+    // Match Python BERT truncation: retain the terminal SEP after truncating content.
+    // Transformers.js currently slices after adding special tokens.
+    if (this.bertSeparator !== undefined) {
+      const batch = inputs as { input_ids: { data: BigInt64Array; dims: number[] }; attention_mask: { data: BigInt64Array } };
+      const [rows, cols] = batch.input_ids.dims;
+      if (cols === this.config.tokenizer.max_tokens) {
+        for (let row = 0; row < rows; row++) {
+          const last = row * cols + cols - 1;
+          if (Number(batch.attention_mask.data[last]) === 1) batch.input_ids.data[last] = BigInt(this.bertSeparator);
+        }
+      }
+    }
     const { logits } = await this.forward(inputs);
     const cols = logits.dims[1];
     return texts.map((_, i) => Float64Array.from({ length: cols }, (_, j) => logits.data[i * cols + j]));
@@ -29,7 +42,7 @@ export class Classifier {
   }
 }
 
-export function toDecision(config: ModelConfig, logits: ArrayLike<number>, latencyMs: number): Decision {
+export function toDecision(config: Pick<ModelConfig, "labels" | "temperature" | "model">, logits: ArrayLike<number>, latencyMs: number): Decision {
   const { labels, temperature, model } = config;
   const p = softmax(logits, temperature);
   const i = argmax(p);

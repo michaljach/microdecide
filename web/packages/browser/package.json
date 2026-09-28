@@ -8,6 +8,11 @@
       "@nodd/source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./training": {
+      "@nodd/source": "./src/training/index.ts",
+      "types": "./dist/training/index.d.ts",
+      "default": "./dist/training/index.js"
     }
   },
   "types": "./dist/index.d.ts",
@@ -16,7 +21,9 @@
   ],
   "sideEffects": [
     "./dist/worker.js",
-    "./src/worker.ts"
+    "./src/worker.ts",
+    "./dist/training/worker.js",
+    "./src/training/worker.ts"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json"
@@ -32,8 +39,11 @@
     "access": "public"
   },
   "dependencies": {
-    "@nodd/core": "^0.2.0",
     "@huggingface/transformers": "^4.3.0",
+    "@nodd/core": "^0.2.0",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-backend-webgpu": "^4.22.0",
+    "fflate": "^0.8.3",
     "onnxruntime-web": "^1.31.0-dev.20260914-8d85527a0"
   }
 }
