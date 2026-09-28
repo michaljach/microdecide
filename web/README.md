@@ -13,7 +13,7 @@ npm workspaces with the [nodd](../docs/SPEC.md) JavaScript packages and the demo
 
 ```sh
 npm run build          # tsc → packages/*/dist (core first)
-npm publish -ws        # publish all three to the @nodd org (after npm test, npm run build)
+npm publish --workspaces  # publish all three to the @nodd org (after npm test, npm run build)
 ```
 
 In development, Vite, Vitest and `tsc` resolve `@nodd/*` to `packages/*/src` through the
