@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { catalogOf, useModels } from "../catalog";
 import { MODEL_URL, type ModelEntry, fmt, modelTier } from "../common";
-import { BenchPanel, ParityPanel } from "../ui/Bench";
+import { BenchPanel } from "../ui/Bench";
 import { Classifier } from "../ui/Classifier";
 import { Layout } from "../ui/Layout";
 import { mount } from "../ui/mount";
@@ -114,15 +114,6 @@ function Home() {
           Cold load includes the download; warm load reads the model back from the browser cache.
         </p>
         <BenchPanel key={model} model={model} />
-      </section>
-
-      <section id="parity" aria-labelledby="parity-heading">
-        <h2 id="parity-heading">Parity</h2>
-        <p className="small">
-          The browser should agree with the Python model it was exported from. This check runs every backend on the test
-          inputs and compares labels and probabilities with Python's answers (target ≥ 99.5%).
-        </p>
-        <ParityPanel key={model} model={model} />
       </section>
 
       <section id="how" aria-labelledby="how-heading">
