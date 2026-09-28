@@ -9,7 +9,7 @@ import { UsageTabs, usagesFor } from "../ui/Usage";
 
 // hand-picked inputs for the comment moderation demo; other models use their catalog examples
 const EXAMPLES = [
-  "Does the new export feature support CSV?",
+  "Thanks for sharing! Do you have any tips for beginners?",
   "Buy 10,000 real followers for $9.99 at fastfollowz dot example",
   "The devs who shipped this are brain-dead clowns.",
   "This update is terrible, sync is broken again.",
