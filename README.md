@@ -1,3 +1,5 @@
+<img src="web/public/logo.svg" alt="nodd logo" width="96">
+
 # nodd
 
 Turn one decision ("is this comment ok, spam or toxic?") into a **tiny, calibrated
