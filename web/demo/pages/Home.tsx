@@ -77,7 +77,7 @@ function Home() {
   return (
     <Layout page="home">
       <h1>nodd</h1>
-      <p>Tiny, use-case-specific models that run in your browser.</p>
+      <p>Tiny, fast, use-case-specific decision models that can run in a browser. No input/output token costs, and you can train them on low-spec hardware.</p>
       <p>
         <a href="#try">Try the demo</a> · <a href="./repository.html">Explore community models</a> ·{" "}
         <a href="./docs.html">Read the docs</a> · <a href="#how">How it works</a>
