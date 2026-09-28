@@ -104,7 +104,7 @@ function Home() {
         </p>
         {index && <Classifier key={model} model={model} examples={examples} heading="h3" picker={picker} />}
         <p className="small">
-          Find open-source models to reuse on the <a href="./repository.html">Models page</a>.
+          Find open-source models to reuse on the <a href="./repository.html">Community page</a>.
         </p>
       </section>
 

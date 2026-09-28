@@ -1,10 +1,10 @@
 import { Layout } from "../ui/Layout";
 import { mount } from "../ui/mount";
 
-function Models() {
+function Community() {
   return (
     <Layout page="repository">
-      <h1>Models</h1>
+      <h1>Community</h1>
       <p>
         Open-source models from the nodd community, hosted on Hugging Face.
         Download, reuse, and adapt them for your own projects, or submit your own model to the catalog.
@@ -16,4 +16,4 @@ function Models() {
   );
 }
 
-mount(<Models />);
+mount(<Community />);

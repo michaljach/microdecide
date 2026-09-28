@@ -22,7 +22,7 @@ In development, Vite, Vitest and `tsc` resolve `@nodd/*` to `packages/*/src` thr
 ## Demo site
 
 `demo/` is a static React site (Vite, one HTML entry per page, so deep links work on GitHub Pages
-without a router): `index.html` (demo, benchmark, parity), `repository.html` (Models page linking
+without a router): `index.html` (demo, benchmark, parity), `repository.html` (Community page linking
 to the community's Hugging Face models), `model.html?model=…`, `docs.html`, `bench.html`,
 `parity.html`. Pages live in `demo/pages/`, shared components in `demo/ui/`. React is a dev
 dependency only; the library in `src/` doesn't use it.

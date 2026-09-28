@@ -97,7 +97,7 @@ function Docs() {
       <pre><code>{QUICKSTART}</code></pre>
       <p>
         The example specs in <code>examples/</code> (comment moderation, sentiment, support triage, prompt injection)
-        are available through the <a href="./repository.html">Models page</a>. Run artifacts go to{" "}
+        are available through the <a href="./repository.html">Community page</a>. Run artifacts go to{" "}
         <code>runs/&lt;task&gt;/&lt;version&gt;/</code>; the browser folder is <code>…/export</code>.
       </p>
 

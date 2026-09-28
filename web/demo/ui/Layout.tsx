@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 export type Page = "home" | "repository" | "docs" | "bench" | "parity" | "model";
 
 const NAV: [Page, string, string][] = [
-  ["repository", "Models", "./repository.html"],
+  ["repository", "Community", "./repository.html"],
   ["docs", "Docs", "./docs.html"],
 ];
 
