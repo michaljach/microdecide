@@ -5,7 +5,7 @@ import { BenchPanel } from "../ui/Bench";
 import { Classifier } from "../ui/Classifier";
 import { Layout } from "../ui/Layout";
 import { mount } from "../ui/mount";
-import { type Usage, UsageTabs } from "../ui/Usage";
+import { UsageTabs, usagesFor } from "../ui/Usage";
 
 // hand-picked inputs for the comment moderation demo; other models use their catalog examples
 const EXAMPLES = [
@@ -27,42 +27,13 @@ output:
     toxic: Insults, harassment, threats or hate toward people or groups.
 targets:    {min_macro_f1: 0.90, deploy: browser, max_download_mb: 30}`;
 
-const USAGES: Usage[] = [
-  {
-    label: "Browser",
-    install: "npm install @nodd/browser",
-    code: `import { nodd } from "@nodd/browser";
-
-// the export folder, served from your site (runs in a Web Worker, cached offline)
-const m = await nodd.load("/models/comment_moderation/v3");
-const d = await m.decide("Buy cheap followers at ...");
-// d.label is "ok", "spam" or "toxic"
-if (!m.isConfident(d)) { /* escalate to a bigger model */ }`,
-  },
-  {
-    label: "Node.js",
-    install: "npm install @nodd/node",
-    code: `import { nodd } from "@nodd/node";
-
-// the export folder on disk (onnxruntime-node, native CPU)
-const m = await nodd.load("./models/comment_moderation/v3");
-const d = await m.decide("Buy cheap followers at ...");
-// d.label is "ok", "spam" or "toxic"
-if (!m.isConfident(d)) { /* escalate to a bigger model */ }`,
-  },
-  {
-    label: "Python",
-    install: "uv add git+https://github.com/michaljach/nodd",
-    code: `from nodd.runtime import Runtime
-
-# the trained run folder (PyTorch)
-rt = Runtime.load("runs/comment_moderation/v3")
-d = rt.decide("Buy cheap followers at ...")
-# d.label is "ok", "spam" or "toxic"
-if not rt.is_confident(d):
-    ...  # escalate to a bigger model`,
-  },
-];
+const USAGES = usagesFor({
+  url: "/models/comment_moderation/v3",
+  task: "comment_moderation",
+  version: "v3",
+  example: "Buy cheap followers at ...",
+  labels: ["ok", "spam", "toxic"],
+});
 
 const DECISION = `{
   "label": "spam",

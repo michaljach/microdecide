@@ -3,15 +3,18 @@ import { MODEL_URL } from "../common";
 import { Classifier } from "../ui/Classifier";
 import { Layout } from "../ui/Layout";
 import { mount } from "../ui/mount";
+import { UsageTabs, usagesFor } from "../ui/Usage";
 
 function Card({ m }: { m: CatalogEntry }) {
   const q = m.metrics;
   const per = q?.perLabel ?? {};
-  const usage = `import { nodd } from "@nodd/browser";
-
-const m = await nodd.load("${m.path}");
-const d = await m.decide(${JSON.stringify(m.examples[0] ?? "…")});
-// d.label is one of: ${Object.keys(m.labels).join(", ")}`;
+  const usages = usagesFor({
+    url: m.path,
+    task: m.task,
+    version: m.version,
+    example: m.examples[0] ?? "…",
+    labels: Object.keys(m.labels),
+  });
   const quality: [string, string][] = q
     ? [
         ["macro F1", q.macroF1.toFixed(3)],
@@ -66,7 +69,7 @@ const d = await m.decide(${JSON.stringify(m.examples[0] ?? "…")});
       </div>
 
       <h2>Use it</h2>
-      <pre><code>{usage}</code></pre>
+      <UsageTabs usages={usages} />
       <p className="small">
         <a href={`${m.path}/report.md`}>Full evaluation report</a> ·{" "}
         <a href={`./bench.html?model=${encodeURIComponent(m.path)}`}>Benchmark this model</a> ·{" "}
