@@ -84,7 +84,7 @@ function Home() {
         label outside your set.
       </p>
       <p>
-        <a href="#try">Try the demo</a> · <a href="./repository.html">Browse the model repository</a> ·{" "}
+        <a href="#try">Try the demo</a> · <a href="./repository.html">Explore community models</a> ·{" "}
         <a href="./docs.html">Read the docs</a> · <a href="#how">How it works</a>
       </p>
 
@@ -104,7 +104,7 @@ function Home() {
         </p>
         {index && <Classifier key={model} model={model} examples={examples} heading="h3" picker={picker} />}
         <p className="small">
-          See every model with its labels and quality numbers in the <a href="./repository.html">repository</a>.
+          Find open-source models to reuse on the <a href="./repository.html">Models page</a>.
         </p>
       </section>
 

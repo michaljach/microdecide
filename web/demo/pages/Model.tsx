@@ -86,7 +86,7 @@ function Model() {
   return (
     <Layout page="model" wide model={MODEL_URL}>
       <title>{m ? `nodd · ${title(m.task)}` : "nodd · Model"}</title>
-      <p><a href="./repository.html">← Repository</a></p>
+      <p><a href="./repository.html">← Models</a></p>
       {m ? (
         <>
           <h1>{title(m.task)} <span className="muted">{m.version}</span></h1>

@@ -1,66 +1,19 @@
-import { Fragment } from "react";
-import { type CatalogEntry, byVersionDesc, catalogOf, modelPage, title, useModels } from "../catalog";
 import { Layout } from "../ui/Layout";
 import { mount } from "../ui/mount";
 
-function Item({ m, older }: { m: CatalogEntry; older: CatalogEntry[] }) {
-  const facts = [
-    Number.isFinite(m.downloadMB) ? `${m.downloadMB.toFixed(1)} MB` : null,
-    m.metrics && `macro F1 ${m.metrics.macroF1.toFixed(2)}`,
-  ].filter(Boolean);
-  return (
-    <li>
-      <h2>
-        <a href={modelPage(m)}>{title(m.task)}</a> <span className="muted">{m.version}</span>
-      </h2>
-      <p>{m.description}</p>
-      <p className="small">
-        {Object.keys(m.labels).map((l) => (
-          <Fragment key={l}><code>{l}</code> </Fragment>
-        ))}
-      </p>
-      <p className="muted small">
-        {facts.join(" · ")}
-        {older.length > 0 && (
-          <>
-            {" · older: "}
-            {older.map((o, i) => (
-              <span key={o.id}>{i > 0 && ", "}<a href={modelPage(o)}>{o.version}</a></span>
-            ))}
-          </>
-        )}
-      </p>
-    </li>
-  );
-}
-
-function Repository() {
-  const index = useModels();
-  const byTask = new Map<string, CatalogEntry[]>();
-  for (const m of catalogOf(index).sort(byVersionDesc)) byTask.set(m.task, [...(byTask.get(m.task) ?? []), m]);
-  const groups = [...byTask.values()].sort((a, b) => a[0].task.localeCompare(b[0].task));
-
+function Models() {
   return (
     <Layout page="repository">
-      <h1>Repository</h1>
+      <h1>Models</h1>
       <p>
-        Ready-made models for common decisions. Each one is a small fine-tuned encoder (about 24 MB) that runs in your
-        browser, trained with nodd from a task spec in <code>examples/</code>. Open one to try it.
+        Open-source models from the nodd community, hosted on Hugging Face.
+        Download, reuse, and adapt them for your own projects.
       </p>
-      <ul className="model-list">
-        {!index && <li className="muted">loading…</li>}
-        {index && !groups.length && <li>No models yet.</li>}
-        {groups.map(([latest, ...older]) => (
-          <Item key={latest.task} m={latest} older={older} />
-        ))}
-      </ul>
-      <p className="muted small">
-        The training data is synthetic and small, so expect lower accuracy on real inputs. To add your own, write a spec,
-        run <code>uv run nodd run &lt;spec&gt;</code>, then <code>npm run sync-model</code> (see the{" "}
-        <a href="./docs.html">docs</a>).
+      <p>
+        <a href="https://huggingface.co/nodd-repo">Browse community models on Hugging Face →</a>
       </p>
     </Layout>
   );
 }
 
-mount(<Repository />);
+mount(<Models />);
