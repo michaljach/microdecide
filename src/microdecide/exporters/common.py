@@ -11,7 +11,6 @@ from microdecide.artifacts import read_config, write_config
 Probs = Callable[[list[str]], np.ndarray]
 FORMAT = "microdecide"
 FORMAT_VERSION = 2
-STATIC_MAX_TOKENS = 512
 OPSET = 18
 MAX_F1_DROP = 0.02
 

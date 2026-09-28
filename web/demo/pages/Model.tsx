@@ -89,7 +89,7 @@ function Model() {
           <h1>{title(m.task)} <span className="muted">{m.version}</span></h1>
           <p>{m.description}</p>
           <p className="muted small">
-            {[m.id, `${m.tier} tier`, m.base, Number.isFinite(m.downloadMB) ? `${m.downloadMB.toFixed(1)} MB` : null, `trained ${m.created.slice(0, 10)}`]
+            {[m.id, m.base, Number.isFinite(m.downloadMB) ? `${m.downloadMB.toFixed(1)} MB` : null, `trained ${m.created.slice(0, 10)}`]
               .filter(Boolean)
               .join(" · ")}
           </p>

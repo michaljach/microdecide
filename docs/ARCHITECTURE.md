@@ -12,17 +12,17 @@ library code. The CLI coordinates existing pipeline functions.
   model configs remain format version 2.
 - `classifiers.py`: the inference `Classifier` protocol and built-in loaders.
   Both runtime and training use this module; runtime does not import training.
-- `static.py`, `encoder.py`: tier implementations and fitting.
+- `encoder.py`: the model (a fine-tuned sentence encoder) and fitting.
 - `train.py`: candidate selection, calibration, and saving a run.
 - `export.py`: export orchestration and compatibility exports.
-  `exporters/static.py` and `exporters/encoder.py` own their artifact writers and
-  reference inference; `exporters/common.py` owns parity metrics and shared helpers.
+  `exporters/encoder.py` owns the artifact writer and ONNX reference inference;
+  `exporters/common.py` owns parity metrics and shared helpers.
 - `evaluate.py`: measurement and report data; `reporting.py`: Markdown rendering.
 - `data.py`, `teachers/`, `synth.py`: collection, labeling, and generation.
 
 The existing `microdecide.export` functions, `train.classifier_for`, and
 `evaluate.render_markdown` remain importable. Prefer the owning modules in new
-internal code. There is no plugin registry: two explicit tiers are sufficient.
+internal code. There is one tier (encoder); `tier` stays in the artifacts for format stability.
 
 ## Browser library and demo
 
@@ -78,12 +78,11 @@ npm run build:lib
 npm run build:demo
 ```
 
-`npm test` first runs `scripts/generate_fixtures.py` through uv. It creates seeded
-training data and sklearn reference outputs, plus a tiny local WordPiece/model2vec
-model exported through the production Python exporter. Fixtures go in ignored
-`web/test/generated/`; no teacher calls, model downloads, or existing `runs/`
-folders are needed. Node parity is required rather than skipped. `MODEL_EXPORT`
-can still select a real static export for that test.
+`npm test` first runs `scripts/generate_fixtures.py` through uv. It exports a tiny
+seeded BERT classifier through the production Python exporter and writes the config
+contract cases. Fixtures go in ignored `web/test/generated/`; no teacher calls, model
+downloads, or existing `runs/` folders are needed. `npm run test:browser` checks that
+the model page reproduces Python's answers on that fixture.
 
 For production-page acceptance checks, install Chromium once and run:
 

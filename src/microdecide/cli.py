@@ -102,7 +102,7 @@ BUDGET = typer.Option(None, "--max-download-mb", help="Override targets.max_down
 def train(
     spec: Path,
     runs: Path = RUNS,
-    tier: str = typer.Option(None, help="static | encoder | auto (default: spec's model.tier)"),
+    tier: str = typer.Option(None, help="encoder | auto (default: spec's model.tier)"),
     base: str = BASE,
     max_download_mb: float = BUDGET,
 ) -> None:
@@ -146,7 +146,7 @@ def export(
     run_dir: Path,
     out: Path = typer.Option(None, help="Output folder (default: <run_dir>/export)"),
 ) -> None:
-    """Export a trained version for the browser (static JS + ONNX) with a parity check."""
+    """Export a trained version for the browser (ONNX, q8 + fp32) with a parity check."""
     from microdecide.export import ExportError
     from microdecide.export import export as export_model
 

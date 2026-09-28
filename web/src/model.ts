@@ -1,5 +1,5 @@
 /** Load an exported model folder and turn texts into Decisions. Runs in a worker or the main thread. */
-import { type Engine, StaticEmbedder, StaticEngine, StaticOnnxEngine, StaticTokenizer, TransformersEngine } from "./engines.js";
+import { type Engine, TransformersEngine } from "./engines.js";
 import { type Fetcher, decodeJson, joinUrl, makeFetcher } from "./fetch.js";
 import { parseModelConfig } from "./artifacts.js";
 import { argmax, softmax } from "./text.js";
@@ -37,46 +37,26 @@ export class Model {
       return buf;
     };
     const config = parseModelConfig(decodeJson(await fetchCounted("microdecide.json")));
-    const backend = options.backend ?? (config.tier === "static" ? "static" : "onnx");
     const device = options.device ?? "auto";
     const dtype = options.dtype ?? "q8";
-    const toFetch =
-      config.tier === "static"
-        ? [config.tokenizer.file, "tokenizer_config.json", backend === "static" ? config.static.embeddings : config.onnx?.file]
-        : [config.tokenizer.file, "tokenizer_config.json", "config.json", dtype === "fp32" ? config.onnx.fp32_file : config.onnx.file];
-    expected = toFetch.reduce((sum, f) => sum + ((f && config.files?.[f]) || 0), 0);
+    const onnxFile = dtype === "fp32" ? config.onnx.fp32_file : config.onnx.file;
+    if (!onnxFile) throw new Error(`${config.model} has no ${dtype} ONNX file`);
+    const toFetch = [config.tokenizer.file, "tokenizer_config.json", "config.json", onnxFile];
+    expected = toFetch.reduce((sum, f) => sum + (config.files?.[f] ?? 0), 0);
     started = true;
-    const wasmPaths = options.ortWasmPaths ?? "/ort/";
-    let engine: Engine;
-    if (config.tier === "static") {
-      if (backend === "onnx" && !config.onnx) throw new Error(`${config.model} has no ONNX export; use backend "static"`);
-      const [tokJson, tokConfig, weights] = await Promise.all([
-        fetchCounted(config.tokenizer.file).then((b) => decodeJson<object>(b)),
-        fetchCounted("tokenizer_config.json").then((b) => decodeJson<object>(b)),
-        fetchCounted(backend === "static" ? config.static.embeddings : config.onnx!.file),
-      ]);
-      const tokenizer = new StaticTokenizer(tokJson, tokConfig, config);
-      engine =
-        backend === "static"
-          ? new StaticEngine(new StaticEmbedder(new Int8Array(weights), config, tokenizer))
-          : await StaticOnnxEngine.create(weights, tokenizer, device, wasmPaths);
-    } else {
-      if (backend !== "onnx") throw new Error(`backend "${backend}" is only for static-tier models`);
-      engine = await TransformersEngine.create(
-        baseUrl,
-        config,
-        { device, dtype, wasmPaths, cache: useCache },
-        (file, n) => bytes.set(file, n),
-        onFile,
-      );
-    }
+    const engine: Engine = await TransformersEngine.create(
+      baseUrl,
+      config,
+      { device, dtype, wasmPaths: options.ortWasmPaths ?? "/ort/", cache: useCache },
+      (file, n) => bytes.set(file, n),
+      onFile,
+    );
     const info: ModelInfo = {
       model: config.model,
-      tier: config.tier,
       labels: config.labels,
       threshold: config.threshold,
-      backend,
       device: engine.device,
+      dtype,
       loadMs: performance.now() - t0,
       downloadBytes: [...bytes.values()].reduce((a, b) => a + b, 0),
     };

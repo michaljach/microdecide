@@ -1,5 +1,5 @@
 import { parseModelConfig } from "../src/artifacts";
-import type { Backend, Device, ModelConfig } from "../src";
+import type { Device, ModelConfig } from "../src";
 
 /** Site root ("/" locally, "/microdecide/" on GitHub Pages). Every asset URL goes through url(). */
 export const BASE = import.meta.env.BASE_URL;
@@ -12,7 +12,6 @@ export const MODEL_URL = params.get("model") ?? url("models/comment_moderation/v
 export interface ModelEntry {
   id: string;
   path: string;
-  tier: ModelConfig["tier"];
   base: string;
   downloadMB: number;
 }
@@ -28,25 +27,18 @@ export async function modelIndex(): Promise<ModelEntry[]> {
 
 export interface Config {
   name: string;
-  backend: Backend;
-  device?: Device;
-  dtype?: "q8" | "fp32";
+  device: Device;
+  dtype: "q8" | "fp32";
   /** compared against parity.jsonl (the exported artifact's Python predictions) */
   parity: boolean;
 }
 
-export const CONFIGS: Record<ModelConfig["tier"], Config[]> = {
-  static: [
-    { name: "static (plain JS)", backend: "static", parity: true },
-    { name: "onnx · wasm", backend: "onnx", device: "wasm", parity: true },
-    { name: "onnx · webgpu", backend: "onnx", device: "webgpu", parity: true },
-  ],
-  encoder: [
-    { name: "transformers.js · wasm · q8", backend: "onnx", device: "wasm", dtype: "q8", parity: true },
-    { name: "transformers.js · webgpu · q8", backend: "onnx", device: "webgpu", dtype: "q8", parity: true },
-    { name: "transformers.js · webgpu · fp32", backend: "onnx", device: "webgpu", dtype: "fp32", parity: false },
-  ],
-};
+/** Backends, fastest single-input first: WASM beats WebGPU at this model size (see the benchmark). */
+export const CONFIGS: Config[] = [
+  { name: "transformers.js · wasm · q8", device: "wasm", dtype: "q8", parity: true },
+  { name: "transformers.js · webgpu · q8", device: "webgpu", dtype: "q8", parity: true },
+  { name: "transformers.js · webgpu · fp32", device: "webgpu", dtype: "fp32", parity: false },
+];
 
 /** Reads microdecide.json via the library's model cache first (works offline once loaded). */
 export async function modelConfig(model = MODEL_URL): Promise<ModelConfig> {
@@ -55,24 +47,14 @@ export async function modelConfig(model = MODEL_URL): Promise<ModelConfig> {
   return parseModelConfig(await (hit ?? (await fetch(file))).json());
 }
 
-export async function modelTier(model = MODEL_URL): Promise<ModelConfig["tier"]> {
-  return (await modelConfig(model)).tier;
-}
-
-/** Backend configs for a model, minus ones whose files aren't deployed (e.g. the fp32 encoder). */
+/** Backend configs for a model, minus ones whose files aren't deployed (e.g. the fp32 file). */
 export async function configsFor(model = MODEL_URL): Promise<Config[]> {
   const cfg = await modelConfig(model);
-  return CONFIGS[cfg.tier].filter((c) => c.dtype !== "fp32" || (cfg.tier !== "static" && !!cfg.onnx.fp32_file));
+  return CONFIGS.filter((c) => c.dtype !== "fp32" || !!cfg.onnx.fp32_file);
 }
 
-/**
- * The backend the demos use: the fastest one for single inputs, which is the first config per tier
- * (static → plain JS, encoder → WASM q8). WebGPU is slower at this model size (see the benchmark);
- * bench/parity still run every backend.
- */
-export async function demoConfig(model = MODEL_URL): Promise<Config> {
-  return (await configsFor(model))[0];
-}
+/** The backend the demos use: the fastest for single inputs. Bench and parity run every backend. */
+export const demoConfig = CONFIGS[0];
 
 /** Vendor/architecture of the WebGPU adapter (tells a real GPU from a software fallback). */
 export async function gpuAdapterInfo(): Promise<Record<string, string> | null> {

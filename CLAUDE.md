@@ -16,11 +16,13 @@ Example spec: `examples/comment_moderation.yaml`.
   and what's next. Update the checkbox in `docs/ROADMAP.md`.
 - Keep it minimal. Prefer a few clear modules over abstractions. No plugin
   systems until a second implementation actually exists.
-- **Tiny models only**: target ~30 MB downloads (static and encoder tiers).
+- **Tiny models only**: target ~30 MB downloads. Every model is a fine-tuned small encoder.
   The decoder tier (SmolLM2/Qwen, 115–500 MB) was built, measured and dropped
-  on purpose — don't reintroduce large models (see ROADMAP M5).
-- Every tier must **run in the browser** (plain JS / onnxruntime-web /
-  transformers.js; WASM by default) and must **train on CPU**.
+  on purpose — don't reintroduce large models (see ROADMAP M5). The static
+  tier (model2vec + logistic regression) was removed too: it lost to the
+  encoder at similar size.
+- Models must **run in the browser** (transformers.js / onnxruntime-web, WASM by
+  default) and must **train on CPU**.
 - Classification is **one forward pass, no text generation**.
 
 ## Stack
@@ -28,8 +30,8 @@ Example spec: `examples/comment_moderation.yaml`.
 - Python 3.11+, managed with `uv`
 - `pydantic` v2 for the spec and all typed outputs
 - `typer` for the CLI
-- `scikit-learn` for the tiny tier head + calibration
-- `model2vec` (static embeddings) for the tiny tier encoder
+- `scikit-learn` for metrics
+- `model2vec` (static embeddings) for near-duplicate detection when collecting data
 - `setfit` / `sentence-transformers` for the encoder tier
 - `transformers` + `torch` for the encoder tier (fine-tuned classification head)
 - `torch.onnx.export` (dynamo, needs `onnxscript`) + `onnxruntime.quantization` for ONNX

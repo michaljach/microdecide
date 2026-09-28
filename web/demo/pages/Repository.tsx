@@ -5,7 +5,6 @@ import { mount } from "../ui/mount";
 
 function Item({ m, older }: { m: CatalogEntry; older: CatalogEntry[] }) {
   const facts = [
-    `${m.tier} tier`,
     Number.isFinite(m.downloadMB) ? `${m.downloadMB.toFixed(1)} MB` : null,
     m.metrics && `macro F1 ${m.metrics.macroF1.toFixed(2)}`,
   ].filter(Boolean);

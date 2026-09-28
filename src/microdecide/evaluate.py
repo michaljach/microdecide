@@ -147,7 +147,7 @@ def download_mb(run_dir: Path, card: dict) -> float:
     exp = run_dir / "export" / "model_card.json"
     if exp.is_file():
         e = json.loads(exp.read_text())["export"]
-        return e["static_download_mb"] if card["tier"] == "static" else e["onnx_download_mb"]
+        return e["onnx_download_mb"]
     return card["download_mb"]
 
 

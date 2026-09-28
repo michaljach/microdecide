@@ -13,10 +13,10 @@ knows when it is unsure, so the hard cases can go to a bigger model.
 task spec (YAML) → collect inputs → teacher labels → train → calibrate → evaluate → export → browser
 ```
 
-- **Tiers**, smallest download first: *static* (model2vec embeddings + logistic
-  regression, plain JS) and *encoder* (fine-tuned MiniLM, ONNX q8 via transformers.js).
-  `auto` trains every candidate that fits your download budget and keeps the best fit
-  (highest validation F1; the smaller one on a near-tie).
+- **Models**: a small sentence encoder (MiniLM-class) fine-tuned with a classification
+  head, exported to ONNX q8 and run with transformers.js. Every base model that fits your
+  download budget is trained and the best fit is kept (highest validation F1; the smaller
+  one on a near-tie).
 - Every prediction is a typed `Decision` with a **calibrated** confidence; below the
   threshold (chosen for a target precision) it should be escalated.
 - Exports are checked for **parity**: the browser matches Python on the test set.
@@ -25,8 +25,8 @@ Example task (`examples/comment_moderation.yaml`, 1,711 synthetic comments):
 
 | model | download | test macro F1 | handled without escalation | browser p95 |
 |---|---|---|---|---|
-| static · potion-32M | 33 MB | 0.897 | 81% | 0.1 ms |
-| **encoder · MiniLM-L3** (auto pick) | **18.6 MB** | **0.943** | **88%** | 5.8 ms |
+| MiniLM-L3 (v2) | 18.6 MB | 0.943 | 88% | 6.8 ms |
+| **MiniLM-L6** (v3, best fit) | **23.7 MB** | **0.948** | **96%** | 12.0 ms |
 
 The test data is synthetic — expect lower numbers on real comments.
 

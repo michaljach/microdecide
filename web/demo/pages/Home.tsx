@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { catalogOf, useModels } from "../catalog";
-import { MODEL_URL, type ModelEntry, fmt, modelTier } from "../common";
+import { MODEL_URL, type ModelEntry, fmt } from "../common";
 import { BenchPanel } from "../ui/Bench";
 import { Classifier } from "../ui/Classifier";
 import { Layout } from "../ui/Layout";
@@ -51,9 +51,7 @@ function Home() {
   // a model that isn't in the index (opened with ?model=…) still gets an option
   useEffect(() => {
     if (!index || index.some((m) => m.path === MODEL_URL)) return;
-    void modelTier()
-      .catch(() => "static" as const)
-      .then((tier) => setExtra({ id: MODEL_URL.split("/").pop()!, path: MODEL_URL, tier, base: "", downloadMB: NaN }));
+    setExtra({ id: MODEL_URL.split("/").pop()!, path: MODEL_URL, base: "", downloadMB: NaN });
   }, [index]);
 
   const options = [...(extra ? [extra] : []), ...(index ?? [])];
@@ -66,7 +64,7 @@ function Home() {
       <select id="model" value={model} onChange={(e) => setModel(e.target.value)}>
         {options.map((m) => (
           <option key={m.path} value={m.path}>
-            {m.id} · {m.tier}{Number.isFinite(m.downloadMB) ? ` · ${fmt(m.downloadMB, 1)} MB` : ""}
+            {m.id}{Number.isFinite(m.downloadMB) ? ` · ${fmt(m.downloadMB, 1)} MB` : ""}
           </option>
         ))}
       </select>
@@ -135,24 +133,25 @@ function Home() {
         <p>Every answer has the same shape:</p>
         <pre><code>{DECISION}</code></pre>
 
-        <h2>Tiers</h2>
+        <h2>Models</h2>
+        <p>
+          Every model is a small sentence encoder fine-tuned with a classification head, exported to ONNX (int8) and run
+          with transformers.js. microdecide trains every candidate that fits the download budget and keeps the best fit:
+          the highest validation F1, or the smaller model when two are practically tied.
+        </p>
         <table>
           <thead>
-            <tr><th>tier</th><th>model</th><th>trains on</th><th>runs in the browser as</th></tr>
+            <tr><th>base</th><th>download</th></tr>
           </thead>
           <tbody>
-            <tr><td>static</td><td>static embeddings (model2vec) + logistic regression</td><td>CPU</td><td>plain JS</td></tr>
-            <tr><td>encoder</td><td>small sentence-transformer (MiniLM), fine-tuned</td><td>CPU</td><td>transformers.js, ONNX q8 on WASM</td></tr>
+            <tr><td>paraphrase-MiniLM-L3-v2</td><td>18 MB</td></tr>
+            <tr><td>all-MiniLM-L6-v2</td><td>24 MB</td></tr>
+            <tr><td>bge-small-en-v1.5</td><td>34 MB</td></tr>
           </tbody>
         </table>
         <p className="small">
-          With <code>tier: auto</code>, microdecide trains every candidate that fits the download budget and keeps the
-          best fit: the highest validation F1, or the smaller model when two are practically tied.
-        </p>
-        <p className="small">
-          The demos run static models in plain JS and encoders on WASM. At this size WebGPU is slower per input (the
-          GPU round trip costs more than the math), so it's only an opt-in for large batches; the{" "}
-          <a href="#bench">benchmark</a> still measures it.
+          The demos run on WASM. At this size WebGPU is slower per input (the GPU round trip costs more than the math),
+          so it's only an opt-in for large batches; the <a href="#bench">benchmark</a> still measures it.
         </p>
       </section>
     </Layout>

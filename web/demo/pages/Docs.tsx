@@ -23,8 +23,8 @@ output:
     spam: Ads, links to unrelated products or services, SEO junk, scams.
     toxic: Insults, harassment, threats or hate toward people or groups.
 model:
-  tier: auto                        # auto | static | encoder
-  base: null                        # force one base model (needs an explicit tier)
+  tier: auto                        # auto | encoder (both: best fit among the encoder bases)
+  base: null                        # force one base model (with tier: encoder)
   quantization: q8
 teacher:                            # the model that labels the training data
   kind: llm                         # llm | csv
@@ -105,7 +105,7 @@ function Docs() {
         </thead>
         <tbody>
           <tr><td><code>output.labels</code></td><td>required</td><td>label → description; names use letters, digits, <code>_</code> or <code>-</code></td></tr>
-          <tr><td><code>model.tier</code></td><td><code>auto</code></td><td><code>auto</code> picks the best fit across tiers; <code>static</code> or <code>encoder</code> pins one</td></tr>
+          <tr><td><code>model.base</code></td><td>none</td><td>train one base model instead of choosing (needs <code>tier: encoder</code>)</td></tr>
           <tr><td><code>teacher.kind</code></td><td>required</td><td><code>llm</code> (needs <code>model</code>) or <code>csv</code> (needs <code>path</code>, a labeled CSV)</td></tr>
           <tr><td><code>teacher.min_confidence</code></td><td>0</td><td>drop labels the labeling model is less sure about</td></tr>
           <tr><td><code>data.synthetic</code></td><td>0</td><td>how many inputs to generate; <code>synth_model</code> defaults to the teacher's</td></tr>
@@ -140,20 +140,24 @@ function Docs() {
       </p>
 
       <h2 id="training">Training and model selection</h2>
+      <p>
+        Every model is a small sentence encoder fine-tuned with a classification head. These base models are the
+        candidates:
+      </p>
       <table>
         <thead>
-          <tr><th>tier</th><th>model</th><th>candidates (download)</th></tr>
+          <tr><th>base</th><th>download (int8)</th></tr>
         </thead>
         <tbody>
-          <tr><td>static</td><td>static embeddings (model2vec), averaged, + logistic regression</td><td>potion-base-8M (8.6 MB), potion-base-32M (33 MB)</td></tr>
-          <tr><td>encoder</td><td>MiniLM-class sentence encoder, fine-tuned with a classification head</td><td>MiniLM-L3 (18 MB), MiniLM-L6 (24 MB), bge-small (34 MB)</td></tr>
+          <tr><td>sentence-transformers/paraphrase-MiniLM-L3-v2</td><td>18 MB</td></tr>
+          <tr><td>sentence-transformers/all-MiniLM-L6-v2</td><td>24 MB</td></tr>
+          <tr><td>BAAI/bge-small-en-v1.5</td><td>34 MB</td></tr>
         </tbody>
       </table>
       <p>
-        With <code>tier: auto</code>, every candidate that fits <code>max_download_mb</code> is trained and the best fit
-        wins: the highest validation macro F1, or the smaller model when two are within 0.01. Static models train in
-        about a second; encoders in tens of seconds on CPU (<code>MICRODECIDE_DEVICE=mps</code> or <code>cuda</code> to
-        speed up).
+        Every candidate that fits <code>max_download_mb</code> is trained and the best fit wins: the highest validation
+        macro F1, or the smaller model when two are within 0.01. Each trains in tens of seconds on CPU
+        (<code>MICRODECIDE_DEVICE=mps</code> or <code>cuda</code> to speed up).
       </p>
       <p>
         Calibration fits a temperature on the validation split, so the reported confidence matches how often the model is
@@ -170,16 +174,15 @@ function Docs() {
           <tr><td><code>microdecide.json</code></td><td>labels, temperature, threshold, tokenizer rules, file sizes; validated on load</td></tr>
           <tr><td><code>tokenizer.json</code>, <code>tokenizer_config.json</code>, <code>config.json</code></td><td>Hugging Face tokenizer and model config</td></tr>
           <tr><td><code>onnx/model_quantized.onnx</code></td><td>the model, int8 (what the browser loads)</td></tr>
-          <tr><td><code>onnx/model.onnx</code></td><td>encoder only: full precision, optional</td></tr>
-          <tr><td><code>static/embeddings.i8</code></td><td>static only: the int8 embedding table for the plain-JS engine</td></tr>
+          <tr><td><code>onnx/model.onnx</code></td><td>full precision, optional</td></tr>
           <tr><td><code>parity.jsonl</code>, <code>model_card.json</code></td><td>expected answers on the test split; training metadata</td></tr>
         </tbody>
       </table>
 
       <h2 id="library">Browser library</h2>
       <p>
-        <code>microdecide-web</code> (in <code>web/</code>) runs an exported folder. Static models run in plain JS;
-        encoders run with transformers.js on WASM. Inference happens in a Web Worker, and model files are cached, so a
+        <code>microdecide-web</code> (in <code>web/</code>) runs an exported folder with transformers.js on WASM.
+        Inference happens in a Web Worker, and model files are cached, so a
         model loads offline after the first visit.
       </p>
       <pre><code>{LOAD}</code></pre>
@@ -189,9 +192,8 @@ function Docs() {
         </thead>
         <tbody>
           <tr><td><code>onProgress</code></td><td>none</td><td><code>{"{ loaded, total }"}</code> bytes while the files download</td></tr>
-          <tr><td><code>backend</code></td><td>by tier</td><td><code>static</code> (plain JS) or <code>onnx</code></td></tr>
           <tr><td><code>device</code></td><td><code>auto</code> = WASM</td><td><code>webgpu</code> is opt-in: slower per input at this model size, faster only for large full-precision batches</td></tr>
-          <tr><td><code>dtype</code></td><td><code>q8</code></td><td>encoders: <code>fp32</code> uses the full-precision file</td></tr>
+          <tr><td><code>dtype</code></td><td><code>q8</code></td><td><code>fp32</code> uses the full-precision file</td></tr>
           <tr><td><code>worker</code>, <code>cache</code></td><td>true</td><td>run in a Web Worker; keep files in the Cache API</td></tr>
           <tr><td><code>ortWasmPaths</code></td><td><code>/ort/</code></td><td>where onnxruntime-web's <code>.wasm</code> files are served</td></tr>
         </tbody>
@@ -219,7 +221,7 @@ function Docs() {
       <table>
         <tbody>
           <tr><td><code>uv run pytest</code></td><td>Python tests (no API calls)</td></tr>
-          <tr><td><code>npm test</code></td><td>library tests, including Node parity with Python on a generated fixture</td></tr>
+          <tr><td><code>npm test</code></td><td>library tests: the config contract (Python schema → browser validator), download progress, worker transport</td></tr>
           <tr><td><code>npm run parity</code></td><td>headless Chromium: browser answers vs Python (≥ 99.5% of labels)</td></tr>
           <tr><td><code>npm run bench</code></td><td>load time and latency per backend; the result shows on the home page</td></tr>
           <tr><td><code>npm run offline</code></td><td>network cut: the page and the model reload from caches</td></tr>

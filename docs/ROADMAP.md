@@ -58,6 +58,13 @@ ever revisited: decoder q4 must be weight-only (HQQ, block 32 — plain RTN lost
 3 F1 points); dynamic int8 activation quantization lost ~5; export the pooled
 last-token logits (one forward pass, no KV cache); fp32 export needs external data.
 
+
+## [–] Static tier — removed
+Built in M2 (model2vec embeddings + logistic regression, plain-JS runtime), then
+removed on request: at similar size it lost to the encoder (comment moderation
+test F1 0.897 at 33 MB vs 0.943 at 18.6 MB; prompt injection 0.873 vs 0.942),
+best fit never picked it, and it doubled the export path, browser runtime and
+parity checks. model2vec is still used for near-duplicate detection.
 ## [ ] M6 — Escalate, feedback, retrain
 - FastAPI `POST /decide` (teacher proxy); browser `escalateUrl`
 - `feedback.jsonl`; `microdecide retrain` with version comparison

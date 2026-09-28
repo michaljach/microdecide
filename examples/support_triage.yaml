@@ -13,7 +13,7 @@ output:
     how_to: A question about how to use something the product already does.
     feature_request: Asks for something the product doesn't do yet, or suggests an improvement.
 model:
-  tier: encoder           # auto | static | encoder — auto = best fit within the download budget
+  tier: encoder           # auto | encoder — both: best fit among encoder bases within the budget
   base: null
   quantization: q8
 # PoC: inputs + labels in the CSV were written offline by Claude (in a coding session),

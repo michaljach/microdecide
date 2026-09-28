@@ -35,27 +35,6 @@ def spec():
     return s.model_copy(update={"model": s.model.model_copy(update={"tier": "auto"})})
 
 
-def tiny_static_model(dim: int = 32, int8: bool = True):
-    """A real model2vec StaticModel over a small word vocab: no download, save/load works."""
-    from model2vec import StaticModel
-    from tokenizers import Tokenizer, models, pre_tokenizers
-
-    words = sorted({w for t in TOY_TEXTS for w in t.lower().replace(",", " ").replace("!", " ").split()})
-    vocab = {"[UNK]": 0, "[PAD]": 1, **{w: i + 2 for i, w in enumerate(words)}}
-    tok = Tokenizer(models.WordLevel(vocab, unk_token="[UNK]"))
-    tok.pre_tokenizer = pre_tokenizers.Whitespace()
-    rng = np.random.default_rng(0)
-    vectors = rng.normal(size=(len(vocab), dim)).astype(np.float32)
-    for w, i in vocab.items():  # make label-ish words point in consistent directions
-        if w in {"buy", "cheap", "followers", "discount", "click", "casino", "loans"}:
-            vectors[i, 0] += 4
-        if w in {"idiot", "moron", "loser", "stupid", "clown", "pathetic"}:
-            vectors[i, 1] += 4
-    if int8:  # like real runs (train.EMBEDDING_DTYPE): global-scale symmetric int8
-        vectors = np.clip(np.rint(vectors / (np.abs(vectors).max() / 127)), -127, 127).astype(np.int8)
-    return StaticModel(vectors=vectors, tokenizer=tok, normalize=True, config={"normalize": True})
-
-
 _OK = ["great update thanks", "love the dark mode", "does export support csv", "sync broke on android please fix",
        "nice post about remote work", "is there a linux version", "the new sidebar is confusing", "thanks for the changelog"]
 _SPAM = ["buy cheap followers now", "click here for discount", "cheap casino bonus click", "fast loans buy now",
@@ -68,7 +47,7 @@ TOY_ROWS = (
 )
 
 
-def tiny_encoder_dir(path):
+def tiny_encoder_dir(path, seed: int = 0):
     """A 1-layer, 16-dim BERT + WordPiece tokenizer over the toy vocab, saved locally (no download)."""
     from transformers import BertConfig, BertModel, BertTokenizerFast
 
@@ -78,7 +57,7 @@ def tiny_encoder_dir(path):
     tok = BertTokenizerFast(vocab_file=str(path / "vocab.txt"), do_lower_case=True)
     import torch
 
-    torch.manual_seed(0)
+    torch.manual_seed(seed)
     cfg = BertConfig(vocab_size=len(words) + 5, hidden_size=16, num_hidden_layers=1, num_attention_heads=2,
                      intermediate_size=32, max_position_embeddings=512)
     BertModel(cfg).save_pretrained(path)
@@ -88,8 +67,8 @@ def tiny_encoder_dir(path):
 
 @pytest.fixture
 def toy_run(tmp_path, spec, monkeypatch):
-    """A labeled dataset of the toy rows (4x, with suffixes) + the tiny encoder patched into training."""
-    from microdecide import data, encoder, static
+    """A labeled dataset of the toy rows (4x, with suffixes) + two tiny encoders patched in as candidates."""
+    from microdecide import data, encoder
 
     rows, splits = [], ["train"] * 6 + ["val", "test"]
     for rep in range(4):
@@ -99,10 +78,10 @@ def toy_run(tmp_path, spec, monkeypatch):
                          "confidence": 0.95, "teacher": "fake", "probabilities": {}, "split": split})
     runs = tmp_path / "runs"
     data.write_jsonl(data.data_dir(spec, runs) / "labeled.jsonl", rows)
-    model = tiny_static_model()
-    monkeypatch.setattr(static, "load_encoder", lambda base, quantize_to=None: model)
-    monkeypatch.setattr(static, "CANDIDATES", (("tiny-a", 0.1), ("tiny-b", 0.2)))
-    monkeypatch.setattr(encoder, "CANDIDATES", ((str(tiny_encoder_dir(tmp_path / "tiny-bert")), 0.15),))
+    monkeypatch.setattr(encoder, "CANDIDATES", (
+        (str(tiny_encoder_dir(tmp_path / "tiny-bert-a")), 0.15),
+        (str(tiny_encoder_dir(tmp_path / "tiny-bert-b", seed=1)), 0.25),
+    ))
     return runs
 
 

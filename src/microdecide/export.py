@@ -3,14 +3,10 @@
   microdecide.json            runtime config: tier, labels, temperature, threshold, tokenizer rules
   tokenizer.json              HF tokenizer (+ tokenizer_config.json, config.json)
   onnx/model_quantized.onnx   logits graph for onnxruntime-web / transformers.js (WASM / WebGPU)
-
-static tier:  + static/embeddings.i8 (int8 table, plain JS, no ONNX runtime) + head in microdecide.json
-encoder tier: + onnx/model.onnx (fp32); model_quantized.onnx is dynamic int8 (q8)
+  onnx/model.onnx             full precision (optional in the browser); model_quantized.onnx is dynamic int8 (q8)
 
 Every export runs a parity check (training-time model vs each exported artifact, test split) and
-writes parity.jsonl — the exported artifact's predictions — for the browser parity page.
-`reference_probabilities` re-implements static-tier inference from the exported files only;
-it is the spec the JS static engine mirrors."""
+writes parity.jsonl — the exported artifact's predictions — for the browser parity page."""
 
 from __future__ import annotations
 
@@ -23,9 +19,7 @@ from microdecide.data import read_jsonl, write_jsonl
 from microdecide.runtime import Runtime
 from microdecide.artifacts import write_card
 
-# Preserve the existing export module API while implementations live by tier.
-from microdecide.exporters.common import ExportError, FORMAT, FORMAT_VERSION, STATIC_MAX_TOKENS, OPSET, MAX_F1_DROP, compare as _compare, record_file_sizes
-from microdecide.exporters.static import _export_static, ExportedTokenizer, reference_probabilities, static_onnx_probabilities, build_static_onnx
+from microdecide.exporters.common import ExportError, FORMAT, FORMAT_VERSION, OPSET, MAX_F1_DROP, compare as _compare, record_file_sizes
 from microdecide.exporters.encoder import _export_encoder, export_encoder_onnx, quantize_q8, encoder_onnx_probabilities
 
 
@@ -47,12 +41,9 @@ def export(run_dir: str | Path, out: str | Path | None = None, log=print) -> dic
         "threshold": rt.threshold,
         "max_chars": rt.max_chars,
     }
-    if rt.card["tier"] == "static":
-        artifacts, primary, download = _export_static(rt, run_dir, out, base_config)
-    elif rt.card["tier"] == "encoder":
-        artifacts, primary, download = _export_encoder(rt, run_dir, out, base_config, log)
-    else:
+    if rt.card["tier"] != "encoder":
         raise ValueError(f"unknown tier {rt.card['tier']!r}")
+    artifacts, primary, download = _export_encoder(rt, run_dir, out, base_config, log)
 
     record_file_sizes(out)
 

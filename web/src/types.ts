@@ -30,47 +30,22 @@ interface OnnxRef {
   output: string;
 }
 
-/** `microdecide.json` for the static tier: int8 embedding table + linear head. */
-export interface StaticConfig extends BaseConfig {
-  tier: "static";
-  /** The ONNX graph of the same model (optional: the plain-JS backend doesn't need it). */
-  onnx?: OnnxRef;
-  normalize: boolean;
-  dim: number;
-  vocab_size: number;
-  tokenizer: {
-    file: string;
-    add_special_tokens: boolean;
-    median_token_length: number;
-    max_tokens: number;
-    drop_token_ids: number[];
-  };
-  static: { embeddings: string; dtype: "int8" };
-  head: { coef: number[][]; intercept: number[] };
-}
-
-/** `microdecide.json` for the encoder tier: a transformers.js sequence classifier. */
+/** `microdecide.json`, written by `microdecide export`: a transformers.js sequence classifier. */
 export interface EncoderConfig extends BaseConfig {
   tier: "encoder";
   onnx: OnnxRef;
   tokenizer: { file: string; add_special_tokens: boolean; max_tokens: number; truncation: boolean };
 }
 
-/** `microdecide.json`, written by `microdecide export`. */
-export type ModelConfig = StaticConfig | EncoderConfig;
+export type ModelConfig = EncoderConfig;
 
-/** "static" = plain JS over the int8 table (static tier only, no runtime download);
- *  "onnx" = onnxruntime-web (static tier's graph, or the encoder via transformers.js). */
-export type Backend = "static" | "onnx";
 export type Device = "auto" | "webgpu" | "wasm";
 
 export interface LoadOptions {
-  /** Default: "static" for static-tier models (smallest, no ONNX runtime), "onnx" otherwise. */
-  backend?: Backend;
-  /** Encoder tier only: "q8" (default, smallest) or "fp32" (often better on WebGPU). */
+  /** "q8" (default, smallest) or "fp32" (the full-precision file, if it is served). */
   dtype?: "q8" | "fp32";
-  /** ONNX only. "auto" = WASM: lower single-input latency than WebGPU for models this size
-   *  (see engines.ts). Pass "webgpu" to force it. */
+  /** "auto" = WASM: lower single-input latency than WebGPU for models this size (see engines.ts).
+   *  Pass "webgpu" to force it. */
   device?: Device;
   /** Run inference in a Web Worker so the UI never blocks. Default true where Workers exist. */
   worker?: boolean;
@@ -90,11 +65,10 @@ export interface LoadProgress {
 
 export interface ModelInfo {
   model: string;
-  tier: ModelConfig["tier"];
   labels: string[];
   threshold: number;
-  backend: Backend;
-  device: "js" | "webgpu" | "wasm";
+  device: "webgpu" | "wasm";
+  dtype: "q8" | "fp32";
   loadMs: number;
   downloadBytes: number;
 }

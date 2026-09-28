@@ -71,9 +71,8 @@ for (const src of exports) {
   index.push({
     id: cfg.model,
     path: `models/${task}/${version}`, // relative to the site root (works under a sub-path)
-    tier: cfg.tier,
     base: card.base,
-    downloadMB: cfg.tier === "static" ? e.static_download_mb : e.onnx_download_mb,
+    downloadMB: e.onnx_download_mb,
     task,
     version,
     description: card.spec.description.trim(),
@@ -94,7 +93,7 @@ for (const src of exports) {
     },
     examples: examples(dest),
   });
-  console.log(`model ${cfg.model} (${cfg.tier}) → public/models/${task}/${version}`);
+  console.log(`model ${cfg.model} → public/models/${task}/${version}`);
 }
 
 index.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));

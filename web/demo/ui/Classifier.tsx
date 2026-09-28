@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useState } from "react";
 import { type Decision, type LoadProgress, MicroDecide } from "../../src";
-import { type Config, ORT_WASM, demoConfig, fmt } from "../common";
+import { ORT_WASM, demoConfig, fmt } from "../common";
 import { DecisionView } from "./DecisionView";
 
 const message = (err: unknown) => (err instanceof Error ? err.message : String(err));
@@ -15,7 +15,7 @@ function loadingText(p: LoadProgress | null): string {
 
 /**
  * Try a model: input on the left, result on the right. Re-mount with `key={model}` to switch models.
- * Runs on the fastest backend for the model (demoConfig). Keeps the ids the headless checks use
+ * Runs on the fastest backend (demoConfig: WASM, q8). Keeps the ids the headless checks use
  * (#text, #status) and exposes the last answer as window.__last.
  */
 export function Classifier({ model, examples, heading = "h2", picker }: { model: string; examples: string[]; heading?: "h2" | "h3"; picker?: ReactNode }) {
@@ -29,22 +29,19 @@ export function Classifier({ model, examples, heading = "h2", picker }: { model:
   useEffect(() => {
     let live = true;
     let m: MicroDecide | null = null;
-    demoConfig(model)
-      .then((cfg: Config) =>
-        MicroDecide.load(model, {
-          backend: cfg.backend,
-          device: cfg.device,
-          dtype: cfg.dtype,
-          ortWasmPaths: ORT_WASM,
-          onProgress: (p) => live && setProgress(p),
-        }).then((x) => {
-          if (!live) return x.dispose();
-          m = x;
-          const i = x.info;
-          setStatus(`${i.model} · ${i.tier} · ${i.backend}/${i.device}${cfg.dtype ? "/" + cfg.dtype : ""} · ${mb(i.downloadBytes)} MB · loaded in ${fmt(i.loadMs, 0)} ms`);
-          setLoaded(x);
-        }),
-      )
+    MicroDecide.load(model, {
+      device: demoConfig.device,
+      dtype: demoConfig.dtype,
+      ortWasmPaths: ORT_WASM,
+      onProgress: (p) => live && setProgress(p),
+    })
+      .then((x) => {
+        if (!live) return x.dispose();
+        m = x;
+        const i = x.info;
+        setStatus(`${i.model} · ${i.device}/${i.dtype} · ${mb(i.downloadBytes)} MB · loaded in ${fmt(i.loadMs, 0)} ms`);
+        setLoaded(x);
+      })
       .catch((err) => live && setStatus(`failed: ${message(err)}`));
     return () => {
       live = false;

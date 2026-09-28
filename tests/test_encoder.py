@@ -1,11 +1,11 @@
-"""Encoder tier end to end on a tiny local BERT (no downloads): train, runtime, eval, export, compare."""
+"""Encoder end to end on a tiny local BERT (no downloads): train, runtime, eval, export, compare."""
 
 import json
 
 import pytest
 from typer.testing import CliRunner
 
-from microdecide import encoder, static, train
+from microdecide import encoder, train
 from microdecide.cli import app
 from microdecide.compare import compare
 from microdecide.evaluate import evaluate
@@ -55,11 +55,10 @@ def test_encoder_export(encoder_run):
 
 
 def test_auto_plan_orders_by_download_size(spec, monkeypatch):
-    monkeypatch.setattr(static, "CANDIDATES", (("s-small", 5.0), ("s-big", 40.0)))
-    monkeypatch.setattr(encoder, "CANDIDATES", (("e-small", 20.0), ("e-big", 30.0)))
-    # s-big (40 MB) is over the spec's 30 MB budget: not trained at all
-    assert train.plan(spec, None) == [("static", "s-small"), ("encoder", "e-small"), ("encoder", "e-big")]
-    assert train.plan(spec, "encoder") == [("encoder", "e-small"), ("encoder", "e-big")]
+    monkeypatch.setattr(encoder, "CANDIDATES", (("e-big", 30.0), ("e-small", 20.0), ("e-huge", 40.0)))
+    # smallest first; e-huge (40 MB) is over the spec's 30 MB budget: not trained at all
+    assert train.plan(spec, None) == [("encoder", "e-small"), ("encoder", "e-big")]
+    assert train.plan(spec, "encoder") == train.plan(spec, None)
     forced = spec.model_copy(update={"model": spec.model.model_copy(update={"tier": "encoder", "base": "my/model"})})
     assert train.plan(forced, None) == [("encoder", "my/model")]
     tight = spec.model_copy(update={"targets": spec.targets.model_copy(update={"max_download_mb": 1})})
@@ -80,12 +79,12 @@ def test_best_fit_prefers_quality_then_size():
     assert train.best_fit([c(0.9, 40)], budget=30) is None
 
 
-def test_compare_static_vs_encoder(toy_run, spec, tmp_path):
-    v1 = train.train(spec, toy_run, tier="static", log=lambda _: None)
-    v2 = train.train(spec, toy_run, tier="encoder", log=lambda _: None)
+def test_compare_versions(toy_run, spec, tmp_path):
+    v1 = train.train(spec, toy_run, log=lambda _: None)
+    v2 = train.train(spec, toy_run, log=lambda _: None)
     md, summary = compare([v1, v2], log=lambda _: None)
     assert summary["same_test_split"] and summary["models"] == ["comment_moderation@v1", "comment_moderation@v2"]
-    assert "| tier | static | encoder |" in md and "macro F1" in md
+    assert "| tier | encoder | encoder |" in md and "macro F1" in md
     assert 0 <= next(iter(summary["agreement"].values())) <= 1
 
     out = tmp_path / "cmp.md"
