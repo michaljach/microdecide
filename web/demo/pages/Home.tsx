@@ -26,9 +26,9 @@ output:
     toxic: Insults, harassment, threats or hate toward people or groups.
 targets:    {min_macro_f1: 0.90, deploy: browser, max_download_mb: 30}`;
 
-const USAGE = `import { Nodd } from "@nodd/browser";
+const USAGE = `import { nodd } from "@nodd/browser";
 
-const m = await Nodd.load("/models/comment_moderation/v3");
+const m = await nodd.load("/models/comment_moderation/v3");
 const d = await m.decide("Buy cheap followers at ...");
 // d.label is "ok", "spam" or "toxic"`;
 

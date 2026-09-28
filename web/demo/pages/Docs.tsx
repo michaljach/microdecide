@@ -41,9 +41,9 @@ escalation:
   target_precision: 0.97            # the confidence threshold is picked for this precision
 seed: 42`;
 
-const LOAD = `import { Nodd } from "@nodd/browser";
+const LOAD = `import { nodd } from "@nodd/browser";
 
-const m = await Nodd.load("/models/comment_moderation/v3", {
+const m = await nodd.load("/models/comment_moderation/v3", {
   onProgress: ({ loaded, total }) => console.log(\`\${loaded} / \${total} bytes\`),
 });
 const d = await m.decide("Buy cheap followers at ...");
@@ -52,9 +52,9 @@ d.confidence;     // calibrated probability of that label
 m.isConfident(d); // confidence ≥ the model's calibrated threshold
 m.dispose();      // stops the worker`;
 
-const NODE = `import { Nodd } from "@nodd/node";
+const NODE = `import { nodd } from "@nodd/node";
 
-const m = await Nodd.load("./models/comment_moderation/v3"); // the export folder
+const m = await nodd.load("./models/comment_moderation/v3"); // the export folder
 const d = await m.decide("Buy cheap followers at ...");`;
 
 const DECISION = `{

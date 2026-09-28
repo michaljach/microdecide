@@ -189,7 +189,7 @@ model_card.json           card + export parity + download sizes (+ bench.json fr
 
 ### 4.8 JS runtime (`web/packages`: `@nodd/browser`, `@nodd/node`)
 ```ts
-const m = await Nodd.load("/models/comment_moderation/v3", {
+const m = await nodd.load("/models/comment_moderation/v3", {
   device: "auto",                // wasm (measured faster than webgpu at this size)
   dtype: "q8",                   // q8 (default) | fp32
   onProgress: ({ loaded, total }) => {},   // download bytes
@@ -209,7 +209,7 @@ m.isConfident(d);                // false → escalate (escalateUrl lands in M6)
 - `web/demo`: paste text → decision + probabilities; **benchmark page** (load
   time, p50/p95, WASM vs WebGPU); **parity page** (browser vs Python labels).
   `npm run parity|bench|offline` drive them in headless Chromium.
-- `@nodd/node` has the same API (`Nodd.load(dir)` loads the export folder from disk)
+- `@nodd/node` has the same API (`nodd.load(dir)` loads the export folder from disk)
   on onnxruntime-node, native CPU: no worker, Cache API or `.wasm` files.
   `@nodd/core` holds what both share: the `nodd.json` validator, `Decision`, softmax.
 

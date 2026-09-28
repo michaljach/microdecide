@@ -8,7 +8,7 @@ npm workspaces with the [nodd](../docs/SPEC.md) JavaScript packages and the demo
 | [`@nodd/node`](packages/node) | Node ≥ 20: onnxruntime-node, native CPU | loads the export folder from disk |
 | [`@nodd/core`](packages/core) | both | `nodd.json` validator, `Decision`, logits → decision |
 
-`@nodd/browser` and `@nodd/node` have the same API (`Nodd.load`, `decide`, `decideBatch`,
+`@nodd/browser` and `@nodd/node` have the same API (`nodd.load`, `decide`, `decideBatch`,
 `isConfident`), so the same export folder answers the same way on either side.
 
 ```sh

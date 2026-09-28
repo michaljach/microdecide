@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from "react";
-import { type Decision, type LoadProgress, Nodd } from "@nodd/browser";
+import { type Decision, type LoadProgress, nodd } from "@nodd/browser";
 import { ORT_WASM, demoConfig, fmt } from "../common";
 import { DecisionView } from "./DecisionView";
 
@@ -21,15 +21,15 @@ function loadingText(p: LoadProgress | null): string {
 export function Classifier({ model, examples, heading = "h2", picker }: { model: string; examples: string[]; heading?: "h2" | "h3"; picker?: ReactNode }) {
   const H = heading;
   const [text, setText] = useState(examples[0] ?? "");
-  const [loaded, setLoaded] = useState<Nodd | null>(null);
+  const [loaded, setLoaded] = useState<nodd | null>(null);
   const [progress, setProgress] = useState<LoadProgress | null>(null);
   const [status, setStatus] = useState("");
   const [decision, setDecision] = useState<Decision | null>(null);
 
   useEffect(() => {
     let live = true;
-    let m: Nodd | null = null;
-    Nodd.load(model, {
+    let m: nodd | null = null;
+    nodd.load(model, {
       device: demoConfig.device,
       dtype: demoConfig.dtype,
       ortWasmPaths: ORT_WASM,
