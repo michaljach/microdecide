@@ -28,9 +28,9 @@ export function Layout({ page, wide, model, children }: { page: Page; wide?: boo
   return (
     <div className={wide ? "app wide" : "app"}>
       <nav aria-label="Main">
-        {page === "home" ? <b aria-current="page">microdecide</b> : <a href="./">microdecide</a>}
+        {page === "home" ? <b aria-current="page">nodd</b> : <a href="./">nodd</a>}
         {NAV.map(([p, label, href]) => (p === page ? <b key={p} aria-current="page">{label}</b> : <a key={p} href={href}>{label}</a>))}
-        <a href="https://github.com/michaljach/microdecide">GitHub</a>
+        <a href="https://github.com/michaljach/nodd">GitHub</a>
       </nav>
       {children}
       <footer>

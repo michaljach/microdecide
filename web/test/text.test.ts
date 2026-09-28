@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { argmax, sliceCodePoints, softmax } from "../src/text";
+import { argmax, sliceCodePoints, softmax } from "../packages/core/src/text";
 
 describe("sliceCodePoints", () => {
   it("counts code points like Python, not UTF-16 units", () => {

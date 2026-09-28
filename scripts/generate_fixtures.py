@@ -10,14 +10,14 @@ import json
 import tempfile
 from pathlib import Path
 
-from microdecide.artifacts import MODEL_CONFIG, write_card
-from microdecide.data import write_jsonl
-from microdecide.export import export
-from microdecide.spec import TaskSpec
-from microdecide.encoder import EncoderClassifier
+from nodd.artifacts import MODEL_CONFIG, write_card
+from nodd.data import write_jsonl
+from nodd.export import export
+from nodd.spec import TaskSpec
+from nodd.encoder import EncoderClassifier
 
 ROOT = Path(__file__).resolve().parents[1]
-SCHEMA = ROOT / "web/src/model.schema.json"
+SCHEMA = ROOT / "web/packages/core/src/model.schema.json"
 
 
 def exported_fixture(out: Path) -> None:
@@ -49,7 +49,7 @@ def exported_fixture(out: Path) -> None:
 
 
 def contract_fixtures(out: Path) -> None:
-    config = json.loads((out / "model/microdecide.json").read_text())
+    config = json.loads((out / "model/nodd.json").read_text())
     cases = [{"name": "encoder export", "config": config, "valid": True}]
     for field, value in [("format_version", 3), ("tier", "static"), ("tier", "decoder"), ("temperature", 0),
                          ("max_chars", -1), ("labels", ["bad", "bad"]), ("labels", ["good"]),

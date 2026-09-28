@@ -6,10 +6,10 @@ import yaml
 from conftest import fake_embed
 from typer.testing import CliRunner
 
-from microdecide import data
-from microdecide.cli import app
-from microdecide.data import Example, dedup_exact, dedup_near, normalize, split_with_gold, stratified_split
-from microdecide.teachers import CachedTeacher, FakeTeacher
+from nodd import data
+from nodd.cli import app
+from nodd.data import Example, dedup_exact, dedup_near, normalize, split_with_gold, stratified_split
+from nodd.teachers import CachedTeacher, FakeTeacher
 
 COMMENTS = [
     "Great post, thanks for the detailed changelog!",
@@ -165,7 +165,7 @@ def test_label_keeps_given_labels_and_drops_low_confidence(tmp_path, spec):
 
 
 def test_label_requires_collect(tmp_path, spec):
-    with pytest.raises(FileNotFoundError, match="run `microdecide collect` first"):
+    with pytest.raises(FileNotFoundError, match="run `nodd collect` first"):
         data.label(spec, FakeTeacher(), tmp_path / "runs")
 
 

@@ -3,6 +3,7 @@
     "target": "ES2022",
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "customConditions": ["@nodd/source"],
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM", "DOM.Iterable", "WebWorker"],
     "strict": true,
@@ -11,5 +12,5 @@
     "isolatedModules": true,
     "types": ["vite/client", "node"]
   },
-  "include": ["src", "demo", "test", "*.config.ts"]
+  "include": ["packages/*/src", "demo", "test", "*.config.ts"]
 }

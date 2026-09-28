@@ -1,4 +1,4 @@
-import { MicroDecide } from "../src";
+import { Nodd } from "@nodd/browser";
 import { MODEL_URL, ORT_WASM, configsFor, parityRows, webgpuAvailable } from "./common";
 
 export const MIN_AGREEMENT = 0.995;
@@ -31,7 +31,7 @@ export async function runParity(model = MODEL_URL): Promise<ParityRun> {
       results.push({ name: cfg.name, skipped: "WebGPU not available" });
       continue;
     }
-    const m = await MicroDecide.load(model, { device: cfg.device, dtype: cfg.dtype, ortWasmPaths: ORT_WASM });
+    const m = await Nodd.load(model, { device: cfg.device, dtype: cfg.dtype, ortWasmPaths: ORT_WASM });
     const ds = await m.decideBatch(rows.map((r) => r.text));
     let same = 0;
     let maxDiff = 0;

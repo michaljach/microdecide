@@ -1,0 +1,31 @@
+{
+  "name": "@nodd/core",
+  "version": "0.1.0",
+  "description": "The nodd model format, Decision type and decision logic shared by @nodd/browser and @nodd/node.",
+  "type": "module",
+  "exports": {
+    ".": {
+      "@nodd/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaljach/nodd.git",
+    "directory": "web/packages/core"
+  },
+  "homepage": "https://michaljach.github.io/nodd/",
+  "publishConfig": {
+    "access": "public"
+  }
+}

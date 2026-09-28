@@ -3,9 +3,9 @@ from types import SimpleNamespace
 
 import pytest
 
-from microdecide import synth
-from microdecide.teachers import CachedTeacher, CSVTeacher, DiskCache, FakeTeacher, LLMTeacher, TeacherError, make_teacher
-from microdecide.teachers.llm import LLMClient
+from nodd import synth
+from nodd.teachers import CachedTeacher, CSVTeacher, DiskCache, FakeTeacher, LLMTeacher, TeacherError, make_teacher
+from nodd.teachers.llm import LLMClient
 
 
 class FakeAnthropic:

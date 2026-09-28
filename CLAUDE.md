@@ -1,6 +1,6 @@
-# CLAUDE.md — microdecide
+# CLAUDE.md — nodd
 
-Working name: **microdecide**. A framework that turns a Jev-style task spec
+**nodd** (formerly microdecide): a framework that turns a Jev-style task spec
 (input + fixed set of typed outputs) into a tiny, fast, calibrated model
 trained for that one use case, that **runs in the browser** (WASM/WebGPU),
 with automatic escalation to a bigger "teacher" model when it is unsure.
@@ -36,8 +36,11 @@ Example spec: `examples/comment_moderation.yaml`.
 - `transformers` + `torch` for the encoder tier (fine-tuned classification head)
 - `torch.onnx.export` (dynamo, needs `onnxscript`) + `onnxruntime.quantization` for ONNX
   export + int8 quantization (`optimum-onnx` pins transformers < 4.58, incompatible with v5)
-- **Browser runtime** in `web/`: TypeScript + `@huggingface/transformers`
-  (transformers.js), built with `vite`; a demo + benchmark page
+- **JS runtime** in `web/` (npm workspaces, published under the `@nodd` org):
+  `@nodd/core` (model format, `Decision`, decision logic), `@nodd/browser`
+  (transformers.js on onnxruntime-web, Web Worker, Cache API), `@nodd/node`
+  (transformers.js on onnxruntime-node, loads the export folder from disk).
+  TypeScript, built with `tsc`; the demo + benchmark site is built with `vite`
 - `fastapi` + `uvicorn` for the escalation/feedback server
 - `pytest` for tests
 
@@ -48,19 +51,20 @@ Add dependencies only when the milestone needs them.
 ```bash
 uv sync                          # install
 uv run pytest                    # tests
-uv run microdecide run examples/comment_moderation.yaml   # full pipeline (→ export)
-uv run microdecide train examples/comment_moderation.yaml --tier encoder
-uv run microdecide compare runs/comment_moderation/v2 runs/comment_moderation/v3
+uv run nodd run examples/comment_moderation.yaml   # full pipeline (→ export)
+uv run nodd train examples/comment_moderation.yaml --tier encoder
+uv run nodd compare runs/comment_moderation/v2 runs/comment_moderation/v3
 
 cd web && npm install
 npm run sync-model               # copy every runs/*/v*/export + ORT wasm into public/, write models/index.json
 npm run dev                      # demo at /, /repository.html, /model.html?model=…, /docs.html, /bench.html, /parity.html
-npm test && npm run typecheck    # vitest (incl. Node parity vs Python) + tsc
+npm test && npm run typecheck    # vitest (incl. @nodd/node parity vs Python) + tsc
+npm run build                    # tsc → packages/*/dist; publish: npm publish -ws
 MODEL=/models/<task>/<version> npm run parity   # headless Chromium: labels vs Python ≥ 99.5%
-npm run bench                    # → export/bench.json; `microdecide eval` adds it to report.md
+npm run bench                    # → export/bench.json; `nodd eval` adds it to report.md
 npm run offline                  # network cut: page + model reload from caches, still classifies
-npm run deploy:pages             # build for /microdecide/, force-push gh-pages → michaljach.github.io/microdecide
-SITE=https://michaljach.github.io/microdecide/ npm run parity   # run the browser checks against the live site
+npm run deploy:pages             # build for /nodd/, force-push gh-pages → michaljach.github.io/nodd
+SITE=https://michaljach.github.io/nodd/ npm run parity   # run the browser checks against the live site
 ```
 
 ## Rules

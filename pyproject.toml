@@ -1,5 +1,5 @@
 [project]
-name = "microdecide"
+name = "nodd"
 version = "0.1.0"
 description = "Turn a task spec into a tiny, calibrated, browser-runnable classifier."
 authors = [
@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 [project.scripts]
-microdecide = "microdecide.cli:app"
+nodd = "nodd.cli:app"
 
 [build-system]
 requires = ["uv_build>=0.12.17,<0.13.0"]

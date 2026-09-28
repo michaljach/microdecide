@@ -1,7 +1,7 @@
 import { createReadStream, existsSync } from "node:fs";
 import { extname, resolve } from "node:path";
 import react from "@vitejs/plugin-react";
-import { type Plugin, defineConfig } from "vite";
+import { type Plugin, defaultClientConditions, defineConfig } from "vite";
 
 // COOP/COEP make the page crossOriginIsolated → multi-threaded WASM for onnxruntime-web.
 const isolation = {
@@ -26,7 +26,9 @@ const serveOrtRaw: Plugin = {
 
 export default defineConfig({
   plugins: [react(), serveOrtRaw],
-  // "/" locally; BASE=/microdecide/ for GitHub Pages (scripts/deploy-pages.sh)
+  // @nodd/* resolve to their TypeScript sources (packages/*/src), not dist/
+  resolve: { conditions: ["@nodd/source", ...defaultClientConditions] },
+  // "/" locally; BASE=/nodd/ for GitHub Pages (scripts/deploy-pages.sh)
   base: process.env.BASE ?? "/",
   root: "demo",
   publicDir: resolve(import.meta.dirname, "public"),

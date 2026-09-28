@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { makeFetcher, readWithProgress } from "../src/fetch";
+import { makeFetcher, readWithProgress } from "../packages/browser/src/fetch";
 
 function chunked(parts: number[], contentLength = true): Response {
   const body = new ReadableStream<Uint8Array>({

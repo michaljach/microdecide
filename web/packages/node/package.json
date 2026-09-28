@@ -1,0 +1,38 @@
+{
+  "name": "@nodd/node",
+  "version": "0.1.0",
+  "description": "Run nodd task-specific classifiers in Node (transformers.js on onnxruntime-node, native CPU).",
+  "type": "module",
+  "exports": {
+    ".": {
+      "@nodd/source": "./src/index.ts",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaljach/nodd.git",
+    "directory": "web/packages/node"
+  },
+  "homepage": "https://michaljach.github.io/nodd/",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@nodd/core": "^0.1.0",
+    "@huggingface/transformers": "^4.3.0"
+  }
+}

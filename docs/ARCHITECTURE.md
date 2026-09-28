@@ -1,7 +1,7 @@
 # Code organization
 
-The Python package builds and evaluates models; `web/src` is the browser library;
-`web/demo` is its React application. Keep UI state and browser navigation out of
+The Python package builds and evaluates models; `web/packages` holds the npm packages
+(`@nodd/core` shared, `@nodd/browser`, `@nodd/node`); `web/demo` is the React demo site. Keep UI state and browser navigation out of
 library code. The CLI coordinates existing pipeline functions.
 
 ## Python
@@ -20,7 +20,7 @@ library code. The CLI coordinates existing pipeline functions.
 - `evaluate.py`: measurement and report data; `reporting.py`: Markdown rendering.
 - `data.py`, `teachers/`, `synth.py`: collection, labeling, and generation.
 
-The existing `microdecide.export` functions, `train.classifier_for`, and
+The existing `nodd.export` functions, `train.classifier_for`, and
 `evaluate.render_markdown` remain importable. Prefer the owning modules in new
 internal code. There is one tier (encoder); `tier` stays in the artifacts for format stability.
 
@@ -45,7 +45,7 @@ utilities remain ordinary JavaScript/TypeScript because they do not render UI.
 
 ## Artifact contracts
 
-Python's `artifacts.py` generates `web/src/model.schema.json`. Ajv compiles it
+Python's `artifacts.py` generates `web/packages/core/src/model.schema.json`. Ajv compiles it
 at development time into `model-validator.ts`; `artifacts.ts` uses that validator
 and checks relationships such as head dimensions and label cardinality. The
 browser ships the generated validator, without Ajv or runtime schema compilation.

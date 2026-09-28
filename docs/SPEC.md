@@ -1,9 +1,9 @@
-# microdecide — Design Spec
+# nodd — Design Spec
 
 ## 1. Goal
 
 A user describes **one decision** (input, allowed outputs, quality/latency
-target). microdecide produces a **specialized micro model** for exactly that
+target). nodd produces a **specialized micro model** for exactly that
 decision:
 
 - **tiny**: ~10–35 MB to download (target ~30 MB), runs in a browser (WASM,
@@ -111,7 +111,7 @@ Implementations: `LLMTeacher` (Anthropic, schema-constrained JSON with label +
 probability per label; OpenAI-compatible not yet), `JevTeacher` (M7),
 `CSVTeacher` (human or offline labels, looked up by normalized text),
 `FakeTeacher` (tests). All calls go through `CachedTeacher` (disk cache keyed
-by teacher + fingerprint + input, `.cache/microdecide/` or `$MICRODECIDE_CACHE_DIR`).
+by teacher + fingerprint + input, `.cache/nodd/` or `$NODD_CACHE_DIR`).
 Rows that already carry a label (gold, labeled seed) skip the teacher.
 Store teacher confidence; low-confidence teacher labels are down-weighted
 or dropped (configurable).
@@ -140,7 +140,7 @@ It lost to the encoder at similar size (comment moderation: potion-32M, 33 MB, t
 Encoder details: standard `AutoModelForSequenceClassification` (so the
 export runs in transformers.js unchanged), AdamW 1e-4, 6 epochs, warmup 10%,
 max 256 tokens, teacher confidence as sample weight, best epoch by val macro F1.
-Trains on CPU by default (reproducible); `MICRODECIDE_DEVICE=mps|cuda` to speed up.
+Trains on CPU by default (reproducible); `NODD_DEVICE=mps|cuda` to speed up.
 
 **Auto mode** (best fit): train every base candidate whose estimated
 download fits `max_download_mb` (smallest first; over-budget candidates are
@@ -167,9 +167,9 @@ confidence at which precision ≥ `target_precision`.
 - 20 worst errors listed for inspection
 
 ### 4.7 Export (browser-first)
-`microdecide export <run_dir>` → `<run_dir>/export/`, transformers.js folder layout:
+`nodd export <run_dir>` → `<run_dir>/export/`, transformers.js folder layout:
 ```
-microdecide.json          runtime config: labels, temperature, threshold, tokenizer rules
+nodd.json          runtime config: labels, temperature, threshold, tokenizer rules
                           (max_chars, max_tokens), file sizes (download progress)
 tokenizer.json            HF tokenizer (+ tokenizer_config.json, config.json)
 onnx/model_quantized.onnx input_ids + attention_mask → logits, dynamic int8 (transformers.js "q8")
@@ -187,9 +187,9 @@ model_card.json           card + export parity + download sizes (+ bench.json fr
   ONNX on the test split — label agreement, max |Δp|, F1 delta; export fails if
   F1 drops > 2 pts.
 
-### 4.8 Browser runtime (`web/`, npm package `microdecide-web`)
+### 4.8 JS runtime (`web/packages`: `@nodd/browser`, `@nodd/node`)
 ```ts
-const m = await MicroDecide.load("/models/comment_moderation/v3", {
+const m = await Nodd.load("/models/comment_moderation/v3", {
   device: "auto",                // wasm (measured faster than webgpu at this size)
   dtype: "q8",                   // q8 (default) | fp32
   onProgress: ({ loaded, total }) => {},   // download bytes
@@ -209,6 +209,9 @@ m.isConfident(d);                // false → escalate (escalateUrl lands in M6)
 - `web/demo`: paste text → decision + probabilities; **benchmark page** (load
   time, p50/p95, WASM vs WebGPU); **parity page** (browser vs Python labels).
   `npm run parity|bench|offline` drive them in headless Chromium.
+- `@nodd/node` has the same API (`Nodd.load(dir)` loads the export folder from disk)
+  on onnxruntime-node, native CPU: no worker, Cache API or `.wasm` files.
+  `@nodd/core` holds what both share: the `nodd.json` validator, `Decision`, softmax.
 
 ### 4.9 Server: escalate + feedback
 `Runtime` wraps model + optional teacher:
@@ -222,35 +225,35 @@ teacher label to `feedback.jsonl`.
 FastAPI server exposes `POST /decide` with the same schema.
 
 ### 4.10 Improve
-`microdecide retrain` merges `feedback.jsonl` into training data and
+`nodd retrain` merges `feedback.jsonl` into training data and
 produces the next version. Report compares new vs previous version on the
 same test set; don't promote if worse.
 
 ## 5. CLI
 
 ```
-microdecide init <task>            # scaffold spec yaml
-microdecide check <spec>           # validate a spec
-microdecide collect <spec>         # 4.1
-microdecide label <spec>           # 4.2
-microdecide train <spec> [--tier encoder|auto] [--base ID] [--max-download-mb N]
-microdecide eval <run_dir>
-microdecide compare <run_dir> <run_dir>...   # same test split, side by side → runs/<task>/compare.md
-microdecide export <run_dir>
-microdecide serve <run_dir> [--teacher]
-microdecide retrain <spec>
-microdecide run <spec>             # collect → label → train → eval → export
+nodd init <task>            # scaffold spec yaml
+nodd check <spec>           # validate a spec
+nodd collect <spec>         # 4.1
+nodd label <spec>           # 4.2
+nodd train <spec> [--tier encoder|auto] [--base ID] [--max-download-mb N]
+nodd eval <run_dir>
+nodd compare <run_dir> <run_dir>...   # same test split, side by side → runs/<task>/compare.md
+nodd export <run_dir>
+nodd serve <run_dir> [--teacher]
+nodd retrain <spec>
+nodd run <spec>             # collect → label → train → eval → export
 ```
 
 ## 6. Repo layout
 
 ```
-microdecide/
+nodd/
   CLAUDE.md
   pyproject.toml
   docs/SPEC.md  docs/ROADMAP.md
   examples/comment_moderation.yaml
-  src/microdecide/
+  src/nodd/
     spec.py        # TaskSpec, Decision (pydantic)
     data.py        # collect, dedup, split
     synth.py       # synthetic input generation

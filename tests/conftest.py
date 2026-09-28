@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from microdecide.spec import load_spec
+from nodd.spec import load_spec
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLE = ROOT / "examples" / "comment_moderation.yaml"
@@ -23,7 +23,7 @@ def fake_embed(texts: list[str]) -> np.ndarray:
 @pytest.fixture(autouse=True)
 def _isolated_cache(tmp_path, monkeypatch):
     """Every test gets its own teacher cache; nothing touches the repo's .cache/."""
-    monkeypatch.setenv("MICRODECIDE_CACHE_DIR", str(tmp_path / "cache"))
+    monkeypatch.setenv("NODD_CACHE_DIR", str(tmp_path / "cache"))
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
 
 
@@ -68,7 +68,7 @@ def tiny_encoder_dir(path, seed: int = 0):
 @pytest.fixture
 def toy_run(tmp_path, spec, monkeypatch):
     """A labeled dataset of the toy rows (4x, with suffixes) + two tiny encoders patched in as candidates."""
-    from microdecide import data, encoder
+    from nodd import data, encoder
 
     rows, splits = [], ["train"] * 6 + ["val", "test"]
     for rep in range(4):

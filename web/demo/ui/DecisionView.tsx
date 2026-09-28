@@ -1,4 +1,4 @@
-import type { Decision } from "../../src";
+import type { Decision } from "@nodd/browser";
 import { fmt } from "../common";
 
 const pct = (x: number) => `${fmt(x * 100, 1)}%`;

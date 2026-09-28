@@ -1,4 +1,4 @@
-import { MicroDecide, clearModelCache } from "../src";
+import { Nodd, clearModelCache } from "@nodd/browser";
 import type { Config } from "./common";
 import { MODEL_URL, ORT_WASM, configsFor, fmt, gpuAdapterInfo, parityRows, percentile, webgpuAvailable } from "./common";
 
@@ -31,9 +31,9 @@ async function memoryMB(): Promise<number | null> {
 async function bench(model: string, cfg: Config, texts: string[]): Promise<BenchResult> {
   await clearModelCache();
   const opts = { device: cfg.device, dtype: cfg.dtype, ortWasmPaths: ORT_WASM };
-  const cold = await MicroDecide.load(model, opts);
+  const cold = await Nodd.load(model, opts);
   cold.dispose();
-  const m = await MicroDecide.load(model, opts); // warm: model files from the Cache API
+  const m = await Nodd.load(model, opts); // warm: model files from the Cache API
   await m.decide(texts[0]);
   const wall: number[] = [];
   const engine: number[] = [];

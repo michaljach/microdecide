@@ -18,9 +18,9 @@ if (syncAll && existsSync(runs)) {
     for (const v of readdirSync(dir).filter((v) => /^v\d+$/.test(v))) exports.push(join(dir, v, "export"));
   }
 }
-exports = exports.filter((d) => existsSync(join(d, "microdecide.json")));
+exports = exports.filter((d) => existsSync(join(d, "nodd.json")));
 if (!exports.length) {
-  console.error("no exports found — run `uv run microdecide export runs/<task>/<version>` first");
+  console.error("no exports found — run `uv run nodd export runs/<task>/<version>` first");
   process.exit(1);
 }
 
@@ -48,9 +48,9 @@ if (syncAll) rmSync(join(web, "public/models"), { recursive: true, force: true }
 
 const index = [];
 for (const src of exports) {
-  const cfg = readJson(join(src, "microdecide.json"));
-  if (cfg.format !== "microdecide" || cfg.format_version !== 2) {
-    console.warn(`skip ${src}: old export format (re-run microdecide export)`);
+  const cfg = readJson(join(src, "nodd.json"));
+  if (cfg.format !== "nodd" || cfg.format_version !== 2) {
+    console.warn(`skip ${src}: old export format (re-run nodd export)`);
     continue;
   }
   const card = readJson(join(src, "model_card.json"));

@@ -1,8 +1,8 @@
 // Demo app-shell service worker: network first, cache fallback, so the demo (page, JS, worker,
 // onnxruntime wasm, model index/configs) reloads offline after one online visit. Large model
-// weights are cached by the library itself (Cache API "microdecide-models-v1" / transformers.js
+// weights are cached by the library itself (Cache API "nodd-models-v1" / transformers.js
 // "transformers-cache"), so they're skipped here to avoid storing them twice.
-const CACHE = "microdecide-demo-shell-v4";
+const CACHE = "nodd-demo-shell-v4";
 
 self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
