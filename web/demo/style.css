@@ -17,6 +17,7 @@ h3 { font-size: 16px; margin: 24px 0 4px; }
 .app.wide { max-width: 1200px; }
 .cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 40px; }
 .cols > section > :first-child { margin-top: 8px; }
+.cols > section { min-width: 0; }
 .cols.tight { gap: 20px; }
 .cols + .cols { margin-top: 32px; }
 @media (max-width: 860px) { .cols { grid-template-columns: minmax(0, 1fr); } }
@@ -46,6 +47,10 @@ button:disabled { background: #99f; cursor: default; }
 .controls select { max-width: 100%; }
 .muted { color: #666; }
 .small { font-size: 14px; }
+.raw-output { margin-top: 16px; font-size: 14px; }
+.raw-output summary { cursor: pointer; }
+.raw-output summary:focus-visible { outline: 2px solid #00e; outline-offset: 4px; }
+.raw-output pre { margin-top: 8px; }
 .examples { margin: 8px 0 0; padding: 0; list-style: none; font-size: 14px; }
 .examples li { display: inline; }
 .examples li + li::before { content: " · "; color: #999; }

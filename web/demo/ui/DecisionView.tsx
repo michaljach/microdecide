@@ -28,6 +28,10 @@ export function DecisionView({ d, meta = true }: { d: Decision; meta?: boolean }
           inference {fmt(d.latency_ms, 2)} ms · model {d.model}
         </p>
       )}
+      <details className="raw-output">
+        <summary>Raw output</summary>
+        <pre><code>{JSON.stringify(d, null, 2)}</code></pre>
+      </details>
     </>
   );
 }
