@@ -9,7 +9,7 @@ self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
 
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
-  const weights = /\.(onnx|i8|onnx_data)$/.test(url.pathname);
+  const weights = /\.(onnx|onnx_data)$/.test(url.pathname);
   if (e.request.method !== "GET" || url.origin !== location.origin || weights) return;
   e.respondWith(
     (async () => {

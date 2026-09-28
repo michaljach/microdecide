@@ -19,10 +19,8 @@ class Classifier(Protocol):
 
 
 def classifier_for(tier: str) -> type[Classifier]:
-    from microdecide import encoder, static
+    from microdecide import encoder
 
-    if tier == "static":
-        return static.StaticClassifier
     if tier == "encoder":
         return encoder.EncoderClassifier
     raise ValueError(f"unknown tier {tier!r}")

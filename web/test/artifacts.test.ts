@@ -20,12 +20,4 @@ describe("Python/browser artifact contract", () => {
     })).rejects.toThrow("Invalid model config");
     expect(files).toEqual(["/invalid/microdecide.json"]);
   });
-
-  it("loads the Python-exported model through the same validated boundary", async () => {
-    const read = (url: string) => Uint8Array.from(readFileSync(resolve(root, "model", url.replace("/fixture/", "")))).buffer;
-    const model = await Model.load("/fixture", { backend: "static" }, async (url) => read(url));
-    const [good, bad] = await model.decideBatch(["good", "bad"]);
-    expect(good.label).toBe("good");
-    expect(bad.label).toBe("bad");
-  });
 });

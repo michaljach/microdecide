@@ -10,35 +10,38 @@ import json
 import tempfile
 from pathlib import Path
 
-import numpy as np
 from microdecide.artifacts import MODEL_CONFIG, write_card
 from microdecide.data import write_jsonl
 from microdecide.export import export
 from microdecide.spec import TaskSpec
-from microdecide.static import StaticClassifier
+from microdecide.encoder import EncoderClassifier
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / "web/src/model.schema.json"
 
 
 def exported_fixture(out: Path) -> None:
-    from model2vec import StaticModel
-    from tokenizers import Tokenizer, models, pre_tokenizers
+    """A tiny seeded BERT classifier (1 layer, 16 dims) through the real exporter: the files a browser
+    loads, plus parity.jsonl (the exported q8 model's answers) to check the browser against."""
+    import torch
+    from transformers import BertConfig, BertForSequenceClassification, BertTokenizerFast
 
-    tok = Tokenizer(models.WordPiece({"[UNK]": 0, "[PAD]": 1, "good": 2, "bad": 3, "neutral": 4, "😀": 5}, unk_token="[UNK]"))
-    tok.pre_tokenizer = pre_tokenizers.Whitespace()
-    table = np.array([[0, 0], [0, 0], [10, 0], [-10, 0], [0, 10], [5, 5]], dtype=np.int8)
-    encoder = StaticModel(vectors=table, tokenizer=tok, normalize=True, config={"normalize": True})
     labels = ["bad", "good"]
-    model = StaticClassifier(encoder, labels, np.array([[-2., 0.], [2., 0.]]), np.array([0.1, -0.1]))
     spec = TaskSpec.model_validate({"task": "fixture", "description": "Offline parity fixture",
         "input": {"max_chars": 40}, "output": {"type": "choice", "labels": {"bad": "Bad", "good": "Good"}},
-        "teacher": {"kind": "csv", "path": "unused.csv"}})
+        "model": {"tier": "encoder"}, "teacher": {"kind": "csv", "path": "unused.csv"}})
     texts = ["good", "bad", "neutral", "good bad", "", "unknown", "good 😀", "😀 " * 30, "bad " * 30]
     with tempfile.TemporaryDirectory() as tmp:
         run = Path(tmp)
-        model.save(run)
-        write_card(run / "model_card.json", {"model": "fixture@v1", "tier": "static", "labels": labels,
+        vocab = run / "vocab.txt"
+        vocab.write_text("\n".join(["[PAD]", "[UNK]", "[CLS]", "[SEP]", "[MASK]", "good", "bad", "neutral"]) + "\n")
+        tokenizer = BertTokenizerFast(vocab_file=str(vocab), do_lower_case=True)
+        torch.manual_seed(0)
+        config = BertConfig(vocab_size=8, hidden_size=16, num_hidden_layers=1, num_attention_heads=2, intermediate_size=32,
+                            max_position_embeddings=64, num_labels=2, id2label=dict(enumerate(labels)),
+                            label2id={label: i for i, label in enumerate(labels)})
+        EncoderClassifier(BertForSequenceClassification(config), tokenizer, labels, max_tokens=32).save(run)
+        write_card(run / "model_card.json", {"model": "fixture@v1", "tier": "encoder", "labels": labels,
             "temperature": 1.25, "threshold": 0.7, "spec": spec.model_dump(mode="json"),
             "task": "fixture", "version": "v1", "base": "local-fixture"})
         write_jsonl(run / "labeled.jsonl", ({"text": text, "label": "bad" if "bad" in text else "good", "split": "test"} for text in texts))
@@ -47,15 +50,11 @@ def exported_fixture(out: Path) -> None:
 
 def contract_fixtures(out: Path) -> None:
     config = json.loads((out / "model/microdecide.json").read_text())
-    cases = [{"name": "static export", "config": config, "valid": True}]
-    encoder = {k: config[k] for k in ("format", "format_version", "model", "labels", "temperature", "threshold", "max_chars", "onnx")}
-    encoder.update(tier="encoder", tokenizer={"file": "tokenizer.json", "add_special_tokens": True, "max_tokens": 256, "truncation": True})
-    cases.append({"name": "encoder export", "config": encoder, "valid": True})
-    for field, value in [("format_version", 3), ("tier", "decoder"), ("temperature", 0), ("max_chars", -1),
-                         ("labels", ["bad", "bad"]), ("dim", 3), ("head", {"coef": [], "intercept": []}),
-                         ("tokenizer", {**config["tokenizer"], "drop_token_ids": [99]})]:
-        cases.append({"name": f"invalid {field}", "config": {**config, field: value}, "valid": False})
-    cases.append({"name": "invalid labels (none)", "config": {**config, "labels": [], "head": {"coef": [], "intercept": []}}, "valid": False})
+    cases = [{"name": "encoder export", "config": config, "valid": True}]
+    for field, value in [("format_version", 3), ("tier", "static"), ("tier", "decoder"), ("temperature", 0),
+                         ("max_chars", -1), ("labels", ["bad", "bad"]), ("labels", ["good"]),
+                         ("tokenizer", {**config["tokenizer"], "max_tokens": 0}), ("onnx", None)]:
+        cases.append({"name": f"invalid {field}: {json.dumps(value)[:30]}", "config": {**config, field: value}, "valid": False})
     for case in cases:
         try:
             MODEL_CONFIG.validate_python(case["config"])

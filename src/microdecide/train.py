@@ -1,8 +1,8 @@
 """Train a model version (docs/SPEC.md §4.4): pick tier + base, fit, calibrate, save.
 
-Tiers live in their own modules (static.py, encoder.py), each exposing CANDIDATES
-(smallest first) and fit(base, data, labels, seed, log) -> (classifier, info). A classifier
-has .tier, .logits(texts), .download_mb(), .save(dir), and classmethod .load(run_dir)."""
+The tier (encoder.py) exposes CANDIDATES (smallest first) and
+fit(base, data, labels, seed, log) -> (classifier, info). A classifier has .tier,
+.logits(texts), .download_mb(), .save(dir), and classmethod .load(run_dir)."""
 
 from __future__ import annotations
 
@@ -13,17 +13,17 @@ from pathlib import Path
 
 import numpy as np
 
-from microdecide import calibrate, encoder, static
+from microdecide import calibrate, encoder
 from microdecide.data import data_dir, read_jsonl
 from microdecide.spec import TaskSpec
 from microdecide.artifacts import write_card
 from microdecide.classifiers import Classifier, classifier_for
 
-TIER_ORDER = ("static", "encoder")
+TIER_ORDER = ("encoder",)
 # Best fit: the highest val macro F1 within the download budget wins, but a smaller model wins a
 # near-tie — val splits are small, so F1 differences below this are mostly noise.
 F1_TIE = 0.01
-TIERS = {"static": static, "encoder": encoder}
+TIERS = {"encoder": encoder}
 
 
 def plan(spec: TaskSpec, override: str | None) -> list[tuple[str, str]]:
@@ -134,7 +134,7 @@ def train(spec: TaskSpec, runs: str | Path = "runs", tier: str | None = None, lo
         "tier": model.tier,
         "base": best["base"],
         "labels": labels,
-        "prompt_template": None,  # static/encoder tiers see raw input text
+        "prompt_template": None,  # the encoder sees raw input text
         "temperature": T,
         "threshold": thr["threshold"],
         "calibration": calibration,

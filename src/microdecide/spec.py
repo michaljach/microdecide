@@ -70,7 +70,7 @@ class OutputSpec(_Strict):
 
 
 class ModelSpec(_Strict):
-    tier: Literal["auto", "static", "encoder"] = "auto"
+    tier: Literal["auto", "encoder"] = "auto"  # one tier: auto = best fit among its bases
     base: str | None = None
     quantization: Literal["q8", "q4"] = "q8"
 
@@ -222,11 +222,11 @@ output:
     label_a: Describe when this label applies.
     label_b: Describe when this label applies.
 model:
-  tier: auto                # auto | static | encoder
+  tier: auto                # auto | encoder (the same: best fit among encoder bases)
   base: null                # override base model id
   quantization: q8
 teacher:
-  kind: llm                 # llm | jev | csv
+  kind: llm                 # llm | csv
   model: claude-haiku-4-5-20251001
 data:
   seed_examples: null       # optional CSV/JSONL (text[,label])

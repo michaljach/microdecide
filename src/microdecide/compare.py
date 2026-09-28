@@ -1,4 +1,4 @@
-"""Compare model versions on the same test split (M4: static vs encoder; M6: new vs previous)."""
+"""Compare model versions on the same test split (e.g. a retrain vs the previous version)."""
 
 from __future__ import annotations
 

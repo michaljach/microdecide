@@ -38,8 +38,8 @@ output:
     spam: Ads, links to unrelated products, SEO junk.
     toxic: Insults, harassment, hate.
 model:
-  tier: auto                        # auto | static | encoder
-  base: null                        # override base model id (needs an explicit tier)
+  tier: auto                        # auto | encoder (both: best fit among encoder bases)
+  base: null                        # override base model id (with tier: encoder)
   quantization: q8
 teacher:
   kind: llm                         # llm | jev | csv
@@ -120,40 +120,35 @@ or dropped (configurable).
 Stratified train / val / test = 70 / 15 / 15. If a human-labeled gold set
 exists, it is always used as the test set.
 
-### 4.4 Train — model tiers (all browser-runnable)
-All tiers output logits over the label set in **one forward pass**.
+### 4.4 Train — the model (browser-runnable)
+The model outputs logits over the label set in **one forward pass**.
 Sizes/latencies are rough targets; measure with the benchmark page (M3).
 
-| Tier | Base (default, configurable) | Method | Download | Train on |
-|---|---|---|---|---|
-| static | model2vec potion-base-8M → 32M (int8 embeddings) | logistic regression head | ~9–33 MB | CPU, seconds |
-| encoder | MiniLM-L3 → MiniLM-L6 → bge-small (17–33M params) | full fine-tune, `*ForSequenceClassification` | ~18–35 MB (q8) | CPU, < 1 min |
+| Base (default, configurable) | Method | Download | Train on |
+|---|---|---|---|
+| MiniLM-L3 → MiniLM-L6 → bge-small (17–33M params) | full fine-tune, `*ForSequenceClassification` | ~18–35 MB (q8) | CPU, < 1 min |
 
 Decoder tier (SmolLM2/Qwen3 + LoRA): **dropped.** Built and measured in M5 — Qwen3-0.6B
 reached test F1 0.974 vs 0.943 for the encoder, but at 501 MB (q4) vs 18.6 MB and
 p95 237 ms (Python, MPS) vs 3 ms (CPU); SmolLM2-135M (115 MB) was *worse* than the encoder. The project
 targets tiny models (~30 MB), so the tier was removed.
 
-Static tier details: embeddings are quantized to int8 at train time (no F1
-loss measured; no train/export mismatch). Standardization is folded into the
-head, so `head.json` is just `logits = emb @ coef.T + intercept` and can be
-evaluated (or refit) outside Python. Without `model.base`, the static tier
-trains each base within budget and keeps the best fit (see Auto mode). Head C is chosen by val macro F1; teacher confidence is
-the sample weight.
+Static tier (model2vec embeddings + logistic regression, plain-JS runtime): **removed.**
+It lost to the encoder at similar size (comment moderation: potion-32M, 33 MB, test F1
+0.897 vs MiniLM-L3, 18.6 MB, 0.943) and best fit never picked it on the example tasks.
 
-Encoder tier details: standard `AutoModelForSequenceClassification` (so the
+Encoder details: standard `AutoModelForSequenceClassification` (so the
 export runs in transformers.js unchanged), AdamW 1e-4, 6 epochs, warmup 10%,
 max 256 tokens, teacher confidence as sample weight, best epoch by val macro F1.
 Trains on CPU by default (reproducible); `MICRODECIDE_DEVICE=mps|cuda` to speed up.
 
-**Auto mode** (best fit): train every (tier, base) candidate whose estimated
-download fits `max_download_mb` (smallest first, across tiers; over-budget
-candidates are skipped), then keep the highest val macro F1. A smaller
+**Auto mode** (best fit): train every base candidate whose estimated
+download fits `max_download_mb` (smallest first; over-budget candidates are
+skipped), then keep the highest val macro F1. A smaller
 candidate wins a near-tie (within 0.01 val macro F1, `train.F1_TIE`), since
 val splits are small. `min_macro_f1` doesn't stop the search; it's reported
-as met or missed. "Smallest" is the download: on the example task the encoder
-(MiniLM-L3, 18.6 MB q8, F1 0.943) beats the larger static model (potion-32M,
-33 MB, F1 0.897). If nothing reaches `min_macro_f1`, the report recommends
+as met or missed. On the example task it keeps MiniLM-L6 (23.7 MB, test F1
+0.948) over MiniLM-L3 (18.6 MB, 0.943). If nothing reaches `min_macro_f1`, the report recommends
 more/better data, a larger budget, or escalation-heavy mode.
 
 
@@ -174,46 +169,39 @@ confidence at which precision ≥ `target_precision`.
 ### 4.7 Export (browser-first)
 `microdecide export <run_dir>` → `<run_dir>/export/`, transformers.js folder layout:
 ```
-microdecide.json          runtime config: labels, temperature, threshold, head weights,
-                          tokenizer rules (max_chars, max_tokens, dropped ids)
+microdecide.json          runtime config: labels, temperature, threshold, tokenizer rules
+                          (max_chars, max_tokens), file sizes (download progress)
 tokenizer.json            HF tokenizer (+ tokenizer_config.json, config.json)
-static/embeddings.i8      static tier: int8 table [vocab, dim], plain JS, no ONNX runtime
-onnx/model_quantized.onnx input_ids + attention_mask → logits (onnxruntime-web)
+onnx/model_quantized.onnx input_ids + attention_mask → logits, dynamic int8 (transformers.js "q8")
+onnx/model.onnx           full precision (optional in the browser)
 parity.jsonl              test-split predictions from Python (browser parity input)
 model_card.json           card + export parity + download sizes (+ bench.json from web/)
 ```
-- Static tier: embeddings are already int8 from training, so export adds no
-  quantization loss. Encoder: `torch.onnx.export` (dynamo) → `onnx/model.onnx`
-  (fp32) + dynamic int8 `onnx/model_quantized.onnx` (transformers.js "q8"), plus
-  the HF tokenizer/config files. A failed export (parity) is marked in its model
+- `torch.onnx.export` (dynamo) → `onnx/model.onnx` (fp32) + dynamic int8
+  `onnx/model_quantized.onnx` (transformers.js "q8"), plus the HF tokenizer/config files. A failed export (parity) is marked in its model
   card and not published by `web/scripts/sync-model.mjs`.
-- `parity.jsonl` holds the predictions of the artifact the browser runs (static
-  format, or the q8 ONNX), so browser parity isolates runtime differences from
+- `parity.jsonl` holds the predictions of the artifact the browser runs (the q8
+  ONNX), so browser parity isolates runtime differences from
   quantization loss (which the export parity check measures).
-- **Parity check** at export: training-time model vs exported static format vs
-  exported ONNX on the test split — label agreement, max |Δp|, F1 delta; export
-  fails if F1 drops > 2 pts. `export.reference_probabilities` re-implements
-  inference from the exported files only and is the spec the JS runtime mirrors
-  (code-point truncation to `max_chars`, then `max_tokens × median_token_length`
-  chars; no special tokens; `[UNK]` dropped; masked mean → L2 norm → head).
+- **Parity check** at export: training-time model vs the exported fp32 and q8
+  ONNX on the test split — label agreement, max |Δp|, F1 delta; export fails if
+  F1 drops > 2 pts.
 
 ### 4.8 Browser runtime (`web/`, npm package `microdecide-web`)
 ```ts
 const m = await MicroDecide.load("/models/comment_moderation/v3", {
-  backend: "static",             // static tier: static (plain JS, default) | onnx
-  device: "auto",                // onnx: wasm (measured faster than webgpu at this size)
-  dtype: "q8",                   // encoder: q8 (default) | fp32
+  device: "auto",                // wasm (measured faster than webgpu at this size)
+  dtype: "q8",                   // q8 (default) | fp32
+  onProgress: ({ loaded, total }) => {},   // download bytes
 });
 const d = await m.decide("Buy cheap followers at ...");   // Decision
 m.isConfident(d);                // false → escalate (escalateUrl lands in M6)
 ```
-- Static tier: `@huggingface/tokenizers` (transformers.js' tokenizer) + plain JS,
-  or its ONNX graph on `onnxruntime-web`. Encoder tier: transformers.js
-  `AutoTokenizer` + `AutoModelForSequenceClassification`, files served from the
-  page's origin only (never the Hub or a CDN, so it works offline). One shared
-  onnxruntime-web; loaded lazily so the static path never downloads it.
-- Device default is measured, not assumed (M2 Pro, Metal): static JS p95 0.1 ms;
-  encoder q8 WASM p50 2.5 ms vs WebGPU 9.8 ms fp32 / 14.6 ms q8 single-input.
+- transformers.js `AutoTokenizer` + `AutoModelForSequenceClassification`, files
+  served from the page's origin only (never the Hub or a CDN, so it works offline);
+  loaded lazily.
+- Device default is measured, not assumed (M2 Pro, Metal): q8 WASM p50 2.5 ms vs
+  WebGPU 9.8 ms fp32 / 14.6 ms q8 single-input.
   WebGPU wins only on large batches at this size.
 - Model files cached in the browser (Cache API) after first load; the demo adds
   an app-shell service worker so it reloads and classifies with the network off
@@ -245,7 +233,7 @@ microdecide init <task>            # scaffold spec yaml
 microdecide check <spec>           # validate a spec
 microdecide collect <spec>         # 4.1
 microdecide label <spec>           # 4.2
-microdecide train <spec> [--tier static|encoder|auto] [--base ID] [--max-download-mb N]
+microdecide train <spec> [--tier encoder|auto] [--base ID] [--max-download-mb N]
 microdecide eval <run_dir>
 microdecide compare <run_dir> <run_dir>...   # same test split, side by side → runs/<task>/compare.md
 microdecide export <run_dir>
@@ -267,7 +255,7 @@ microdecide/
     data.py        # collect, dedup, split
     synth.py       # synthetic input generation
     teachers/      # base.py, llm.py, jev.py, csv.py, fake.py, cache.py
-    train.py       # tiers
+    train.py       # candidates, best fit, calibration
     calibrate.py
     evaluate.py
     export.py

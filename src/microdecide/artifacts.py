@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Annotated, Literal
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, TypeAdapter, model_validator
 from microdecide.spec import TaskSpec
@@ -28,25 +28,7 @@ class Tokenizer(Artifact):
     file: str
     add_special_tokens: bool
     max_tokens: int = Field(gt=0)
-
-
-class StaticTokenizer(Tokenizer):
-    median_token_length: int = Field(gt=0)
-    drop_token_ids: list[int]
-
-
-class EncoderTokenizer(Tokenizer):
     truncation: bool
-
-
-class Embeddings(Artifact):
-    embeddings: str
-    dtype: Literal["int8"]
-
-
-class Head(Artifact):
-    coef: list[list[float]]
-    intercept: list[float]
 
 
 class BaseConfig(Artifact):
@@ -68,34 +50,13 @@ class BaseConfig(Artifact):
         return self
 
 
-class StaticConfig(BaseConfig):
-    tier: Literal["static"]
-    onnx: OnnxRef | None = None
-    normalize: bool
-    dim: int = Field(gt=0)
-    vocab_size: int = Field(gt=0)
-    tokenizer: StaticTokenizer
-    static: Embeddings
-    head: Head
-
-    @model_validator(mode="after")
-    def head_shape(self):
-        if len(self.head.coef) != len(self.labels) or len(self.head.intercept) != len(self.labels):
-            raise ValueError("head rows must match labels")
-        if any(len(row) != self.dim for row in self.head.coef):
-            raise ValueError("head columns must match embedding dimension")
-        if any(i < 0 or i >= self.vocab_size for i in self.tokenizer.drop_token_ids):
-            raise ValueError("drop token id is outside vocabulary")
-        return self
-
-
 class EncoderConfig(BaseConfig):
     tier: Literal["encoder"]
-    tokenizer: EncoderTokenizer
+    tokenizer: Tokenizer
     onnx: OnnxRef
 
 
-MODEL_CONFIG = TypeAdapter(Annotated[StaticConfig | EncoderConfig, Field(discriminator="tier")])
+MODEL_CONFIG = TypeAdapter(EncoderConfig)
 
 
 def read_config(path: Path) -> dict:
@@ -112,7 +73,7 @@ class ModelCard(BaseModel):
     model_config = ConfigDict(extra="allow", allow_inf_nan=False)
     artifact_version: Literal[1] = 1  # missing in legacy cards
     model: str
-    tier: Literal["static", "encoder"]
+    tier: Literal["encoder"]
     labels: list[str] = Field(min_length=2)
     temperature: float = Field(gt=0)
     threshold: float = Field(ge=0, le=1.0 + 1e-9)

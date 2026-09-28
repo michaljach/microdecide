@@ -53,7 +53,7 @@ export async function readWithProgress(res: Response, onBytes: (loaded: number, 
   return out.buffer;
 }
 
-/** Clears cached model files (ours, and transformers.js' cache used by the encoder tier). */
+/** Clears cached model files (ours, and transformers.js' cache). */
 export async function clearModelCache(): Promise<boolean> {
   if (typeof caches === "undefined") return false;
   const results = await Promise.all([caches.delete(CACHE_NAME), caches.delete("transformers-cache")]);

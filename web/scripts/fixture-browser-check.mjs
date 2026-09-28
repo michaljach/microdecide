@@ -1,5 +1,5 @@
 // Offline acceptance check using the same generated fixtures as the contract tests: the model page
-// loads the Python-exported fixture model and classifies; the docs and repository pages render.
+// loads the Python-exported fixture encoder and matches Python's answers; docs and repository render.
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -26,11 +26,15 @@ try {
   const base = server.resolvedUrls.local[0];
 
   await page.goto(`${base}model.html?model=${encodeURIComponent(new URL("fixture-model", base).pathname)}`);
-  await page.waitForFunction(() => window.__last, null, { timeout: 30_000 });
+  await page.waitForFunction(() => window.__last, null, { timeout: 60_000 });
   assert.equal(await page.title(), "microdecide · Model");
-  for (const label of ["good", "bad"]) {
-    await page.fill("#text", label);
-    await page.waitForFunction((l) => window.__last?.label === l, label);
+  // the browser (transformers.js, WASM) gives Python's answers: parity.jsonl = the exported q8 model's
+  const expected = readFileSync(join(fixtures, "parity.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l)).filter((r) => r.text.trim());
+  for (const row of expected.slice(0, 5)) {
+    await page.evaluate(() => (window.__prev = window.__last));
+    await page.fill("#text", row.text);
+    await page.waitForFunction(() => window.__last !== window.__prev, null, { timeout: 10_000 });
+    assert.equal(await page.evaluate(() => window.__last.label), row.label, `browser label for ${JSON.stringify(row.text)}`);
   }
 
   await page.goto(`${base}docs.html`);
@@ -43,7 +47,7 @@ try {
   assert.equal(await page.locator("nav b[aria-current=page]").textContent(), "Repository");
 
   assert.deepEqual(errors, []);
-  console.log("Browser fixture check passed: model page loads + classifies the exported fixture; docs and repository render.");
+  console.log("Browser fixture check passed: model page loads the exported fixture encoder and matches Python; docs and repository render.");
 } finally {
   await browser?.close();
   await new Promise((resolve) => server.httpServer.close(resolve));

@@ -1,6 +1,6 @@
 import { MicroDecide, clearModelCache } from "../src";
 import type { Config } from "./common";
-import { MODEL_URL, ORT_WASM, configsFor, fmt, gpuAdapterInfo, modelTier, parityRows, percentile, webgpuAvailable } from "./common";
+import { MODEL_URL, ORT_WASM, configsFor, fmt, gpuAdapterInfo, parityRows, percentile, webgpuAvailable } from "./common";
 
 const N_SINGLE = 200;
 
@@ -30,7 +30,7 @@ async function memoryMB(): Promise<number | null> {
 
 async function bench(model: string, cfg: Config, texts: string[]): Promise<BenchResult> {
   await clearModelCache();
-  const opts = { backend: cfg.backend, device: cfg.device, dtype: cfg.dtype, ortWasmPaths: ORT_WASM };
+  const opts = { device: cfg.device, dtype: cfg.dtype, ortWasmPaths: ORT_WASM };
   const cold = await MicroDecide.load(model, opts);
   cold.dispose();
   const m = await MicroDecide.load(model, opts); // warm: model files from the Cache API
@@ -64,7 +64,6 @@ async function bench(model: string, cfg: Config, texts: string[]): Promise<Bench
 
 export interface BenchRun {
   model: string;
-  tier: string;
   gpuAdapter: Record<string, string> | null;
   results: BenchResult[];
   webgpu: boolean;
@@ -77,7 +76,6 @@ export interface BenchRun {
 export async function runBench(model = MODEL_URL, onUpdate: (rs: BenchResult[]) => void = () => {}): Promise<BenchRun> {
   const texts = (await parityRows(model)).map((r) => r.text);
   const gpu = await webgpuAvailable();
-  const tier = await modelTier(model);
   const results: BenchResult[] = [];
   for (const cfg of await configsFor(model)) {
     if (cfg.device === "webgpu" && !gpu) {
@@ -91,5 +89,5 @@ export async function runBench(model = MODEL_URL, onUpdate: (rs: BenchResult[]) 
     }
     onUpdate(results);
   }
-  return { model, tier, gpuAdapter: await gpuAdapterInfo(), results, webgpu: gpu, crossOriginIsolated, userAgent: navigator.userAgent, n: texts.length };
+  return { model, gpuAdapter: await gpuAdapterInfo(), results, webgpu: gpu, crossOriginIsolated, userAgent: navigator.userAgent, n: texts.length };
 }
