@@ -6,50 +6,19 @@ uv run python scripts/generate_fixtures.py --schema-only
 from __future__ import annotations
 
 import argparse
-from copy import deepcopy
 import json
 import tempfile
 from pathlib import Path
 
 import numpy as np
-from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
-
-from microdecide import calibrate
 from microdecide.artifacts import MODEL_CONFIG, write_card
-from microdecide.data import stratified_split, write_jsonl
+from microdecide.data import write_jsonl
 from microdecide.export import export
 from microdecide.spec import TaskSpec
 from microdecide.static import StaticClassifier
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMA = ROOT / "web/src/model.schema.json"
-
-
-def training_fixture(out: Path) -> None:
-    rng = np.random.default_rng(42)
-    y = np.repeat(np.arange(3), 80)
-    rng.shuffle(y)
-    centers = rng.normal(size=(3, 8))
-    X = centers[y] + rng.normal(size=(len(y), 8))
-    w = rng.uniform(0.5, 1, len(y))
-    split = stratified_split(y.tolist(), 42)
-    tr, va = (np.array([s == part for s in split]) for part in ("train", "val"))
-    scaler = StandardScaler().fit(X[tr])
-    C = 0.1
-    clf = LogisticRegression(C=C, class_weight="balanced", max_iter=5000, tol=1e-10, random_state=42)
-    clf.fit(scaler.transform(X[tr]), y[tr], sample_weight=w[tr])
-    coef = clf.coef_ / scaler.scale_
-    intercept = clf.intercept_ - (clf.coef_ * scaler.mean_ / scaler.scale_).sum(axis=1)
-    logits = X @ coef.T + intercept
-    temperature = calibrate.fit_temperature(logits[va], y[va])
-    probs = calibrate.softmax(logits[va], temperature)
-    fixture = dict(X=X.tolist(), y=y.tolist(), w=w.tolist(), split=split, C=C,
-                   sk_coef=coef.tolist(), sk_intercept=intercept.tolist(), sk_pred=logits.argmax(1).tolist(),
-                   val_logits=logits[va].tolist(), val_y=y[va].tolist(), temperature=temperature,
-                   ece_after=calibrate.ece(probs, y[va]),
-                   threshold=calibrate.pick_threshold(probs.max(1), probs.argmax(1) == y[va], 0.9))
-    (out / "train_fixture.json").write_text(json.dumps(fixture) + "\n")
 
 
 def exported_fixture(out: Path) -> None:
@@ -82,13 +51,11 @@ def contract_fixtures(out: Path) -> None:
     encoder = {k: config[k] for k in ("format", "format_version", "model", "labels", "temperature", "threshold", "max_chars", "onnx")}
     encoder.update(tier="encoder", tokenizer={"file": "tokenizer.json", "add_special_tokens": True, "max_tokens": 256, "truncation": True})
     cases.append({"name": "encoder export", "config": encoder, "valid": True})
-    base = deepcopy(config)
-    base.update(kind="base", labels=[], head={"coef": [], "intercept": []})
-    cases.append({"name": "embedding base", "config": base, "valid": True})
     for field, value in [("format_version", 3), ("tier", "decoder"), ("temperature", 0), ("max_chars", -1),
                          ("labels", ["bad", "bad"]), ("dim", 3), ("head", {"coef": [], "intercept": []}),
                          ("tokenizer", {**config["tokenizer"], "drop_token_ids": [99]})]:
         cases.append({"name": f"invalid {field}", "config": {**config, field: value}, "valid": False})
+    cases.append({"name": "invalid labels (none)", "config": {**config, "labels": [], "head": {"coef": [], "intercept": []}}, "valid": False})
     for case in cases:
         try:
             MODEL_CONFIG.validate_python(case["config"])
@@ -111,10 +78,9 @@ def main():
     if SCHEMA.read_text() != schema:
         raise SystemExit("Artifact schema is stale: run scripts/generate_fixtures.py --schema-only")
     args.out.mkdir(parents=True, exist_ok=True)
-    training_fixture(args.out)
     exported_fixture(args.out)
     contract_fixtures(args.out)
-    print(f"Generated training and export fixtures → {args.out}")
+    print(f"Generated export fixtures → {args.out}")
 
 
 if __name__ == "__main__":

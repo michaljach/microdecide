@@ -96,12 +96,6 @@ for (const src of exports) {
   });
   console.log(`model ${cfg.model} (${cfg.tier}) → public/models/${task}/${version}`);
 }
-// example dataset for the training playground
-const exampleCsv = join(web, "../examples/comment_moderation_data.csv");
-if (existsSync(exampleCsv)) {
-  mkdirSync(join(web, "public/examples"), { recursive: true });
-  cpSync(exampleCsv, join(web, "public/examples/comment_moderation.csv"));
-}
 
 index.sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
 writeFileSync(join(web, "public/models/index.json"), JSON.stringify(index, null, 2));

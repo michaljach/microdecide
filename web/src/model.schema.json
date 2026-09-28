@@ -233,6 +233,7 @@
           "items": {
             "type": "string"
           },
+          "minItems": 2,
           "title": "Labels",
           "type": "array"
         },
@@ -271,19 +272,6 @@
           "const": "static",
           "title": "Tier",
           "type": "string"
-        },
-        "kind": {
-          "anyOf": [
-            {
-              "const": "base",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Kind"
         },
         "onnx": {
           "anyOf": [

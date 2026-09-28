@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Build the demo for GitHub Pages and force-push it as a single-commit `gh-pages` branch.
-#   scripts/deploy-pages.sh            (from web/; needs exported models + bases, see CLAUDE.md)
+#   scripts/deploy-pages.sh            (from web/; needs exported models, see CLAUDE.md)
 #   scripts/deploy-pages.sh --reuse-models  (use existing public/ artifacts without runs/)
 # Site: https://<owner>.github.io/<repo>/  — the base path is taken from the origin remote.
 set -euo pipefail
@@ -10,7 +10,6 @@ remote=$(git remote get-url origin)
 repo=$(basename -s .git "$remote")
 export BASE="/$repo/"
 
-[ -d public/bases/potion-base-8M ] || { echo "missing public/bases — run: uv run microdecide export-base minishlab/potion-base-8M (and -32M)"; exit 1; }
 case "${1:-}" in
   "") node scripts/sync-model.mjs ;;
   --reuse-models)

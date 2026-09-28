@@ -33,9 +33,7 @@ interface OnnxRef {
 /** `microdecide.json` for the static tier: int8 embedding table + linear head. */
 export interface StaticConfig extends BaseConfig {
   tier: "static";
-  /** "base" = embedding table without a head (training playground input). */
-  kind?: "base";
-  /** Absent for models trained in the browser (static JS backend only). */
+  /** The ONNX graph of the same model (optional: the plain-JS backend doesn't need it). */
   onnx?: OnnxRef;
   normalize: boolean;
   dim: number;

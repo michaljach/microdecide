@@ -97,7 +97,7 @@ function Model() {
       ) : (
         <>
           <h1>Model</h1>
-          {index && <p>{MODEL_URL} isn't in the model catalog (for example, a model saved from the training playground).</p>}
+          {index && <p>{MODEL_URL} isn't in the model repository.</p>}
         </>
       )}
       {index && <Classifier model={MODEL_URL} examples={m?.examples ?? []} />}

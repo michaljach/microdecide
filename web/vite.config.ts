@@ -43,7 +43,7 @@ export default defineConfig({
         index: resolve(import.meta.dirname, "demo/index.html"),
         bench: resolve(import.meta.dirname, "demo/bench.html"),
         parity: resolve(import.meta.dirname, "demo/parity.html"),
-        playground: resolve(import.meta.dirname, "demo/playground.html"),
+        docs: resolve(import.meta.dirname, "demo/docs.html"),
         repository: resolve(import.meta.dirname, "demo/repository.html"),
         model: resolve(import.meta.dirname, "demo/model.html"),
       },

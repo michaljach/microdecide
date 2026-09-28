@@ -5,7 +5,7 @@ classifier that runs in the browser** — ~10–35 MB, offline, no per-call cost
 knows when it is unsure, so the hard cases can go to a bigger model.
 
 **Live demo:** https://michaljach.github.io/microdecide/ ·
-**Train your own in the browser:** https://michaljach.github.io/microdecide/playground.html
+**Docs:** https://michaljach.github.io/microdecide/docs.html
 
 ## How it works
 
@@ -37,7 +37,7 @@ uv sync
 uv run microdecide run examples/comment_moderation.yaml   # collect → label → train → eval → export
 uv run microdecide compare runs/comment_moderation/v2 runs/comment_moderation/v3
 
-cd web && npm install && npm run sync-model && npm run dev # demo, benchmark, parity, playground
+cd web && npm install && npm run sync-model && npm run dev # demo, repository, docs, benchmark, parity
 ```
 
 ```ts

@@ -42,15 +42,12 @@ browser, and browser labels match Python on ≥ 99.5% of the test set.
 
 **Done when:** report compares static vs encoder; encoder runs in the demo.
 
-## [x] M4.5 — Web training playground
-- a page in `web/` where a user trains a model entirely in the browser (Web
-  Worker): define labels, paste/upload/label examples, fit a head on frozen
-  static embeddings, see val metrics + calibration + threshold, try it live
-- download the result as a model folder `MicroDecide.load` can open
-
-**Done when:** a model trained in the playground loads with `MicroDecide.load`
-and matches the playground's own predictions; training ~1k examples takes
-seconds in the browser.
+## [–] M4.5 — Web training playground — removed
+Built (train a static-tier head in the browser, save or download it), then
+removed on request: browser training only covered the static tier, and a frozen
+encoder + trained head measured below it (comment moderation test F1 0.864–0.869
+vs 0.897 static, 0.948 fine-tuned MiniLM-L6). Training now happens in Python;
+the browser runs the exported models. The site has a Docs page instead.
 
 ## [–] M5 — Decoder tier (Qwen-class) — dropped
 Built and measured, then removed: the project targets tiny models (~30 MB).

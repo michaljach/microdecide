@@ -48,7 +48,7 @@ function Home() {
   const [model, setModel] = useState(MODEL_URL);
   const [extra, setExtra] = useState<ModelEntry | null>(null);
 
-  // a model that isn't in the index (e.g. saved from the training playground) still gets an option
+  // a model that isn't in the index (opened with ?model=…) still gets an option
   useEffect(() => {
     if (!index || index.some((m) => m.path === MODEL_URL)) return;
     void modelTier()
@@ -84,7 +84,7 @@ function Home() {
       </p>
       <p>
         <a href="#try">Try the demo</a> · <a href="./repository.html">Browse the model repository</a> ·{" "}
-        <a href="./playground.html">Train your own in the browser</a> · <a href="#how">How it works</a>
+        <a href="./docs.html">Read the docs</a> · <a href="#how">How it works</a>
       </p>
 
       <section id="try" aria-labelledby="try-heading">
@@ -141,7 +141,7 @@ function Home() {
             <tr><th>tier</th><th>model</th><th>trains on</th><th>runs in the browser as</th></tr>
           </thead>
           <tbody>
-            <tr><td>static</td><td>static embeddings (model2vec) + logistic regression</td><td>CPU, or in the browser</td><td>plain JS</td></tr>
+            <tr><td>static</td><td>static embeddings (model2vec) + logistic regression</td><td>CPU</td><td>plain JS</td></tr>
             <tr><td>encoder</td><td>small sentence-transformer (MiniLM), fine-tuned</td><td>CPU</td><td>transformers.js, ONNX q8 on WASM</td></tr>
           </tbody>
         </table>

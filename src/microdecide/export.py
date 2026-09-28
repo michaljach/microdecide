@@ -25,7 +25,7 @@ from microdecide.artifacts import write_card
 
 # Preserve the existing export module API while implementations live by tier.
 from microdecide.exporters.common import ExportError, FORMAT, FORMAT_VERSION, STATIC_MAX_TOKENS, OPSET, MAX_F1_DROP, compare as _compare, record_file_sizes
-from microdecide.exporters.static import _export_static, export_base, ExportedTokenizer, reference_probabilities, static_onnx_probabilities, build_static_onnx
+from microdecide.exporters.static import _export_static, ExportedTokenizer, reference_probabilities, static_onnx_probabilities, build_static_onnx
 from microdecide.exporters.encoder import _export_encoder, export_encoder_onnx, quantize_q8, encoder_onnx_probabilities
 
 
