@@ -87,3 +87,18 @@ not by an independent teacher. Metrics use the original synthetic holdouts and d
 establish real-world accuracy. Generated datasets and model weights stay under `runs/`.
 
 Results and validation: [larger synthetic training report](docs/SYNTHETIC_TRAINING.md).
+
+## Contributing
+
+Bug reports, fixes, documentation, and new examples are welcome. [Open an issue](https://github.com/michaljach/nodd/issues)
+to report a problem or discuss an idea, or submit a pull request with a description of your changes
+and the checks you ran. Run `uv run pytest` for Python changes; see the [web development checks](web/README.md#development-checks)
+for browser and Node.js changes.
+
+To share a model, follow the [model contribution guide](community/README.md) and submit a listing
+through the [Hugging Face community Space](https://huggingface.co/spaces/nodd-repo/community).
+
+## License
+
+The nodd source code is licensed under the [MIT License](LICENSE).
+Models and datasets have their own licenses; check each model or dataset card before reuse.
