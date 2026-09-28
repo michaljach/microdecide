@@ -7,10 +7,10 @@ function Models() {
       <h1>Models</h1>
       <p>
         Open-source models from the nodd community, hosted on Hugging Face.
-        Download, reuse, and adapt them for your own projects.
+        Download, reuse, and adapt them for your own projects, or submit your own model to the catalog.
       </p>
       <p>
-        <a href="https://huggingface.co/nodd-repo">Browse community models on Hugging Face →</a>
+        <a href="https://huggingface.co/spaces/nodd-repo/community">Browse the community catalog on Hugging Face →</a>
       </p>
     </Layout>
   );

@@ -1,0 +1,38 @@
+[
+  {
+    "repo_id": "nodd-repo/comment-moderation",
+    "name": "Comment moderation",
+    "task": "Moderation",
+    "description": "Classifies comments as okay, spam, or toxic.",
+    "size_mb": 24.31,
+    "license": "apache-2.0",
+    "revision": "v4"
+  },
+  {
+    "repo_id": "nodd-repo/prompt-injection",
+    "name": "Prompt injection",
+    "task": "Prompt injection",
+    "description": "Distinguishes ordinary assistant requests from prompt-injection attempts.",
+    "size_mb": 18.58,
+    "license": "apache-2.0",
+    "revision": "v3"
+  },
+  {
+    "repo_id": "nodd-repo/sentiment",
+    "name": "Sentiment",
+    "task": "Sentiment",
+    "description": "Identifies positive, neutral, or negative sentiment in reviews and other text.",
+    "size_mb": 24.31,
+    "license": "apache-2.0",
+    "revision": "v2"
+  },
+  {
+    "repo_id": "nodd-repo/support-triage",
+    "name": "Support triage",
+    "task": "Support routing",
+    "description": "Routes support messages to billing, bugs, account access, how-to questions, or feature requests.",
+    "size_mb": 24.31,
+    "license": "apache-2.0",
+    "revision": "v2"
+  }
+]

@@ -9,6 +9,10 @@ knows when it is unsure, so the hard cases can go to a bigger model.
 **Live demo:** https://michaljach.github.io/nodd/ ·
 **Docs:** https://michaljach.github.io/nodd/docs.html
 
+**Community models:** [Search the catalog on Hugging Face](https://huggingface.co/spaces/nodd-repo/community).
+Share your own model by submitting a listing through the Space's Community tab;
+see the [contribution guide](community/README.md).
+
 ## How it works
 
 ```
