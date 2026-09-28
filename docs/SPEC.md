@@ -222,24 +222,6 @@ m.isConfident(d);                // false → escalate (escalateUrl lands in M6)
   time, p50/p95, WASM vs WebGPU); **parity page** (browser vs Python labels).
   `npm run parity|bench|offline` drive them in headless Chromium.
 
-### 4.8.1 Training playground (`web/demo/playground.html`)
-Train a static-tier model entirely in the browser; data never leaves the page.
-- Labels + examples: example dataset, CSV/JSONL upload or paste (`text,label[,confidence]`),
-  one-by-one entry, or a labeling queue for unlabeled lines (keys 1–9, s = skip).
-  Persisted in `localStorage`.
-- Embedding base: a static model exported without a head
-  (`microdecide export-base minishlab/potion-base-8M` → `web/public/bases/`).
-- `trainStaticHead` (library export, `src/train.ts`) is the Python static recipe in
-  TS: standardize (folded), class-balanced (weighted, as sklearn ≥ 1.8) + sample-weighted
-  multinomial LR via L-BFGS, C by val macro F1, temperature + threshold + ECE.
-  Checked against sklearn/`calibrate.py` on a fixture; on the example task's own split
-  it reproduces the Python static-8M test F1 exactly (0.8589).
-- Output: "Save in this browser" writes the model folder into the Cache API that
-  `MicroDecide.load` reads first (`/playground-models/<name>`, no server, offline);
-  "Download .zip" gives the same folder (static JS backend; no ONNX file).
-- Measured (M2 Pro, 1,711 examples): potion-8M trains in 0.8 s, potion-32M in 1.4 s
-  (test F1 0.884, 75% handled alone); reloaded model matches the playground 100%.
-
 ### 4.9 Server: escalate + feedback
 `Runtime` wraps model + optional teacher:
 ```python

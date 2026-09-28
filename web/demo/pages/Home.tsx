@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { catalogOf, useModels } from "../catalog";
 import { MODEL_URL, type ModelEntry, fmt, modelTier } from "../common";
-import { BenchPanel, ParityPanel } from "../ui/Bench";
+import { BenchPanel } from "../ui/Bench";
 import { Classifier } from "../ui/Classifier";
 import { Layout } from "../ui/Layout";
 import { mount } from "../ui/mount";
@@ -48,7 +48,7 @@ function Home() {
   const [model, setModel] = useState(MODEL_URL);
   const [extra, setExtra] = useState<ModelEntry | null>(null);
 
-  // a model that isn't in the index (e.g. saved from the training playground) still gets an option
+  // a model that isn't in the index (opened with ?model=…) still gets an option
   useEffect(() => {
     if (!index || index.some((m) => m.path === MODEL_URL)) return;
     void modelTier()
@@ -84,7 +84,7 @@ function Home() {
       </p>
       <p>
         <a href="#try">Try the demo</a> · <a href="./repository.html">Browse the model repository</a> ·{" "}
-        <a href="./playground.html">Train your own in the browser</a> · <a href="#how">How it works</a>
+        <a href="./docs.html">Read the docs</a> · <a href="#how">How it works</a>
       </p>
 
       <section id="try" aria-labelledby="try-heading">
@@ -116,15 +116,6 @@ function Home() {
         <BenchPanel key={model} model={model} />
       </section>
 
-      <section id="parity" aria-labelledby="parity-heading">
-        <h2 id="parity-heading">Parity</h2>
-        <p className="small">
-          The browser should agree with the Python model it was exported from. This check runs every backend on the test
-          inputs and compares labels and probabilities with Python's answers (target ≥ 99.5%).
-        </p>
-        <ParityPanel key={model} model={model} />
-      </section>
-
       <section id="how" aria-labelledby="how-heading">
         <h2 id="how-heading">How it works</h2>
         <p>You write a task spec. Label descriptions matter: the labeling model reads them.</p>
@@ -150,7 +141,7 @@ function Home() {
             <tr><th>tier</th><th>model</th><th>trains on</th><th>runs in the browser as</th></tr>
           </thead>
           <tbody>
-            <tr><td>static</td><td>static embeddings (model2vec) + logistic regression</td><td>CPU, or in the browser</td><td>plain JS</td></tr>
+            <tr><td>static</td><td>static embeddings (model2vec) + logistic regression</td><td>CPU</td><td>plain JS</td></tr>
             <tr><td>encoder</td><td>small sentence-transformer (MiniLM), fine-tuned</td><td>CPU</td><td>transformers.js, ONNX q8 on WASM</td></tr>
           </tbody>
         </table>

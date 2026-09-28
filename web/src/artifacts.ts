@@ -16,12 +16,10 @@ export function parseModelConfig(value: unknown): ModelConfig {
   }
   if (new Set(config.labels).size !== config.labels.length) throw new Error("Model labels must be unique");
   if (config.tier === "static") {
-    if (config.kind == null) delete config.kind;
     if (config.head.coef.length !== config.labels.length || config.head.intercept.length !== config.labels.length) {
       throw new Error("Model head rows must match labels");
     }
     if (config.head.coef.some((row) => row.length !== config.dim)) throw new Error("Model head columns must match embedding dimension");
-    if (!config.labels.length && config.kind !== "base") throw new Error("Only embedding bases may have no labels");
     if (config.tokenizer.drop_token_ids.some((id) => id < 0 || id >= config.vocab_size)) throw new Error("Drop token id is outside vocabulary");
   }
   return config;

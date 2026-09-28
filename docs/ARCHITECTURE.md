@@ -34,19 +34,13 @@ interface remains in `engines.ts`.
 live in `training/split.ts`, `optimize.ts`, `metrics.ts`, and `calibrate.ts`.
 
 `rpc.ts` owns request correlation, progress delivery, error handling, and disposal.
-`protocol.ts` defines inference messages. The demo's `training/protocol.ts` defines
-training messages and derives its result from the library's `TrainReport`.
+`protocol.ts` defines inference messages; its progress payload is download bytes.
 Clients infer their return types from the request rather than choosing arbitrary
 result types. Worker replies use the same protocol types.
 
-The playground page composes `training/task.ts` (persistent task state),
-`training/client.ts` (worker lifecycle), and `training/Results.tsx` (report view).
-Importing those modules does not start a worker. The page retains its form and
-workflow orchestration. All six HTML entries contain only metadata, styles, and a
-React root. Layout widths, page titles, confirmations, downloads, and keyboard
-labeling are owned by React components and handlers. Refs invoke browser actions
-such as focusing a queue, opening a modal, or starting a download. The only
-explicit document lookup in the demo is the root mount. Service workers and ML
+All six HTML entries (index, repository, model, docs, bench, parity) contain only
+metadata, styles, and a React root; layout and page titles are owned by React
+components. The only explicit document lookup in the demo is the root mount. Service workers and ML
 utilities remain ordinary JavaScript/TypeScript because they do not render UI.
 
 ## Artifact contracts
@@ -98,7 +92,6 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-This uses generated local fixtures to exercise training, caching, inference in
-both execution modes, ZIP downloads, task persistence, and the model page. The
-existing `parity`, `bench`, `offline`, and `playground` commands still cover real
-exported models; the tiny fixtures do not replace quality checks on those models.
+This uses the generated fixture model to exercise the model page (load, validate,
+classify) and renders the docs and repository pages. The existing `parity`,
+`bench`, and `offline` commands still cover real exported models; the tiny fixtures do not replace quality checks on those models.

@@ -2,7 +2,6 @@
 //   node scripts/browser-check.mjs parity    browser labels vs Python (exit 1 if < 99.5%)
 //   node scripts/browser-check.mjs bench     load time, p50/p95, WASM vs WebGPU → <export>/bench.json
 //   node scripts/browser-check.mjs offline   classify with the network cut (model from Cache API)
-//   node scripts/browser-check.mjs playground  train in the browser, save, reload with MicroDecide.load
 // BASE=/microdecide/ builds + previews under a sub-path; SITE=https://… checks a deployed site instead.
 import { existsSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -72,40 +71,6 @@ try {
     const status = await page.textContent("#status");
     console.log(`offline reload OK — ${status}`);
     console.log(`offline decision: ${d.label} (${(d.confidence * 100).toFixed(1)}%)`);
-  } else if (mode === "playground") {
-    await page.goto(`${base}/playground.html`);
-    await page.click("#load-example");
-    await page.waitForFunction(() => /^\d{3,} labeled/.test(document.getElementById("count").textContent), null, { timeout: 30_000 });
-    if (process.env.EMBEDDINGS) await page.selectOption("#base", process.env.EMBEDDINGS); // e.g. bases/potion-base-32M
-    const t0 = Date.now();
-    await page.click("#train");
-    await page.waitForFunction(() => window.__playground?.result, null, { timeout: 120_000 });
-    const wall = Date.now() - t0;
-    await page.click("#save");
-    await page.waitForFunction(() => window.__playground?.saved, null, { timeout: 60_000 });
-    const check = await page.evaluate(async () => {
-      const { MicroDecide, result, saved } = window.__playground;
-      const m = await MicroDecide.load(saved);
-      const ds = await m.decideBatch(result.predictions.map((p) => p.text));
-      let same = 0;
-      let maxDiff = 0;
-      ds.forEach((d, i) => {
-        const p = result.predictions[i];
-        if (d.label === p.predicted) same++;
-        Object.values(d.probabilities).forEach((v, k) => (maxDiff = Math.max(maxDiff, Math.abs(v - p.probabilities[k]))));
-      });
-      m.dispose();
-      return { saved, n: ds.length, agreement: same / ds.length, maxDiff, model: m.info.model, loadMs: m.info.loadMs };
-    });
-    const r = await page.evaluate(() => window.__playground.result);
-    const [download] = await Promise.all([page.waitForEvent("download"), page.click("#download")]);
-    const zipPath = join(web, "test-results", "playground.zip");
-    await download.saveAs(zipPath);
-    await page.reload();
-    const persisted = await page.textContent("#count");
-    console.log(JSON.stringify({ trainWallMs: wall, ms: r.ms, testMacroF1: r.test.macroF1, testAccuracy: r.test.accuracy,
-      coverage: r.escalation.testCoverage, counts: r.counts, C: r.C, reload: check, zip: zipPath, persistedAfterReload: persisted }, null, 2));
-    if (check.agreement < 0.995 || !persisted.startsWith(String(r.counts.train + r.counts.val + r.counts.test))) exitCode = 1;
   } else {
     throw new Error(`unknown mode ${mode}`);
   }

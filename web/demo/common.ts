@@ -48,7 +48,7 @@ export const CONFIGS: Record<ModelConfig["tier"], Config[]> = {
   ],
 };
 
-/** Reads microdecide.json via the library's model cache first (playground models live only there). */
+/** Reads microdecide.json via the library's model cache first (works offline once loaded). */
 export async function modelConfig(model = MODEL_URL): Promise<ModelConfig> {
   const file = new URL(`${model.replace(/\/+$/, "")}/microdecide.json`, location.href).href;
   const hit = typeof caches !== "undefined" ? await (await caches.open("microdecide-models-v1")).match(file) : undefined;

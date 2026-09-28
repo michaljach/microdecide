@@ -53,7 +53,7 @@ class BaseConfig(Artifact):
     format: Literal["microdecide"]
     format_version: Literal[2]
     model: str
-    labels: list[str]
+    labels: list[str] = Field(min_length=2)
     temperature: float = Field(gt=0)
     threshold: float = Field(ge=0, le=1.0 + 1e-9)
     max_chars: int = Field(gt=0)
@@ -70,7 +70,6 @@ class BaseConfig(Artifact):
 
 class StaticConfig(BaseConfig):
     tier: Literal["static"]
-    kind: Literal["base"] | None = None
     onnx: OnnxRef | None = None
     normalize: bool
     dim: int = Field(gt=0)
@@ -85,8 +84,6 @@ class StaticConfig(BaseConfig):
             raise ValueError("head rows must match labels")
         if any(len(row) != self.dim for row in self.head.coef):
             raise ValueError("head columns must match embedding dimension")
-        if not self.labels and self.kind != "base":
-            raise ValueError("only embedding bases may have no labels")
         if any(i < 0 or i >= self.vocab_size for i in self.tokenizer.drop_token_ids):
             raise ValueError("drop token id is outside vocabulary")
         return self
@@ -94,7 +91,6 @@ class StaticConfig(BaseConfig):
 
 class EncoderConfig(BaseConfig):
     tier: Literal["encoder"]
-    labels: list[str] = Field(min_length=2)
     tokenizer: EncoderTokenizer
     onnx: OnnxRef
 

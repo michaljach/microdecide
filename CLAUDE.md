@@ -49,16 +49,14 @@ uv run pytest                    # tests
 uv run microdecide run examples/comment_moderation.yaml   # full pipeline (→ export)
 uv run microdecide train examples/comment_moderation.yaml --tier encoder
 uv run microdecide compare runs/comment_moderation/v2 runs/comment_moderation/v3
-uv run microdecide export-base minishlab/potion-base-8M   # embedding base for the playground
 
 cd web && npm install
 npm run sync-model               # copy every runs/*/v*/export + ORT wasm into public/, write models/index.json
-npm run dev                      # demo at /, /repository.html, /model.html?model=…, /playground.html, /bench.html, /parity.html
+npm run dev                      # demo at /, /repository.html, /model.html?model=…, /docs.html, /bench.html, /parity.html
 npm test && npm run typecheck    # vitest (incl. Node parity vs Python) + tsc
 MODEL=/models/<task>/<version> npm run parity   # headless Chromium: labels vs Python ≥ 99.5%
 npm run bench                    # → export/bench.json; `microdecide eval` adds it to report.md
 npm run offline                  # network cut: page + model reload from caches, still classifies
-npm run playground               # train in the browser, save, reload with MicroDecide.load (≥ 99.5%)
 npm run deploy:pages             # build for /microdecide/, force-push gh-pages → michaljach.github.io/microdecide
 SITE=https://michaljach.github.io/microdecide/ npm run parity   # run the browser checks against the live site
 ```

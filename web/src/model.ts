@@ -50,7 +50,6 @@ export class Model {
     let engine: Engine;
     if (config.tier === "static") {
       if (backend === "onnx" && !config.onnx) throw new Error(`${config.model} has no ONNX export; use backend "static"`);
-      if (!config.labels.length) throw new Error(`${config.model} is an embedding base without a head`);
       const [tokJson, tokConfig, weights] = await Promise.all([
         fetchCounted(config.tokenizer.file).then((b) => decodeJson<object>(b)),
         fetchCounted("tokenizer_config.json").then((b) => decodeJson<object>(b)),

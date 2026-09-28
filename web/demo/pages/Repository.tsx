@@ -57,8 +57,8 @@ function Repository() {
       </ul>
       <p className="muted small">
         The training data is synthetic and small, so expect lower accuracy on real inputs. To add your own, write a spec,
-        run <code>uv run microdecide run &lt;spec&gt;</code>, then <code>npm run sync-model</code>. Or{" "}
-        <a href="./playground.html">train one in the browser</a>.
+        run <code>uv run microdecide run &lt;spec&gt;</code>, then <code>npm run sync-model</code> (see the{" "}
+        <a href="./docs.html">docs</a>).
       </p>
     </Layout>
   );
