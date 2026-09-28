@@ -21,6 +21,7 @@ case "${1:-}" in
   *) echo "usage: $0 [--reuse-models]"; exit 1 ;;
 esac
 npx vite build
+node scripts/check-social-preview.mjs
 
 # lean site: the fp32 encoder (70 MB) is only an optional WebGPU variant
 find dist-demo/models -path '*/onnx/model.onnx' -delete
