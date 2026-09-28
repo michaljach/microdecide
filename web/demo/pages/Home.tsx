@@ -77,12 +77,7 @@ function Home() {
   return (
     <Layout page="home">
       <h1>nodd</h1>
-      <p>
-        Turn one decision into a tiny model that runs in your browser. You describe the <b>input</b> and a fixed set of typed{" "}
-        <b>labels</b>, a bigger model labels examples, and nodd trains a small, calibrated classifier for exactly
-        that task. Each answer is one forward pass with no text generation, so there's nothing to parse and it can't return a
-        label outside your set.
-      </p>
+      <p>Tiny, use-case-specific models that run in your browser.</p>
       <p>
         <a href="#try">Try the demo</a> · <a href="./repository.html">Explore community models</a> ·{" "}
         <a href="./docs.html">Read the docs</a> · <a href="#how">How it works</a>
