@@ -59,7 +59,7 @@ cd web && npm install
 npm run sync-model               # copy every runs/*/v*/export + ORT wasm into public/, write models/index.json
 npm run dev                      # demo at /, /repository.html, /model.html?model=…, /docs.html, /bench.html, /parity.html
 npm test && npm run typecheck    # vitest (incl. @nodd/node parity vs Python) + tsc
-npm run build                    # tsc → packages/*/dist; publish: npm publish -ws
+npm run build                    # tsc → packages/*/dist; publish: npm publish --workspaces (2FA: run in your own terminal)
 MODEL=/models/<task>/<version> npm run parity   # headless Chromium: labels vs Python ≥ 99.5%
 npm run bench                    # → export/bench.json; `nodd eval` adds it to report.md
 npm run offline                  # network cut: page + model reload from caches, still classifies
