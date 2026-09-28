@@ -1,7 +1,9 @@
 import { modelUrl, selectModels, validateCatalog } from './catalog.mjs';
 
 const search = document.querySelector('#search');
-const task = document.querySelector('#task');
+const tags = document.querySelector('#tags');
+const tagFilter = document.querySelector('#tag-filter');
+const tagSummary = document.querySelector('#tags-summary');
 const sort = document.querySelector('#sort');
 const status = document.querySelector('#status');
 const tbody = document.querySelector('#models');
@@ -33,7 +35,9 @@ function row(model) {
   if (model.revision) name.append(element('span', model.revision, 'revision'));
   name.append(element('p', model.description, 'description'));
   const type = element('td');
-  type.append(element('span', model.task, 'task'));
+  const badges = element('div', undefined, 'tags');
+  badges.append(...model.tags.map(tag => element('span', tag, 'tag')));
+  type.append(badges);
   const author = element('td');
   const owner = model.repo_id.split('/')[0];
   author.append(link(owner, `https://huggingface.co/${owner}`));
@@ -44,12 +48,14 @@ function row(model) {
 }
 
 function render() {
-  const selected = selectModels(models, { query: search.value, task: task.value, sort: sort.value });
+  const selectedTags = [...tags.querySelectorAll('input:checked')].map(input => input.value);
+  tagSummary.textContent = selectedTags.length ? `${selectedTags.length} selected` : 'All tags';
+  const selected = selectModels(models, { query: search.value, tags: selectedTags, sort: sort.value });
   tbody.replaceChildren(...selected.map(row));
   status.textContent = `${selected.length} of ${models.length} ${models.length === 1 ? 'model' : 'models'}`;
   table.hidden = selected.length === 0;
   empty.hidden = selected.length !== 0;
-  reset.hidden = !search.value && !task.value && sort.value === 'name';
+  reset.hidden = !search.value && !selectedTags.length && sort.value === 'name';
   empty.querySelector('h2').textContent = models.length ? 'No matching models' : 'No models listed yet';
   empty.querySelector('p').textContent = models.length ? 'Try another search or clear your filters.' : 'Be the first to share a model using the contribution guide below.';
 }
@@ -60,13 +66,20 @@ async function load() {
   empty.hidden = true;
   reset.hidden = true;
   status.textContent = 'Loading models…';
-  for (const control of [search, task, sort]) control.disabled = true;
+  for (const control of [search, tags, sort]) control.disabled = true;
   try {
     const response = await fetch('./models.json', { cache: 'no-cache' });
     if (!response.ok) throw new Error(`Catalog request failed (${response.status}).`);
     models = validateCatalog(await response.json());
-    task.replaceChildren(new Option('All tasks', ''), ...[...new Set(models.map(model => model.task))].sort().map(name => new Option(name, name)));
-    for (const control of [search, task, sort]) control.disabled = false;
+    tags.replaceChildren(...[...new Set(models.flatMap(model => model.tags))].sort().map(tag => {
+      const label = element('label');
+      const input = element('input');
+      input.type = 'checkbox';
+      input.value = tag;
+      label.append(input, document.createTextNode(tag));
+      return label;
+    }));
+    for (const control of [search, tags, sort]) control.disabled = false;
     render();
   } catch (error) {
     console.error('Unable to load community catalog:', error);
@@ -76,8 +89,12 @@ async function load() {
 }
 
 search.addEventListener('input', render);
-task.addEventListener('change', render);
+tags.addEventListener('change', render);
+document.addEventListener('click', event => { if (!tagFilter.contains(event.target)) tagFilter.open = false; });
+tagFilter.addEventListener('keydown', event => {
+  if (event.key === 'Escape') { tagFilter.open = false; tagFilter.querySelector('summary').focus(); }
+});
 sort.addEventListener('change', render);
-reset.addEventListener('click', () => { search.value = ''; task.value = ''; sort.value = 'name'; render(); search.focus(); });
+reset.addEventListener('click', () => { search.value = ''; for (const input of tags.querySelectorAll('input')) input.checked = false; tags.scrollTop = 0; tagFilter.open = false; sort.value = 'name'; render(); search.focus(); });
 retry.addEventListener('click', load);
 load();

@@ -32,7 +32,7 @@ You don't need to join the nodd organization to propose a listing.
 {
   "repo_id": "your-name/your-model",
   "name": "Your model name",
-  "task": "Sentiment",
+  "tags": ["sentiment", "text-classification"],
   "description": "A brief description of the decision this model makes.",
   "size_mb": 24.3,
   "license": "apache-2.0",
@@ -46,12 +46,15 @@ matches your model card. `revision` is optional; specify a published tag or comm
 for a reproducible listing. Each `repo_id` may appear only once; update the existing
 entry when publishing a new version. Keep descriptions under 300 characters.
 
-The supported fields are `repo_id`, `name`, `task`, `description`, `size_mb`, `license`,
-and optional `revision`. The author is derived from the repository owner. The table
-searches names, tasks, descriptions, authors, repository IDs, and licenses.
+The supported fields are `repo_id`, `name`, `tags`, `description`, `size_mb`, `license`,
+and optional `revision`. Supply one or more unique tags using lowercase letters,
+numbers, and hyphens (for example, `sentiment` and `text-classification`). A model
+can have multiple tags. The Tags filter matches **all** selected tags; text search
+also searches every tag. The author is derived from the repository owner. The table
+searches names, tags, descriptions, authors, repository IDs, and licenses.
 
 If editing JSON is unfamiliar, open a thread in the **Community** tab with your
-model link, task, license, download size, and evaluation results. A maintainer can
+model link, tags, license, download size, and evaluation results. A maintainer can
 help prepare the listing. A discussion alone does not publish a listing.
 
 ## Review

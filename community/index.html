@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Find and share small, open-source nodd models. Search community models by name, task, author, and license.">
+  <meta name="description" content="Find and share small, open-source nodd models. Search community models by name, tags, author, and license.">
   <title>nodd · Community models</title>
   <link rel="stylesheet" href="./style.css">
 </head>
@@ -26,18 +26,24 @@
       <div class="filters">
         <div class="search-field">
           <label for="search">Search models</label>
-          <input id="search" type="search" placeholder="Search by name, task, author…" autocomplete="off" disabled>
+          <input id="search" type="search" placeholder="Search by name, tags, author…" autocomplete="off" disabled>
         </div>
         <div>
-          <label for="task">Task</label>
-          <select id="task" disabled><option value="">All tasks</option></select>
+          <span id="tags-label" class="filter-label">Tags</span>
+          <details id="tag-filter">
+            <summary aria-labelledby="tags-label tags-summary"><span id="tags-summary">All tags</span></summary>
+            <div class="tag-menu">
+              <p>Match all selected tags.</p>
+              <fieldset id="tags" disabled aria-labelledby="tags-label"></fieldset>
+            </div>
+          </details>
         </div>
         <div>
           <label for="sort">Sort by</label>
           <select id="sort" disabled>
             <option value="name">Name, A–Z</option>
             <option value="size">Smallest download</option>
-            <option value="task">Task, A–Z</option>
+            <option value="tags">Tags, A–Z</option>
             <option value="author">Author, A–Z</option>
           </select>
         </div>
@@ -50,7 +56,7 @@
         <table>
           <caption class="sr-only">Community model catalog</caption>
           <thead><tr>
-            <th scope="col">Model</th><th scope="col">Task</th><th scope="col">Author</th>
+            <th scope="col">Model</th><th scope="col">Tags</th><th scope="col">Author</th>
             <th scope="col" class="number">Download</th><th scope="col">License</th>
           </tr></thead>
           <tbody id="models"></tbody>
